@@ -1,7 +1,7 @@
-### Title:    Examples 4: Working with Data & Simple Analyses
+### Title:    Introduction to R 4: Working with Data & Simple Analyses
 ### Author:   Kyle M. Lang
-### Created:  2016-JAN-27
-### Modified: 2016-JAN-29
+### Created:  2016-01-27
+### Modified: 2022-01-04
 
 rm(list = ls(all = TRUE))
 

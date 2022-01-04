@@ -1,7 +1,7 @@
-### Title:    Examples 1: Basic R Commands
+### Title:    Introduction to R 1: Basic R Commands
 ### Author:   Kyle M. Lang
-### Created:  2016-JAN-28
-### Modified: 2016-JAN-28
+### Created:  2016-01-28
+### Modified: 2012-01-04
 
 
 ### Comments ###

@@ -1,7 +1,7 @@
-### Title:    Examples 2: R Data Objects
+### Title:    Introduction to R 2: Data Objects
 ### Author:   Kyle M. Lang
-### Created:  2016-JAN-28
-### Modified: 2016-JAN-28
+### Created:  2016-01-28
+### Modified: 2022-01-04
 
 ### Basic Data Structures ###
 
