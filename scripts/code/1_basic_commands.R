@@ -1,10 +1,11 @@
-### Title:    Introduction to R 1: Basic R Commands
+### Title:    Introduction to R 1: Basic Commands
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
 ### Modified: 2012-01-04
 
+rm(list = ls(all = TRUE))
 
-### Comments ###
+###-Comments-----------------------------------------------------------------###
 
 ## The comment character in R is '#'
 ## Each commented line must be preceded by a '#' symbol
@@ -12,14 +13,8 @@
 
 ## Comments are not evaluted when you run your code
 
-## There are two important uses of comments:
-## 1) Documenting your syntax
-## 2) Excluding probelmatic lines of code When debugging
-## ---- When debugging, commenting out parts of your code,
-## ---- rather than deleting them, will save you tons of time
 
-
-### Assignment ###
+###-Assignment---------------------------------------------------------------###
 
 ## To do anything useful, we need to create objects that hold data
 ## We 'assign' values to objects via the 'assignment' operator
@@ -27,8 +22,8 @@ y <- 7
 x = 33.33
 "Bob" -> z
 
-## Evaluating an object name without assignment
-## prints the value of that object to stdout
+## Evaluating an object name without assignment prints the value of that object
+## to stdout
 y
 x
 z
@@ -44,46 +39,51 @@ my1X
 1X <- pi # Uh-oh :(
 
 
-### Mathematical Operators ###
+###-Mathematical Operators---------------------------------------------------###
 
-### Addition
+## Arithmetic
 y + x
-
-### Subtraction
 y - x
-
-### Multiplication
 y * x
-
-### Division
 y / x
 
-### Powers
-## x^n will raise x to the nth power
-y^2 # square y
-y^3 # cube y
+## Powers
+y^2
+y^3
 
-### Roots
-sqrt(y) # square root of y
+## Roots
+sqrt(y)
 
-## for nth roots with n > 2, use fractional exponents
+## Or use fractional exponents
 y^(1/3) # cube root of y
 y^(1/4) # quartic root of y
 
 ### Logarithms and anti-logs
 log(y)   # natural logarithm of y
-log10(y) # base 10 log of y
-log2(y)  # base 2 log of y
+log10(y) # log base 10 of y
+log2(y)  # log base 2 of y
 
 exp(x) # exponentiate x
 
-### Other useful stuff
+## Other useful stuff
 abs(y) # absolute value of y
-
 x %% y # modulo operator := remainder after diving x by y
 
+################################################################################
+## PRACTICE PROBLEM 1.1
+##
+## (a) Create an object called 'age' that takes the value of your age in whole
+##     years.
+## (b) Use the 'age' object you created in (a) to create a second object called
+##     'weeks' that takes the value of your age in whole weeks.
+##     - Assume 52 weeks in each year
+##     - Disregard partial years (i.e., assume every year counted in 'age'
+##       contains 52 whole weeks).
+##
+################################################################################
 
-### Logical Comparisons ###
+
+###-Logical Comparisons------------------------------------------------------###
 
 y <- 5
 x <- 7
@@ -104,24 +104,33 @@ y >= w
 y < w
 y <= w
 
-## We can negate any logical condition by prepending a '!' character
+## We can negate any logical condition by prepending the '!' character
 y > x
 !y > x
 
 y == w
 y != w
 
-## We can create more complex logical conditions with the
-## AND and OR operators: '&' and '|'
+## We can create more complex logical conditions with the AND and OR operators:
+## '&' and '|'
 y == w & y < x
 y == w & y > x
 y == w | y > x
 
+################################################################################
+## PRACTICE PROBLEM 1.2
+##
+## Use a single line of code to generate a logical value (i.e., TRUE/FALSE)
+## indicating if the value of the 'weeks' object you created in (1.1b) is
+## evenly divisible by 5 or 7.
+##
+################################################################################
 
-### Order of Operations ###
 
-## R will, mostly, follow the usual PEMDAS ordering for mathematic operations,
-## but it's not psychic. So, when in doubt, use parentheses!
+###-Order of Operations------------------------------------------------------###
+
+### R will, mostly, follow the usual PEMDAS ordering for mathematic operations,
+### but it's not psychic. When in doubt, use parentheses!
 
 y^(1/2)
 y^1/2
@@ -139,25 +148,33 @@ y + x / w
 (y + x) / w
 
 
-### Interacting with the Environment ###
+###-Interacting with the Environment-----------------------------------------###
 
-## The 'environment' is a loosely organized set of all
-## the objects that R currently has stored in working memory
+### The 'environment' is a loosely organized set of all the objects that R
+### currently has stored in working memory
 
-## Check the contents of the current environment:
+## Check the contents of the current environment
 ls()
 
 ## Remove an object from the environment
 rm(x)
 ls()
 
-## (Nearly) totally clear the enviroment
+################################################################################
+## PRACTICE PROBLEM 1.3
+##
+## Use the rm() function to remove the 'age' object that you created in (1.1a)
+## from your environment.
+##
+################################################################################
+
+## Completely clear the enviroment
 rm(list = ls(all = TRUE))
 ls()
 
-## Every R session is associated with a 'working directory'
-## The working directory is the directory that R will use to
-## read or write data objects to or from disk.
+### Every R session is associated with a 'working directory'. The working
+### directory is the directory wherein R will root its navigation when reading
+### or writing data objects to or from disk.
 
 ## Find the current working directory
 getwd()
@@ -166,39 +183,48 @@ getwd()
 setwd("data/")
 getwd()
 
+################################################################################
+## PRACTICE PROBLEM 1.4
+##
+## Use the setwd() function to change your working directory to the directory in
+## which this script is saved.
+##
+################################################################################
 
-### Install Packages ###
 
-## Prompted to choose CRAN mirror
-install.packages("ICC")
+###-Installing Packages------------------------------------------------------###
 
-## CRAN mirror specified a priori
-install.packages(c("mice", "vcd"),
-                 repos = "http://rweb.quant.ku.edu/cran")
+## Use the default CRAN mirror
+install.packages("psych")
 
-## Specify a directory into which the packages will be installed
+## Specify the CRAN mirror a priori
+install.packages(c("lattice", "gridExtra"),
+                 repos = "http://cloud.r-project.org")
+
+## Specify a non-standard directory into which the packages will be installed
 install.packages("mvtnorm",
-                 repos = "http://rweb.quant.ku.edu/cran",
+                 repos = "http://cloud.r-project.org",
                  lib = "../../software")
 
 ## Install from local source
-install.packages("../../software/quark_0.5.4.tar.gz",
+install.packages("../../software/magrittr_2.0.1.tar.gz",
                  repos = NULL,
                  type = "Source")
 
-##### PRACTICE PROBLEM 1.1 #####
+################################################################################
+## PRACTICE PROBLEM 1.5
+##
+## Use the install.packages() function to install the following packages in the
+## default location (i.e., don't specify anything for the 'lib' argument).
+##
+## PACKAGES: ggplot2, dplyr, haven
+##
+################################################################################
 
-## TASK: Use the commands presented above to install the following
-##       packages in the default location (i.e., don't specify
-##       anything for the 'lib' argument)
-## PACKAGE LIST: mvtnorm, lavaan, psych, mitools, multicomp
 
-##### END PRACTICE PROBLEM 1.1 #####
+###-Getting Help-------------------------------------------------------------###
 
-### Getting help ###
-
-## Prepending the '?' character will access the help file
-## for a function
+## Prepending the '?' character will access the help file for a function
 ?lm
 
 ## We can also use the 'help' function
@@ -211,7 +237,7 @@ help(/)
 ?"/"
 help("/")
 
-## If a package is not loaded we need to specify the namespace
+## If a package is not loaded, we need to specify the namespace
 ?quickpred
 ?mice::quickpred
 help(quickpred, package = "mice")
@@ -219,9 +245,13 @@ help(quickpred, package = "mice")
 ## We can also open an interactive web-based help page
 help.start()
 
-##### PRACTICE PROBLEM 1.2 #####
+################################################################################
+## PRACTICE PROBLEM 1.6
+##
+##  (a) Access the help file for the vector() function.
+##  (b) How many arguments does the vector() function take?
+##
+################################################################################
 
-## TASK: (a) Access the help file for the 'vector()' function.
-##       (b) How many arguments does the 'vector()' function take?
 
-##### END PRACTICE PROBLEM 1.2 #####
+###-END----------------------------------------------------------------------###

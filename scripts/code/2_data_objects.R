@@ -3,68 +3,73 @@
 ### Created:  2016-01-28
 ### Modified: 2022-01-04
 
-### Basic Data Structures ###
+rm(list = ls(all = TRUE))
 
-### Vector
+###-Vectors------------------------------------------------------------------###
 
-## We can make a vector with type equal to any
-## of the six basic vector types
+### Vectors are the simplest kind of object in R. Vectors come in one of six
+### "atomic modes":
+### 1. double/numeric
+### 2. logical
+### 3. character
+### 4. integer
+### 5. complex
+### 6  raw
+
+## We can make a vector with any of the six basic vector modes
 v1 <- vector("numeric", 3)
 v1
 
-v2 <- vector("integer", 3)
+v1 <- vector("double", 3)
+v1
+
+v2 <- vector("logical", 3)
 v2
 
-v3 <- vector("double", 3)
+v3 <- vector("character", 3)
 v3
 
-v4 <- vector("complex", 3)
+v4 <- vector("integer", 3)
 v4
 
-v5 <- vector("logical", 3)
+v5 <- vector("complex", 3)
 v5
 
-v6 <- vector("character", 3)
+v6 <- vector("raw", 3)
 v6
 
-v7 <- vector("raw", 3)
-v7
+## There are many different ways to generate vectors
+(y1 <- c(1, 2, 3))
+(y2 <- c(TRUE, FALSE, TRUE, TRUE))
+(y3 <- c("bob", "suzy", "danny"))
 
-## Default mode for 'vectors' is logical
-x <- vector(length = 5)
-x
+1:5
+1.2:5.3
 
-## The concatination function c() returns a vector populated by its arguments
-y <- c(1, 2, 3)
-y
+rep(33, 4)
+rep(1:3, 3)
+rep(y3, each = 2)
 
-y2 <- c("bob", "suzy", "danny")
-y2
+seq(0, 1, 0.25)
+seq(-1, 1, length.out = 10)
 
-y3 <- c(TRUE, FALSE, TRUE, TRUE)
-y3
+### NOTE: The outer parantheses above allow me to assign an object and print its
+###       value in a single command
 
-## We can check the length of a vector with 'length()'
-length(y)
+################################################################################
+## PRACTICE PROBLEM 2.1
+##
+## Create a numeric vector containing the five even integers between 2 and 10
+## (inclusive).
+##
+################################################################################
 
-## We can check the storage mode of an object with 'mode()'
-mode(y)
-mode(y2)
-mode(y3)
-
-## We can check the type of an object with 'typeof()'
-typeof(y)# numeric data is assumed double
-y4 <- c(1L, 2L, 3L)
-y4
-typeof(y4)
-
-## Clashes of integer and double-precision division result in a double
-y5 <- y4 / y
-typeof(y5)
+## We can check the length of a vector with length()
+length(y1)
 
 ## Arithmetic with vectors works element-wise
-y <- c(1, 2, 3, 4)
-x <- rep(2, 4)
+(y <- 1:4)
+(x <- rep(2, 4))
 
 y + x
 y - x
@@ -79,168 +84,112 @@ y / 3
 z <- c(1, 2)
 y - z
 
-## We can do check logical conditions for each element in the vector
-## by applying the logical test to the vector's name
+## We can check logical conditions for each element in the vector by applying
+## the logical test to the vector's name
 y == 4
 y == 4 | y == 2
 y == c(4, 2)# Hmm...that's weird. What's going on here?
 
-## There are many ways to create vectors:
-y1 <- c(1, 2, 3)
-y1
-
-y2 <- c(1 : 5)
-y2
-
-y3 <- rep(33, 4)
-y3
-
-y4 <- seq(0, 1, 0.25)
-y4
-
-## We can access and re-assign values to the vector
-## entries with the '[]' operator
-y4[1] <- 77
+## We can access and assign values to vector entries with the '[]' operator
 y4
 
 y4[3]
 
-y4[c(2, 4)] <- -22
-y4
+(y4[1] <- 77)
+
+(y4[c(2, 4)] <- -22)
 
 y4[2, 4] <- 33# Oops :(
 
-##### PRACTICE PROBLEM 2.1 #####
+################################################################################
+## PRACTICE PROBLEM 2.2
+##
+## set.seed(235711)
+## myVec <- sample(1:5)
+##
+## (a) Create the object 'myVec' by uncommenting and running the preceding two
+##     lines of code.
+## (b) Programatically create a logical vector that indicates which elements of
+##     myVec are less than 3.
+##
+################################################################################
 
-set.seed(235711)
-myVec <- sample(c(1 : 5))
 
-## TASK: Programatically create a logical vector that
-## indicates which elements of myVec are less than 3.
+###-Matrices-----------------------------------------------------------------###
 
-##### END PRACTICE PROBLEM 2.1 #####
+### Matrices are just vectors with a dimension attribute
 
-### Matrices
+## We create matrices using the matrix() function
+(m1 <- matrix(data = 1, nrow = 3, ncol = 3))
 
-## Matrices are very similar to vectors but they have two dimensions
-
-m1 <- matrix(1, 3, 3)
-m1
-
-## We can assign values with the '[]' operator here too
-m2 <- matrix(NA, 3, 3)
-m2[1, 2] <- 33
-m2[1, 3] <- 44
-m2
+attributes(y1)
+attributes(m1)
 
 ## Matrices are populated in column-major order, by default
-m3 <- matrix(c(1 : 9), 3, 3)
-m3
+(m2 <- matrix(1:9, 3, 3))
 
-## The 'byrow' option allows us to swith the above to 'row-major' order
-m4 <- matrix(c(1 : 9), 3, 3, byrow = TRUE)
-m4
+## The 'byrow' option allows us to fill by row-major order
+(m3 <- matrix(1:9, 3, 3, byrow = TRUE))
 
 ## length() of a matrix counts its elements
-length(m4)
+length(m3)
 
-## We use 'dim()' to get a more sensible measure of dimension
-dim(m4)
+## We use dim() to get a more sensible measure of dimension
+dim(m3)
 
 ## Arthmetic is still assumed element-wise
-m4 + m3
-m4 - m3
-m4 / m3
-m4 * m3
+m3 + m2
+m3 - m2
+m3 / m2
+m3 * m2
 
-## "Matrix Multiplaction" has a special operator '%*%'
-m4 %*% m3
+## We can access and assign values with the '[]' operator
+m3[1 : 2, 1 : 3]
+(m4 <- m3[c(1, 3), 2])
 
-## All of the other basic matrix operations are avaiable, too
-m5 <- matrix(sample(c(1 : 100), size = 9), ncol = 3)
-m5
-t(m5)# Transpose
-solve(m5)# Inverse
-svd(m5)# Singular Value Decomposition
-eigen(m5)# Eigen Decomposition
-
-## The behavior of R vectors in matrix algebra can be tricky
-y <- rnorm(4)
-y
-x <- matrix(rnorm(16), ncol = 4)
-x
-
-y %*% x# y acts like a row-vector
-x %*% y# y acts like a column-vector
-
-y
-t(y)
-t(t(y))
-
-is.matrix(y)
-is.matrix(t(y))
-
-## We can get a true column vector with matrix
-matrix(y)
-t(matrix(y))
-
-##### PRACTICE PROBLEM 2.2 #####
-
-library(mvtnorm)
-set.seed(235711)
-nObs <- 10000
-rSquared <- 0.5
-beta <- c(0.25, 0.5, 0.75)
-X <- rmvnorm(nObs, rep(0, 3), diag(3))
-eta <- X %*% beta
-sigma2 <- (var(eta) / rSquared) - var(eta)
-y <- eta + rnorm(nObs, 0, sqrt(sigma2))
-
-## TASK: Find the least squares solution for the coefficients
-## of the regression of y onto X by hand (see board for hint).
-
-##### END PRACTICE PROBLEM 2.2 #####
-
-## We can select a subset of a matrix with the '[]' operator
-m4[1 : 2, 1 : 3]
-m6 <- m4[c(1, 3), 2]
+m1[1, 2] <- 33
+m1[2:3, c(1, 3)] <- 44
+m1
 
 ## Arithmetic with matrices will also use recycling
-m4 + m6
+m2
+m4
+m2 + m4
+
+################################################################################
+## PRACTICE PROBLEM 2.3
+##
+## (a) Create a 5x3 numeric matrix called 'myMat' wherein each column is equal
+##     to the vector 'myVec' that you created for Problem 2.2.
+## (b) Multiply each entry in 'myMat' by pi (i.e., the numerical constant).
+##
+## HINT: The built-in R object 'pi' contains the value of pi.
+##
+################################################################################
 
 
-### Lists
+###-Lists--------------------------------------------------------------------###
 
-l1 <- list(1, 2, 3)
-l1
+### Lists are the workhorse of R data objects. An R list can hold an arbitrary
+### set of other R objects.
 
-l2 <- list("bob", TRUE, 33, 42+3i)
-l2
+## We create lists using the list() function
+(l1 <- list(1, 2, 3))
+(l2 <- list("bob", TRUE, 33, 42+3i))
 
-## List elements have no defualt names, but we can have them
-l3 <- list(name = "bob",
-           alive = TRUE,
-           age = 33,
-           relationshipStatus = 42+3i)
-l3
-
-l4 <- list()
-l4$grass = "green"
-l4$money = 0
-l4$logical = FALSE
-l4$trivial = function(x){x + 77 - 7 * 11}
-l4
-
-## The elements inside a list don't really know that
-## they live in a list, they'll behave as normal (mostly)
-l4$trivial(32)
+## List elements have no defualt names, but we can define our own
+(l3 <- list(name = "bob",
+            alive = TRUE,
+            age = 33,
+            relationshipStatus = 42+3i)
+)
 
 ## We can also assign post hoc names via the 'names()' function
 names(l1) <- c("first", "second", "third")
 l1
 
-## We can access and modify the elements of a list via
-## the '$', '[]', and '[[]]' operators
+## We can access and modify the elements of a list via the '$', '[]', and
+## '[[]]' operators
 l3$name
 l3[2]
 l3["name"]
@@ -257,106 +206,135 @@ l3[[1]] <- "suzy"
 l3
 
 ## What's the difference between [] and [[]]?
+l3[1]
+l3[[1]]
+
 class(l3[1])
 class(l3[[1]])
 
+## We can append new elements onto an existing list:
+(l4 <- list())
+l4$grass <- "green"
+l4$money <- 0
+l4$logical <- FALSE
+l4$addOne <- function(x){x + 1}
+l4
 
-##### PRACTICE PROBLEM 2.3 #####
+## The elements inside a list don't really know that they live in a list;
+## they'll pretty much behave as normal
+l4$addOne(32)
 
-## TASK: (a) Create a list to describe yourself. Include the following
-##       named elements in your list:
-##       (1) Your Name
-##       (3) Your Eye Color
-##       (4) Your Hair Color
-##       (5) Your Favorite Color
+################################################################################
+## PRACTICE PROBLEM 2.4
 ##
-##       (b) Using a single command, test if your eyes OR your hair
-##       are your favorite color.
+## (a) Create a list to describe yourself. Include the following named elements
+##     in your list:
+##     (1) Your Name
+##     (3) Your Eye Color
+##     (4) Your Hair Color
+##     (5) Your Favorite Color
+##
+## (b) Using a single command, test if your eye color OR your hair color is also
+##     your favorite color.
+##
+################################################################################
 
-##### END PRACTICE PROBLEM 2.3 #####
 
+###-Data Frames--------------------------------------------------------------###
 
-### Data Frames
+### Data frames are R's way of storing rectangular data sets. Each column of a
+### data frame is a vector; each of these vectors can have a different type.
 
-d1 <- data.frame(c(1 : 100),
-                 c(-100, -1),
-                 seq(1, 200, 2)
-                 )
-d2 <- data.frame(x = c(1 : 100),
-                 y = c(-100, -1),
-                 z = seq(1, 200, 2)
-                 )
-d3 <- data.frame(a = sample(c(TRUE, FALSE), 100, replace = TRUE),
-                 b = sample(c("foo", "bar"), 100, replace = TRUE),
-                 c = runif(100)
-                 )
-d4 <- data.frame(matrix(NA, 100, 3))
+## We create data frames using the data.frame() function
+(d1 <- data.frame(1:10, c(-1, 1), seq(0.1, 1, 0.1)))
 
-d1
-d2
-d3
-d4
+(d2 <- data.frame(x = 1:10, y = c(-1, 1), z = seq(0.1, 1, 0.1)))
 
-## We can access columns of a data frame with the '$' operator
-d3$b
+(d3 <- data.frame(a = sample(c(TRUE, FALSE), 10, replace = TRUE),
+                  b = sample(c("foo", "bar"), 10, replace = TRUE),
+                  c = runif(10)
+                  )
+)
+
+(d4 <- data.frame(matrix(NA, 10, 3)))
 
 ## Data frames are actually lists of vectors (representing the columns)
 is.data.frame(d3)
 is.list(d3)
 
-## Although they look like rectangular "matrices," from
-## R's perspective a data frame IS NOT a matrix
+## Although they look like rectangular "matrices", from R's perspective a data
+## frame IS NOT a matrix
 is.matrix(d3)
 
-## Therefore, we cannot do matrix algebra with data frames
+## We cannot treat a data frame like a matrix. E.g., matrix algebra doesn't work
+## with data frames
 d1 %*% t(d2)
 as.matrix(d1) %*% t(as.matrix(d2))
 
-## Transposition "works" but with some unanticipated side-effects
-d1
-t(d1)
+## We can access columns of a data frame using any method we would use to access
+## the elements of a list
+d3$b
+d3["b"]
+d3[["b"]]
 
-class(d1)
-class(t(d1))
+d3[2]
+d3[[2]]
 
-d3
-t(d3)
+## We can also access the elements of a data frame using matrix-style subsetting
+d3[1, 2]
+d3[ , 2]
+d3[1, ]
 
-class(d3)
-class(t(d3))
 
-### Assigning Dimnames
+###-Dimnames-----------------------------------------------------------------###
 
-## We can assign names to vector and list elements using the 'names()' function
-## We can assign row and columns names to matrices and data frames using the
-## 'rownames()' and 'colnames()' functions, respectively.
-
-v1 <- c(1 : 3)
+## We can assign names to vector and list elements using the names() function
+(v1 <- c(1 : 3))
 names(v1) <- c("n1", "n2", "n3")
 v1
 
-m1 <- matrix(rnorm(6), 3, 2)
+attributes(v1)
+
+(l1 <- list("foo", TRUE, pi))
+names(l1) <- c("bar", "not_false", "tasty")
+l1
+
+## We can assign row and column names to matrices and data frames using the
+## rownames() and colnames() functions, respectively.
+(m1 <- matrix(rnorm(6), 3, 2))
 colnames(m1) <- c("suzy", "timmy")
 m1
-rownames(m1) <- c("r1", "r2", "r3")
+rownames(m1) <- paste("row", 1:3, sep = "_")
 m1
 
-d1 <- data.frame(matrix(rchisq(6, df = 1), 3, 2))
+(d1 <- data.frame(matrix(runif(6), 3, 2)))
 colnames(d1) <- c("cat", "dog")
 d1
-rownames(d1) <- c("r1", "r2", "r3")
+rownames(d1) <- paste0("case", 1:3)
 d1
 
-##### PRACTICE PROBLEM 2.4 #####
+## Since data frames are also lists, we can also use the names() function to
+## name the columns of a data frame
+names(d1) <- paste("Column", LETTERS[1:2], sep = ":")
+d1
 
-x <- rep(c(TRUE, FALSE), 25)
-y <- rep(1, 50)
-z <- rep(2, 50)
+################################################################################
+## PRACTICE PROBLEM 2.5
+##
+## x <- rep(c(TRUE, FALSE), 20)
+## y <- rep(1, 20)
+## z <- rep(2, 20)
+##
+## (a) Create the vectors x, y, and z by uncommented and running the preceding
+##     three lines of code.
+## (b) Create a data frame called 'myDf' with 20 rows and 4 columns
+##     - Make the first column the logical negation of 'x'
+##     - Make the second and third columns 'y' and 'z', respectivly
+##     - Make the fourth column equal y/z (i.e., 'y' divided by 'z')
+## (b) Use the paste() function to name the columns var-1, var-2, var-3, var-4.
+## (c) Name the rows with the first twenty letters of the English alphabet.
+##
+################################################################################
 
-## TASK: Create a data frame with 50 rows and 4 columns
-##       Make the first column the logical negation of x
-##       Make the second and third columns y and z, respectivly
-##       Make the fourth column equal y/z (i.e., y divided by z)
-##       Give the fourth column a name of your choosing
 
-##### END PRACTICE PROBLEMS 2.4 #####
+###-END----------------------------------------------------------------------###
