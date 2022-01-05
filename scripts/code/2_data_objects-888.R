@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 2: Data Objects
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2022-01-04
+### Modified: 2022-01-05
 
 rm(list = ls(all = TRUE))
 
@@ -335,6 +335,31 @@ d1
 ## (c) Name the rows with the first twenty letters of the English alphabet.
 ##
 ################################################################################
+
+
+###-Factors------------------------------------------------------------------###
+
+### We use factors to represent categorical variables (i.e., grouping factors).
+
+## We can create a factor using the factor() function
+(f1 <- factor(sample(1:3, 20, TRUE), labels = c("red", "yellow", "blue")))
+
+## Factors are stored as integer vectors with a levels attribute and a special
+## 'factor' class
+typeof(f1)
+attributes(f1)
+
+## The levels are just group labels
+levels(f1)
+
+## Even though a factor's data are represented by an integer vector, R does not
+## consider factors to be interger/numeric data
+is.numeric(f1)
+is.integer(f1)
+
+## Since factors represent nominal variables, we cannot do math with factors
+f1 + 1
+mean(f1)
 
 
 ###-END----------------------------------------------------------------------###

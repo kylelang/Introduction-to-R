@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 4: Working with Data & Simple Analyses
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-27
-### Modified: 2022-01-04
+### Modified: 2022-01-05
 
 rm(list = ls(all = TRUE))
 
@@ -9,6 +9,21 @@ library(psych)
 library(multcomp)
 
 dataDir <- "../data/"
+
+###-Summary------------------------------------------------------------------###
+
+## summary()
+## str()
+## dplyr::summarise()
+
+
+###-Aggregation--------------------------------------------------------------###
+
+## aggregate()
+## tapply()
+## dplyr::group_by() %>% dplyr::summarise()
+
+
 
 dat1 <- readRDS(paste0(dataDir, "adamsKlpsData.rds"))
 dat1 <- read.csv(paste0(dataDir, "adamsKlpsData.csv"))
