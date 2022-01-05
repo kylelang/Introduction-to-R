@@ -9,9 +9,6 @@ rm(list = ls(all = TRUE))
 library(dplyr)    # Data manipulation
 library(magrittr) # Exposition pipe
 
-## Define the directory holding our data
-dataDir <- "../data/"
-
 ## Load the 'bfi' data from the 'psychTools' package
 data(bfi, package = "psychTools")
 
@@ -129,6 +126,13 @@ tmp <- select(bfi, starts_with(c("A", "E"), ignore.case = FALSE))
 head(tmp)
 
 
+###-Sorting------------------------------------------------------------------###
+
+## sort()
+## order()
+## dplyr::arrange()
+
+
 ###-Transformation-----------------------------------------------------------###
 
 ### One common type of data transformation is converting numeric or character
@@ -200,8 +204,39 @@ bfi <- mutate(bfi,
               )
 head(bfi)
 
-## dplyr::recode()
-## dplyr::rename()
+### We can use the case_when() function inside dplyr::mutate() to build new
+### variables from conditional logic
+
+## Use case_when() inside of mutate() to create a new factor called
+## 'gendered_maturity' according to the following logic
+## - gendered_maturity = "boy" when age < 18 and gender = "male"
+## - gendered_maturity = "girl" when age < 18 and gender = "female"
+## - gendered_maturity = "man" when age >= 18 and gender = "male"
+## - gendered_maturity = "woman" when age >= 18 and gender = "female"
+
+bfi <- mutate(bfi,
+              gendered_maturity = case_when(
+                  age < 18 & gender == "male" ~ "boy",
+                  age < 18 & gender == "female" ~ "girl",
+                  age >= 18 & gender == "male" ~ "man",
+                  age >= 18 & gender == "female" ~ "woman",
+                  TRUE ~ NA_character_
+              ),
+              gendered_maturity = as.factor(gendered_maturity)
+              )
+str(bfi)
+levels(bfi$gendered_maturity)
+with(bfi, table(minor = age < 18, gender, gendered_maturity))
+
+### We can use the dplyr::rename() and dplyr::rename_with() functions to easily
+### rename columns in a data frame
+
+## Rename a few of the variables in our bfi data
+bfi <- rename(bfi, sex = gender, ed = education, gm = gendered_maturity)
+
+## Convert all scale item names to lower case
+bfi <- rename_with(bfi, .fn = tolower, .cols = matches("\\d$"))
+head(bfi)
 
 
 ###-Pipes--------------------------------------------------------------------###
