@@ -1,121 +1,221 @@
-### Title:    Introduction to R 4: Working with Data & Simple Analyses
+### Title:    Introduction to R 4: Data Analyses
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-27
-### Modified: 2022-01-05
+### Modified: 2022-01-06
 
 rm(list = ls(all = TRUE))
 
 library(psych)
 library(multcomp)
+library(rockchalk)
 
 dataDir <- "../data/"
 
+source("4_data_manipulation-888.R")
+
+bfiItems <- bfi %>% select(matches("[A-Z]\\d$|sex|ed|gm|age$"))
+bfi      <- bfi %>% select(-matches("^[A-Z]\\d|age_mc|age_std"))
+
+head(bfi)
+head(bfiItems)
+
 ###-Summary------------------------------------------------------------------###
 
-## summary()
-## str()
-## dplyr::summarise()
+## The base R summary() and str() functions give high-level summaries of R
+## objects
+summary(bfi)
+str(bfi)
+
+### To calculate more pointed summary information, the dplyr::summarise()
+### function can be useful.
+
+## Compute the means and standard devaitions of agreeableness and neuroticism
+bfi %>% summarise(mA = mean(agree),
+                  sdA = sd(agree),
+                  mN = mean(neuro),
+                  sdN = sd(neuro)
+                  )
+
+### We can also combine filter() and summarise() to get summary information for
+### subgroups
+
+## Compute the same summary stats as above for only males
+bfi %>% filter(sex == "male") %>%
+    summarise(mA = mean(agree),
+              sdA = sd(agree),
+              mN = mean(neuro),
+              sdN = sd(neuro)
+              )
+
+################################################################################
+## PRACTICE PROBLEM 5.1
+##
+## Use dplyr functions to compute the mean, variance, and range of 'age' for
+## females in the 'bfi' data.
+##
+################################################################################
+
+### The base R rowMeans(), rowSums(), colMeans(), and colSums() functions are
+### very useful.
+
+## Compute the means of the scale scores
+bfi %>% select(matches("^[a-z]{4,5}")) %>% colMeans()
+
+## Find the number of missing values in each column
+colSums(is.na(bfi))
+bfi %>% is.na() %>% colSums()
+
+## Find the proportion of complete cases
+tmp <- bfi %>% is.na() %>% rowSums()
+mean(tmp == 0)
+
+################################################################################
+## PRACTICE PROBLEM 5.2
+##
+## Create a logical vector with one entry for every variable in the 'bfi' data.
+## This vector should take the value TRUE when males have a higher proportion of
+## missing data on a variable than female do.
+##
+################################################################################
+
+### Unforunately, there are no multivariate analogues of functions like var(),
+### sd(), median(), min(), max(), etc. Thankfully, this isn't really a problem,
+### because we can easily broadcast any function that takes a single vector as
+### input using "apply" functions.
+
+## Get the column numbers for the scale scores
+scaleNames <- grep("^[a-z]{4,5}", colnames(bfi), value = TRUE)
+
+## Use apply() to calculate the medians of every scale score
+apply(bfi[scaleNames], 2, median)
+
+## Do the same as above, but treat the data frame as a list
+lapply(bfi[scaleNames], median)
+
+## Do the same as above, but return the result in the simplest format
+sapply(bfi[scaleNames], median)
+
+## Find the maximum scale score value in each row
+apply(bfi[scaleNames], 1, max)
+
+## Find the column number containing the maximum scale score value in each row
+apply(bfi[scaleNames], 1, which.max)
+
+################################################################################
+## PRACTICE PROBLEM 5.3
+##
+## Use an appropriate apply function to create a vector containing the variances
+## of all numeric variables in the 'bfi' data.
+##
+################################################################################
 
 
 ###-Aggregation--------------------------------------------------------------###
 
-## aggregate()
-## tapply()
-## dplyr::group_by() %>% dplyr::summarise()
+### We can also aggregate the data according to some summary statistic within
+### the groups defined by a grouping factor (or multiple factors)
+
+### For univariate summaries, we can use the base R tapply() function.
+
+## Compute the median age for each educational group
+tapply(bfi$age, bfi$ed, median)
+with(bfi, tapply(age, ed, median))
+
+################################################################################
+## PRACTICE PROBLEM 5.4
+##
+## Use the tapply() function to compute the average neuroticism value for minors
+## and for adults.
+##
+################################################################################
+
+### For multivariate summaries, we can use the aggregate() function.
+
+## Compute the variances of each scale score for males and females
+aggregate(bfi[scaleNames], bfi["sex"], var)
+
+## Compute the means each scale score for all sex X education groups
+aggregate(bfi[scaleNames], bfi[c("sex", "ed")], mean)
+
+################################################################################
+## PRACTICE PROBLEM 5.5
+##
+## Use the aggregate function to SDs for 'extra', 'agree', and 'open' within
+## education groups.
+##
+################################################################################
+
+### If we want to use dplyr functions, we can combine the group_by() and
+### summarise() function to get whatever flavor of aggregation we like
+
+## Compute the 5th and 95th percentiles of age for each sex X education group
+bfi %>%
+    group_by(sex, ed) %>%
+    summarize(age05 = quantile(age, 0.05), age95 = quantile(age, 0.95))
+
+### We can use the across() funtion to broadcast univariate functions across
+### multiple columns within summarise()
+
+bfi %>%
+    group_by(sex) %>%
+    summarise(across(c("age", "agree", "extra"), var))
+
+bfi %>%
+    group_by(sex) %>%
+    summarise(across(.fns = class))
+
+bfi %>%
+    group_by(ed) %>%
+    summarise(across(matches("^[a-z]{4,5}"), list(mean = mean, sd = sd)))
+
+bfi %>%
+    group_by(sex, ed) %>%
+    summarise(across(where(is.factor), nlevels))
+
+################################################################################
+## PRACTICE PROBLEM 5.6
+##
+## Use dplyr functions to compute the means, medians, and variances of all
+## numeric variables in the 'bfi' data.
+##
+################################################################################
 
 
+###-More Descriptive Statistics----------------------------------------------###
 
-dat1 <- readRDS(paste0(dataDir, "adamsKlpsData.rds"))
-dat1 <- read.csv(paste0(dataDir, "adamsKlpsData.csv"))
-dat1 <- read.table(paste0(dataDir, "adamsKlpsData.txt"),
-                   header = TRUE,
-                   sep = "\t")
+## Calculate the correlation matrix of the scale scores
+cor(bfi[scaleNames])                      # use Pearson's rho
+cor(bfi[scaleNames], method = "spearman") # use Spearman's rho
+cor(bfi[scaleNames], method = "kendall")  # use Kendall's tau
 
-## Look at the top of the dataset:
-head(dat1)
+## Calculate covariance matrix of the scale scores
+cov(bfi[scaleNames])
 
-##### COMPUTE SCALE SCORES #####
+## Calcualte the covariance matrix of the scale scores for males
+bfi %>%
+    filter(sex == "male") %>%
+    select(all_of(scaleNames)) %>%
+    cov()
 
-sysRacNames <- c(paste0("RIAE", c(2, 3, 7, 8, 9, 11, 12)),
-                 paste0("NORI", c(2, 7, 9))
-                 )
+### The 'psych' package has quite a few handy functions for psychometric style
+### analyses
 
-indRacNames <- c(paste0("RIAE", c(1, 4, 5, 6, 10)),
-                 paste0("NORI", c(1, 4, 10))
-                 )
+## Use the psych::alpha() function to compute Cronbach's Alpha for the
+## agreeableness scale:
+bfiItems %>%
+    select(matches("^a\\d")) %>%
+    alpha(check.keys = TRUE)
 
-policyNames <- paste0("POLICY", c(1, 3, 4, 5, 6))
+## Use the psych::alpha() function to compute Cronbach's Alpha for the
+## opennes scale and include boostrapped confidence intervals:
+bfiItems %>%
+    select(matches("^o\\d")) %>%
+    alpha(n.iter = 1000, check.keys = TRUE)
 
-sysRac <- rowMeans(dat1[ , sysRacNames], na.rm = TRUE)
-indRac <- rowMeans(dat1[ , indRacNames], na.rm = TRUE)
-policy <- rowMeans(dat1[ , policyNames], na.rm = TRUE)
-polAffil <- dat1[ , "POLV"]
-revDisc <- dat1[ , "POLICY2"]
-
-dat2 <- data.frame(sysRac, indRac, policy, polAffil, revDisc)
-
-saveRDS(dat2, paste0(dataDir, "adamsKlpsScaleScore.rds"))
-write.csv(dat2,
-          paste0(dataDir, "adamsKlpsScaleScore.csv"),
-          row.names = FALSE)
-write.table(dat2,
-            paste0(dataDir, "adamsKlpsScaleScore.txt"),
-            row.names = FALSE,
-            col.names = TRUE,
-            sep = "\t")
-
-
-#### COMPUTE DESCRIPTIVE STATS #####
-
-
-## Calculate the correlation matrix
-cor(dat2)
-cor(dat2, method = "spearman")# use Spearmans rho
-
-## Calculate covariance matrix
-cov(dat2)
-
-## Compute variable means:
-colMeans(dat2)
-
-## Compute variable medians
-apply(dat2, 2, median)
-
-## Compute variable modes:
-apply(dat2, 2,
-      FUN = function(x) names( table(x) )[which.max( table(x) )]
-      )
-
-## Compute variable SDs:
-apply(dat2, 2, sd)
-
-## Compute variable Variances:
-apply(dat2, 2, var)
-
-## Compute Cronbach's Alpha for each scale:
-alpha(x = dat1[ , sysRacNames])
-alpha(x = dat1[ , indRacNames])
-alpha(x = dat1[ , policyNames])
-
-## We can also get bootstrapped CIs for the internal consistency estimates
-alpha(x = dat1[ , sysRacNames], n.iter = 1000)
-alpha(x = dat1[ , indRacNames], n.iter = 1000)
-alpha(x = dat1[ , policyNames], n.iter = 1000)
-
-## We can streamline this process with lapply:
-datList <- list(sysRac = dat1[ , sysRacNames],
-                indRac = dat1[ , indRacNames],
-                policy = dat1[ , policyNames])
-
-alphaList <- lapply(datList, alpha)
-
-alphaList$policy
-alphaList$sysRac
-alphaList$indRac
-
-## Check Skew & Kurtosis
-skewVec <- apply(dat2, 2, skew)
-kurtVec <- apply(dat2, 2, kurtosi)
+## Use the psych::skew() psych::kurtosi() functions to calculate the skew and
+## excess kurtosis of the scale scores
+skewVec <- sapply(bfi[scaleNames], skew)
+kurtVec <- sapply(bfi[scaleNames], kurtosi)
 
 skewVec
 kurtVec
@@ -125,91 +225,160 @@ any(abs(skewVec) > 1.0)
 any(abs(kurtVec) > 7.0)
 
 
-##### SIMPLE INFERENTIAL ANALYSES #####
+###-Simple Statistical Tests-------------------------------------------------###
+
+### We can use the t.test() function to do bivariate t-tests
+
+## Do the average levels of agreeableness differ significantly from the average
+## levels of extraversion within people?
+with(bfi, t.test(agree, extra, paired = TRUE))
+
+## Are men significantly more open to new experiences than women?
+t.test(open ~ sex, data = bfi, alternative = "greater")
+
+### Earlier, we calculated bivariate correlations, but we did not test their
+### significance. We can use the cor.test() function to do significance testing
+### for correlations.
+
+## Is there a significant correlation between age and neuroticism for women?
+bfi %>%
+    filter(sex == "female") %$%
+    cor.test(neuro, age)
+
+## Is there a negative correlation between agreeableness and neuroticism?
+bfi %$% cor.test(agree, neuro, alternative = "less")
+
+### We can use the chisq.test() function to do a Pearson's Chi-Squared test for
+### independence between two factors.
+
+## Is there an association between sex and educational attainment?
+out <- bfi %$% table(sex, ed) %>% chisq.test()
+
+## Where do the differences lie?
+out$stdres
 
 
-### Test of Bivariate Mean Differences:
+###-Linear Modeling----------------------------------------------------------###
 
-## Is there differential endoresment of systemic and individual racism?
-t.test(dat2$sysRac, dat2$indRac, paired = TRUE)
+### We use the lm() function to fit linear models
 
-## Yes, there is significantly higher endorsement of individualistic
-## definitions of racism.
+## After controlling for age, is there a difference between men and women in
+## levels of neuroticism?
+
+fit1 <- lm(neuro ~ age + sex, data = bfi)
+summary(fit1)
+
+## Does this difference remain after controlling for the other four personality
+## scales?
+
+fit2 <- update(fit1, ". ~ . + agree + extra + open + consc")
+summary(mod2)
+
+## How much additional variation in neuroticism is explained by adding the four
+## extra scales?
+summary(fit2)$r.squared - summary(fit1)$r.squared
+
+## Is that increase in variance explained significant?
+anova(fit1, fit2)
+
+## We can also do model comparisons in terms of information criteria
+AIC(fit1, fit2)
+BIC(fit1, fit2)
+
+## Is there a differential effect of age on neuroticism for men an women, after
+## controlling for the other personality dimensions?
+fit3 <- update(fit2, ". ~ . + age * sex")
+summary(fit3)
+
+### We can use the rockchalk::plotSlopes() and rockchalk::testSlopes() function
+### to visualize and probe this interaction
+
+## Calculate and visualize the simple slopes of age on neuroticism for each sex
+psOut <- plotSlopes(fit3, plotx = "age", modx = "sex")
+
+## Test the simple slopes for significance:
+testSlopes(psOut)
+
+### Before we place too much trust in these results, we need to evaluate the
+### tenability of the assumptions
+
+## Generate diagnostic plots for our final model
+plot(fit3)
+
+## Put all plots on a single canvas
+par(mfrow = c(2, 2))
+plot(fit3)
 
 
-### Multiple Linear Regression:
+###-ANOVA--------------------------------------------------------------------###
+
+### Since ANOVA is just another flavor of the general linear model, we also use
+### the lm() function to do ANOVAs; we just summarize the results differently
+
+## One-way ANOVA
+fit1 <- lm(extra ~ ed, data = bfi)
+summary.aov(fit1)
+
+## ANCOVA
+fit2 <- lm(extra ~ ed + age, data = bfi)
+summary.aov(fit2)
+
+## Factorial ANCOVA
+fit3 <- lm(extra ~ ed * sex + age, data = bfi)
+summary.aov(fit3)
+
+## Two-way ANCOVA
+fit4 <- lm(extra ~ ed + sex + age, data = bfi)
+summary.aov(fit4)
+
+## Check assumptions graphically
+par(mfrow = c(2, 2))
+plot(fit4)
 
 
-## After controlling for political affiliation, does definition of racism
-## significantly predict belief in reverse discrimination?
+###-Post Hoc Test------------------------------------------------------------###
 
-mod1 <- lm(revDisc ~ polAffil, data = dat2)
-summary(mod1)
+### To evaluate hypotheses about specific effects (or between-group differences),
+### we use the summary.lm() function instead of the summary.aov() function
 
-## Political affiliation is a significant predictor of belief in reverse
-## discrimination such that self-identifying as more conservative is
-## positively associated with greater belief in reverse discrimination.
+## By default factors are coded as dummy codes. So, we'll see test of mean
+## differences from the reference groups
+summary(fit4)
 
-mod2 <- lm(revDisc ~ polAffil + indRac + sysRac, data = dat2)
-anova(mod1, mod2)
+### We can manipulte the contrast attribute of the independent factors to test
+### different comparisons
 
-## After controlling for political affiliation, there is no residual
-## effect of definition of racism on beliefs in reverse discrimination.
+## Check the defaults:
+contrasts(bfi$sex)
+levels(bfi$sex)
 
-## Maybe political affiliation is moderating the effect of
-## definitions of racism on beliefs in reverse discimination?
+contrasts(bfi$ed)
+levels(bfi$ed)
 
-mod3 <- lm(revDisc ~ polAffil*indRac + polAffil*sysRac, data = dat2)
-summary(mod3)
+### We can implement unweighted effects coding by changing the contrast
+### attribute to a contr.sum() object
 
-## Not in these data.
-
-
-### Simple ANOVA:
-
-
-## Does type of feed affect dragon growth?
-dragonFeed <- readRDS(paste0(dataDir, "dragonFeed.rds"))
-
-## Check the basic data stats:
-summary(dragonFeed)
-
-## Look at the within-cell means:
-with(dragonFeed, tapply(growth, diet, mean))
-
-## Look at the within-cell SDs:
-with(dragonFeed, tapply(growth, diet, mean))
-
-## Fit a basic model:
-anovaOut1 <- aov(growth ~ diet, data = dragonFeed)
-summary(anovaOut1) # Basic ANOVA table
-summary.lm(anovaOut1) # Summary of regression representation
-
-### Let's look at some contrasts
-
-## R will use the first level as the default reference category:
-levels(dragonFeed$diet)
-
-## See which feed types outperform the overall mean growth:
+## Change the contrast type for the education factor
 newCt <- contr.sum(levels(dragonFeed$diet))
-contrasts(dragonFeed$diet) <- newCt
+contrasts(bfi$ed) <- contr.sum(levels(bfi$ed))
 
-anovaOut2 <- aov(growth ~ diet, data = dragonFeed)
-summary.lm(anovaOut2)
+## For some reason, we don't get names for our contrasts. So, if we want easily
+## interpretted output, we should add the names ourselves
+colnames(contrasts(bfi$ed)) <- head(levels(bfi$ed), 4)
 
-## Need to change the category ordering to see
-## the contast for 'pelican'
-dragonFeed$diet <- relevel(dragonFeed$diet, ref = "pelican")
-newCt <- contr.sum(levels(dragonFeed$diet))
-newCt
-contrasts(dragonFeed$diet) <- newCt
+## Re-estimate the model using the updated factor
+fit4.2 <- update(fit4, data = bfi)
+summary(fit4.2)
 
-anovaOut3 <- aov(growth ~ diet, data = dragonFeed)
-summary.lm(anovaOut3)
+### The glht() function from the 'multcomp' package supports arbitrary posthoc
+### comparisons with corrections for multiple testing.
 
-## Looks like Aardvark is the only feed-creature type that
-## produces growth rates significantly above the mean
+## We can use the glht() function to test all pairwise comparisons with Tukey's
+## HSD correction
+hsdOut <- glht(fit4, linfct = mcp(ed = "Tukey", sex = "Tukey"))
+summary(hsdOut)
 
-## We can look at all pairwise comparisons, too:
-tukeyOut1 <- glht(anovaOut1, linfct = mcp(diet = "Tukey"))
-summary(tukeyOut1)
+## If we don't have any continous covariates we can use the base R TukeyHSD()
+## function, but we have to estimate the model using aov()
+fit1.2 <- aov(formula(fit1), data = bfi)
+TukeyHSD(fit1.2)

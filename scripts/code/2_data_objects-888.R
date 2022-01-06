@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 2: Data Objects
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2022-01-05
+### Modified: 2022-01-06
 
 rm(list = ls(all = TRUE))
 
@@ -360,6 +360,15 @@ is.integer(f1)
 ## Since factors represent nominal variables, we cannot do math with factors
 f1 + 1
 mean(f1)
+
+################################################################################
+## PRACTICE PROBLEM 2.6
+##
+## (a) Create a length-20 factor with two levels = {"yes", "no"}.
+## (b) Add the factor you created in (a) to the data frame you created in (2.5)
+##     as a new column called "f".
+##
+################################################################################
 
 
 ###-END----------------------------------------------------------------------###
