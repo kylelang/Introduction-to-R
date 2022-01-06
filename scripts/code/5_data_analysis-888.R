@@ -197,6 +197,18 @@ bfi %>%
     select(all_of(scaleNames)) %>%
     cov()
 
+
+################################################################################
+## PRACTICE PROBLEM 5.7
+##
+## Create a pipeline to compute the correlation matrix of all numeric variables
+## in the 'bfi' dataset.
+## - Use Spearman's rho for the correlations.
+## - Use only those participants whose level of educational attainment includes,
+##   at least, graduating from college.
+##
+################################################################################
+
 ### The 'psych' package has quite a few handy functions for psychometric style
 ### analyses
 
@@ -211,6 +223,17 @@ bfiItems %>%
 bfiItems %>%
     select(matches("^o\\d")) %>%
     alpha(n.iter = 1000, check.keys = TRUE)
+
+################################################################################
+## PRACTICE PROBLEM 5.8
+##
+## Compute the internal consistency of the neuroticism scale for adult males.
+## - Use 2000 bootstrap samples to estimate confidence intervals for the
+##   internal consistency.
+## - According to the bootstrap inference, is the internal consistency
+##   significanlty different from 0.8?
+##
+################################################################################
 
 ## Use the psych::skew() psych::kurtosi() functions to calculate the skew and
 ## excess kurtosis of the scale scores
@@ -233,6 +256,13 @@ any(abs(kurtVec) > 7.0)
 ## levels of extraversion within people?
 with(bfi, t.test(agree, extra, paired = TRUE))
 
+################################################################################
+## PRACTICE PROBLEM 5.9
+##
+## Use an exposition pipe to replicate the above t.test
+##
+################################################################################
+
 ## Are men significantly more open to new experiences than women?
 t.test(open ~ sex, data = bfi, alternative = "greater")
 
@@ -247,6 +277,14 @@ bfi %>%
 
 ## Is there a negative correlation between agreeableness and neuroticism?
 bfi %$% cor.test(agree, neuro, alternative = "less")
+
+################################################################################
+## PRACTICE PROBLEM 5.10
+##
+## Test for a positive correlation between agreeableness and openness in people
+## younger than 30.
+##
+################################################################################
 
 ### We can use the chisq.test() function to do a Pearson's Chi-Squared test for
 ### independence between two factors.
@@ -274,6 +312,17 @@ summary(fit1)
 fit2 <- update(fit1, ". ~ . + agree + extra + open + consc")
 summary(mod2)
 
+################################################################################
+## PRACTICE PROBLEM 5.11
+##
+## Estimate a linear regression model to test if agreeableness predicts openness
+## after controlling for extraversion, age, and educational attainment.
+## - Is the hypothesis supported?
+## - What proportion of variability in agreeableness is explained by the
+##   predictors?
+##
+################################################################################
+
 ## How much additional variation in neuroticism is explained by adding the four
 ## extra scales?
 summary(fit2)$r.squared - summary(fit1)$r.squared
@@ -289,6 +338,19 @@ BIC(fit1, fit2)
 ## controlling for the other personality dimensions?
 fit3 <- update(fit2, ". ~ . + age * sex")
 summary(fit3)
+
+################################################################################
+## PRACTICE PROBLEM 5.12
+##
+## Modify the model you fit in (5.11) to test if age moderates the effect of
+## openness on agreeableness or the effect of extraversion on agreeableness.
+## - Does age moderate either of the focal effects?
+## - If you find significant moderation, how does age affect the focal effects?
+## - How much more variability in agteeableness have you explained by modifying
+##   the model?
+## - Is the additional explained variation significant?
+##
+################################################################################
 
 ### We can use the rockchalk::plotSlopes() and rockchalk::testSlopes() function
 ### to visualize and probe this interaction
@@ -308,6 +370,20 @@ plot(fit3)
 ## Put all plots on a single canvas
 par(mfrow = c(2, 2))
 plot(fit3)
+
+################################################################################
+## PRACTICE PROBLEM 5.13
+##
+## (a) Use the rockchalk::plotSlopes() function to visualize the simple slopes
+##     for one of the interactions you estimated in (5.12).
+##     - Define the simple slopes at the mean of the moderator and one SD above
+##       and below the mean of the moderator.
+## (b) Use the rockchalk::testSlopes() function to test the simple slopes you
+##     estimated in (a) for significance.
+##     - Are any of the simple slopes significant?
+##     - Interpret any significant simple slopes.
+##
+################################################################################
 
 
 ###-ANOVA--------------------------------------------------------------------###
@@ -334,6 +410,18 @@ summary.aov(fit4)
 ## Check assumptions graphically
 par(mfrow = c(2, 2))
 plot(fit4)
+
+################################################################################
+## PRACTICE PROBLEM 5.14
+##
+## Estimate a one-way ANCOVA to test if there is a difference in mean openness
+## between adults with different levels of educational attainment after
+## controlling for age, extraversion, and agreeableness
+## - Is the hypothesis supported?
+## - Do all predictors combined explain a significant proportion of variability
+##   in openness?
+##
+################################################################################
 
 
 ###-Post Hoc Test------------------------------------------------------------###
@@ -382,3 +470,16 @@ summary(hsdOut)
 ## function, but we have to estimate the model using aov()
 fit1.2 <- aov(formula(fit1), data = bfi)
 TukeyHSD(fit1.2)
+
+################################################################################
+## PRACTICE PROBLEM 5.15
+##
+## Use Tukey's HSD to test all pairwise differences between the different levels
+## of educational attaiment from the model you estimated in (5.14).
+## - Are any of the groups significanlty different in their mean levesl of
+##   openness? If so, which?
+##
+################################################################################
+
+
+###-END----------------------------------------------------------------------###
