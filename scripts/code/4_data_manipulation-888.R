@@ -1,4 +1,4 @@
-### Title:    Introduction to R 3: Working with Data
+### Title:    Introduction to R 4: Working with Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
 ### Modified: 2012-01-06
