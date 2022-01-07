@@ -41,3 +41,6 @@ vignettes/*.pdf
 # Emacs autosave files
 *~
 *.R#
+
+# Example figures
+scripts/figures/*
