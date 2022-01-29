@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 5: Data Analyses
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-27
-### Modified: 2022-01-06
+### Modified: 2022-01-29
 
 rm(list = ls(all = TRUE))
 
@@ -74,7 +74,7 @@ mean(tmp == 0)
 ##
 ## Create a logical vector with one entry for every variable in the 'bfi' data.
 ## This vector should take the value TRUE when males have a higher proportion of
-## missing data on a variable than female do.
+## missing data on that variable than females do.
 ##
 ################################################################################
 
@@ -140,8 +140,8 @@ aggregate(bfi[scaleNames], bfi[c("sex", "ed")], mean)
 ################################################################################
 ## PRACTICE PROBLEM 5.5
 ##
-## Use the aggregate function to SDs for 'extra', 'agree', and 'open' within
-## education groups.
+## Use the aggregate function to compute SDs for 'extra', 'agree', and 'open'
+## within education groups.
 ##
 ################################################################################
 
@@ -228,6 +228,7 @@ bfiItems %>%
 ## PRACTICE PROBLEM 5.8
 ##
 ## Compute the internal consistency of the neuroticism scale for adult males.
+## - Use the set.seed() function to set the random number seed to 314159.
 ## - Use 2000 bootstrap samples to estimate confidence intervals for the
 ##   internal consistency.
 ## - According to the bootstrap inference, is the internal consistency
@@ -315,8 +316,9 @@ summary(mod2)
 ################################################################################
 ## PRACTICE PROBLEM 5.11
 ##
-## Estimate a linear regression model to test if agreeableness predicts openness
-## after controlling for extraversion, age, and educational attainment.
+## Use the full 'bfi' dataset to estimate a linear regression model to test if
+## openness predicts agreeableness after controlling for extraversion, age, and
+## educational attainment.
 ## - Is the hypothesis supported?
 ## - What proportion of variability in agreeableness is explained by the
 ##   predictors?
@@ -343,10 +345,11 @@ summary(fit3)
 ## PRACTICE PROBLEM 5.12
 ##
 ## Modify the model you fit in (5.11) to test if age moderates the effect of
-## openness on agreeableness or the effect of extraversion on agreeableness.
+## openness on agreeableness or the effect of extraversion on agreeableness,
+## after controlling for educational attainment.
 ## - Does age moderate either of the focal effects?
 ## - If you find significant moderation, how does age affect the focal effects?
-## - How much more variability in agteeableness have you explained by modifying
+## - How much more variability in agreeableness have you explained by modifying
 ##   the model?
 ## - Is the additional explained variation significant?
 ##
@@ -476,7 +479,7 @@ TukeyHSD(fit1.2)
 ##
 ## Use Tukey's HSD to test all pairwise differences between the different levels
 ## of educational attaiment from the model you estimated in (5.14).
-## - Are any of the groups significanlty different in their mean levesl of
+## - Are any of the groups significanlty different in their mean levels of
 ##   openness? If so, which?
 ##
 ################################################################################

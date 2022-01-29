@@ -5,12 +5,17 @@
 
 rm(list = ls(all = TRUE))
 
+dataDir <- "../data/"
+
 ## Load necessary packages
 library(dplyr)    # Data manipulation
 library(magrittr) # Exposition pipe
 
 ## Load the 'bfi' data from the 'psychTools' package
 data(bfi, package = "psychTools")
+
+## Save the original variable names for later use
+varNames0 <- colnames(bfi)
 
 ###-Subsetting---------------------------------------------------------------###
 
@@ -244,8 +249,8 @@ str(bfi)
 ## Modify the factor levels of the 'education' factor we just created. Replace
 ## all of the spaces with underscores, "_".
 ##
-## HINT 1: The levels() function can also be used to reassign factor levels.
-## HINT 2: If you want to be fancy, check out the gsub function.
+## HINT 1: The levels() function can also be used to re-assign factor levels.
+## HINT 2: If you want to be fancy, check out the gsub() function.
 ##
 ################################################################################
 
@@ -293,6 +298,10 @@ bfi <- mutate(bfi,
                      .names = "{.col}_mc")
               )
 head(bfi)
+
+## Save a version of the 'bfi' data for later
+varNames <- c(varNames0, colnames(tmp$scores))
+saveRDS(bfi[varNames], paste0(dataDir, "bfi.rds"))
 
 ################################################################################
 ## PRACTICE PROBLEM 4.6
@@ -407,8 +416,8 @@ bfi %>%
 ################################################################################
 ## PRACTICE PROBLEM 4.9
 ##
-## Use a pipeline to caclulate the squareroot of the mean of the agreeableness
-## scale scores for males in the 'bfi' data.
+## Use a pipeline to calculate the square root of the mean of the agreeableness
+## scale score for males in the 'bfi' data.
 ##
 ## TIP: You can use the unlist() function to covert a list to a vector.
 ##
