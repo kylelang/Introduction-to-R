@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 7: Simple R Programming
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-29
-### Modified: 2022-01-07
+### Modified: 2022-01-29
 
 rm(list = ls(all = TRUE))
 
@@ -170,7 +170,7 @@ t1     # But many times slower
 ### the loop.
 
 ## The appropriate way to get variable means:
-colMeans(dat1)
+colMeans(mtcars)
 
 ### In R, we're usually working with lists and data frames, not vectors and
 ### matrices. So, some flavor of apply statement is often preferred to a loop.
@@ -198,8 +198,6 @@ lapply(fits, summary)
 ### We can build conditional logic into our scripts by using if/else statements.
 ### In R, these work pretty much the same way as they do in all software.
 
-head(mtcars)
-
 ## Seperate cars with automatic and manual transmissions
 auto <- manual <- NULL
 for(i in 1:nrow(mtcars)) {
@@ -213,8 +211,6 @@ auto
 manual
 
 ### By include 'else if' options, We can accomodate more conditions.
-
-table(mtcars$cyl)
 
 ## Count the number of cars with 4, 6, and 8 cylinders
 counts <- rep(0, 3)
@@ -231,12 +227,12 @@ counts
 ## get much more elegent solutions with logical indexing.
 
 ## A better way to do the file splitting shown above
-auto1   <- mtcars[mtcars$am == 0, ]
-manual1 <- mtcars[mtcars$am == 1, ]
+(auto1   <- mtcars[mtcars$am == 0, ])
+(manual1 <- mtcars[mtcars$am == 1, ])
 
 ## Or, using dplyr functions
-auto2   <- mtcars %>% filter(am == 0)
-manual2 <- mtcars %>% filter(am == 1)
+(auto2   <- mtcars %>% filter(am == 0))
+(manual2 <- mtcars %>% filter(am == 1))
 
 all.equal(auto, auto1)
 all.equal(auto, auto2)

@@ -15,11 +15,11 @@ figDir   <- "../figures/"
 
 diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
 titanic  <- readRDS(paste0(dataDir, "titanic.rds"))
+bfi      <- readRDS(paste0(dataDir, "bfi.rds"))
 
 ## Convert surival indicator to a numeric dummy code:
 titanic <- titanic %>% mutate(survived = as.numeric(survived) - 1)
 
-data(bfi, package = "psychTools")
 
 ###-Base R Graphics----------------------------------------------------------###
 

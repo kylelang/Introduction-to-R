@@ -10,6 +10,7 @@ dataDir <- "../data/"
 ## Load necessary packages
 library(dplyr)    # Data manipulation
 library(magrittr) # Exposition pipe
+library(psych)    # For creating scale scores
 
 ## Load the 'bfi' data from the 'psychTools' package
 data(bfi, package = "psychTools")
@@ -286,8 +287,13 @@ tmp <- scoreItems(keys = bfi.keys, items = bfi, impute = "none")
 ## Notice that we get a lot of other stuff in addition to the scores
 ls(tmp)
 
+## If we just want the scores with no fluff, we can use psych::scoreVeryFast()
+scores <- scoreVeryFast(keys = bfi.keys, items = bfi)
+
+head(scores)
+
 ## Add the scale scores onto our data
-bfi <- data.frame(bfi, tmp$scores)
+bfi <- data.frame(bfi, scores)
 
 head(bfi)
 
@@ -299,7 +305,7 @@ bfi <- mutate(bfi,
               )
 head(bfi)
 
-## Save a version of the modified 'bfi' data for later
+## Save a clean version of the modified 'bfi' data for later
 varNames <- c(varNames0, colnames(tmp$scores))
 saveRDS(bfi[varNames], paste0(dataDir, "bfi.rds"))
 

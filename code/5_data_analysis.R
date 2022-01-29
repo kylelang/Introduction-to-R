@@ -8,16 +8,11 @@ rm(list = ls(all = TRUE))
 library(psych)
 library(multcomp)
 library(rockchalk)
+library(dplyr)
+library(magrittr)
 
-dataDir <- "../data/"
+bfi <- readRDS(paste0("../data/bfi.rds"))
 
-source("4_data_manipulation-888.R")
-
-bfiItems <- bfi %>% select(matches("[A-Z]\\d$|sex|ed|gm|age$"))
-bfi      <- bfi %>% select(-matches("^[A-Z]\\d|age_mc|age_std"))
-
-head(bfi)
-head(bfiItems)
 
 ###-Summary------------------------------------------------------------------###
 
@@ -40,7 +35,7 @@ bfi %>% summarise(mA = mean(agree),
 ### subgroups
 
 ## Compute the same summary stats as above for only males
-bfi %>% filter(sex == "male") %>%
+bfi %>% filter(gender == "male") %>%
     summarise(mA = mean(agree),
               sdA = sd(agree),
               mN = mean(neuro),
@@ -59,15 +54,14 @@ bfi %>% filter(sex == "male") %>%
 ### very useful.
 
 ## Compute the means of the scale scores
-bfi %>% select(matches("^[a-z]{4,5}")) %>% colMeans()
+bfi %>% select(matches("^[a-z]{4,5}$")) %>% colMeans()
 
 ## Find the number of missing values in each column
 colSums(is.na(bfi))
 bfi %>% is.na() %>% colSums()
 
 ## Find the proportion of complete cases
-tmp <- bfi %>% is.na() %>% rowSums()
-mean(tmp == 0)
+(bfi %>% is.na() %>% rowSums() == 0) %>% mean()
 
 ################################################################################
 ## PRACTICE PROBLEM 5.2
@@ -83,8 +77,8 @@ mean(tmp == 0)
 ### because we can easily broadcast any function that takes a single vector as
 ### input using "apply" functions.
 
-## Get the column numbers for the scale scores
-scaleNames <- grep("^[a-z]{4,5}", colnames(bfi), value = TRUE)
+## Get the column names for the scale scores
+scaleNames <- grep("^[a-z]{4,5}$", colnames(bfi), value = TRUE)
 
 ## Use apply() to calculate the medians of every scale score
 apply(bfi[scaleNames], 2, median)
@@ -118,8 +112,9 @@ apply(bfi[scaleNames], 1, which.max)
 ### For univariate summaries, we can use the base R tapply() function.
 
 ## Compute the median age for each educational group
-tapply(bfi$age, bfi$ed, median)
-with(bfi, tapply(age, ed, median))
+tapply(bfi$age, bfi$education, median)
+with(bfi, tapply(age, education, median))
+bfi %$% tapply(age, education, median)
 
 ################################################################################
 ## PRACTICE PROBLEM 5.4
@@ -132,10 +127,10 @@ with(bfi, tapply(age, ed, median))
 ### For multivariate summaries, we can use the aggregate() function.
 
 ## Compute the variances of each scale score for males and females
-aggregate(bfi[scaleNames], bfi["sex"], var)
+aggregate(bfi[scaleNames], bfi["gender"], var)
 
 ## Compute the means each scale score for all sex X education groups
-aggregate(bfi[scaleNames], bfi[c("sex", "ed")], mean)
+aggregate(bfi[scaleNames], bfi[c("gender", "education")], mean)
 
 ################################################################################
 ## PRACTICE PROBLEM 5.5
@@ -148,28 +143,32 @@ aggregate(bfi[scaleNames], bfi[c("sex", "ed")], mean)
 ### If we want to use dplyr functions, we can combine the group_by() and
 ### summarise() function to get whatever flavor of aggregation we like
 
-## Compute the 5th and 95th percentiles of age for each sex X education group
+## Compute the 5th and 95th percentiles of age for each gender X education group
 bfi %>%
-    group_by(sex, ed) %>%
+    group_by(gender, education) %>%
     summarize(age05 = quantile(age, 0.05), age95 = quantile(age, 0.95))
 
 ### We can use the across() funtion to broadcast univariate functions across
 ### multiple columns within summarise()
 
 bfi %>%
-    group_by(sex) %>%
+    group_by(gender) %>%
     summarise(across(c("age", "agree", "extra"), var))
 
 bfi %>%
-    group_by(sex) %>%
+    group_by(gender) %>%
     summarise(across(.fns = class))
 
 bfi %>%
-    group_by(ed) %>%
-    summarise(across(matches("^[a-z]{4,5}"), list(mean = mean, sd = sd)))
+    group_by(education) %>%
+    summarise(across(matches("^[a-z]{4,5}$"), list(mean = mean, sd = sd)))
 
 bfi %>%
-    group_by(sex, ed) %>%
+    group_by(education) %>%
+    summarise(across(all_of(scaleNames), list(mean = mean, sd = sd)))
+
+bfi %>%
+    group_by(gender, education) %>%
     summarise(across(where(is.factor), nlevels))
 
 ################################################################################
@@ -191,9 +190,9 @@ cor(bfi[scaleNames], method = "kendall")  # use Kendall's tau
 ## Calculate covariance matrix of the scale scores
 cov(bfi[scaleNames])
 
-## Calcualte the covariance matrix of the scale scores for males
+## Calculate the covariance matrix of the scale scores for males
 bfi %>%
-    filter(sex == "male") %>%
+    filter(gender == "male") %>%
     select(all_of(scaleNames)) %>%
     cov()
 
@@ -214,14 +213,14 @@ bfi %>%
 
 ## Use the psych::alpha() function to compute Cronbach's Alpha for the
 ## agreeableness scale:
-bfiItems %>%
-    select(matches("^a\\d")) %>%
+bfi %>%
+    select(matches("^A\\d")) %>%
     alpha(check.keys = TRUE)
 
 ## Use the psych::alpha() function to compute Cronbach's Alpha for the
 ## opennes scale and include boostrapped confidence intervals:
-bfiItems %>%
-    select(matches("^o\\d")) %>%
+bfi %>%
+    select(matches("^O\\d")) %>%
     alpha(n.iter = 1000, check.keys = TRUE)
 
 ################################################################################
@@ -238,7 +237,7 @@ bfiItems %>%
 
 ## Use the psych::skew() psych::kurtosi() functions to calculate the skew and
 ## excess kurtosis of the scale scores
-skewVec <- sapply(bfi[scaleNames], skew)
+skewVec <- bfi %>% select(all_of(scaleNames)) %>% sapply(skew)
 kurtVec <- sapply(bfi[scaleNames], kurtosi)
 
 skewVec
@@ -265,7 +264,7 @@ with(bfi, t.test(agree, extra, paired = TRUE))
 ################################################################################
 
 ## Are men significantly more open to new experiences than women?
-t.test(open ~ sex, data = bfi, alternative = "greater")
+t.test(open ~ gender, data = bfi, alternative = "greater")
 
 ### Earlier, we calculated bivariate correlations, but we did not test their
 ### significance. We can use the cor.test() function to do significance testing
@@ -273,7 +272,7 @@ t.test(open ~ sex, data = bfi, alternative = "greater")
 
 ## Is there a significant correlation between age and neuroticism for women?
 bfi %>%
-    filter(sex == "female") %$%
+    filter(gender == "female") %$%
     cor.test(neuro, age)
 
 ## Is there a negative correlation between agreeableness and neuroticism?
@@ -290,8 +289,8 @@ bfi %$% cor.test(agree, neuro, alternative = "less")
 ### We can use the chisq.test() function to do a Pearson's Chi-Squared test for
 ### independence between two factors.
 
-## Is there an association between sex and educational attainment?
-out <- bfi %$% table(sex, ed) %>% chisq.test()
+## Is there an association between gender and educational attainment?
+(out <- bfi %$% table(gender, education) %>% chisq.test())
 
 ## Where do the differences lie?
 out$stdres
@@ -304,14 +303,14 @@ out$stdres
 ## After controlling for age, is there a difference between men and women in
 ## levels of neuroticism?
 
-fit1 <- lm(neuro ~ age + sex, data = bfi)
+fit1 <- lm(neuro ~ age + gender, data = bfi)
 summary(fit1)
 
 ## Does this difference remain after controlling for the other four personality
 ## scales?
 
 fit2 <- update(fit1, ". ~ . + agree + extra + open + consc")
-summary(mod2)
+summary(fit2)
 
 ################################################################################
 ## PRACTICE PROBLEM 5.11
@@ -338,7 +337,7 @@ BIC(fit1, fit2)
 
 ## Is there a differential effect of age on neuroticism for men an women, after
 ## controlling for the other personality dimensions?
-fit3 <- update(fit2, ". ~ . + age * sex")
+fit3 <- update(fit2, ". ~ . + age * gender")
 summary(fit3)
 
 ################################################################################
@@ -358,8 +357,8 @@ summary(fit3)
 ### We can use the rockchalk::plotSlopes() and rockchalk::testSlopes() function
 ### to visualize and probe this interaction
 
-## Calculate and visualize the simple slopes of age on neuroticism for each sex
-psOut <- plotSlopes(fit3, plotx = "age", modx = "sex")
+## Calculate and visualize the simple slopes of age on neuroticism for each gender
+psOut <- plotSlopes(fit3, plotx = "age", modx = "gender")
 
 ## Test the simple slopes for significance:
 testSlopes(psOut)
@@ -395,19 +394,19 @@ plot(fit3)
 ### the lm() function to do ANOVAs; we just summarize the results differently
 
 ## One-way ANOVA
-fit1 <- lm(extra ~ ed, data = bfi)
+fit1 <- lm(extra ~ education, data = bfi)
 summary.aov(fit1)
 
 ## ANCOVA
-fit2 <- lm(extra ~ ed + age, data = bfi)
+fit2 <- lm(extra ~ education + age, data = bfi)
 summary.aov(fit2)
 
 ## Factorial ANCOVA
-fit3 <- lm(extra ~ ed * sex + age, data = bfi)
+fit3 <- lm(extra ~ education * gender + age, data = bfi)
 summary.aov(fit3)
 
 ## Two-way ANCOVA
-fit4 <- lm(extra ~ ed + sex + age, data = bfi)
+fit4 <- lm(extra ~ education + gender + age, data = bfi)
 summary.aov(fit4)
 
 ## Check assumptions graphically
@@ -440,22 +439,21 @@ summary(fit4)
 ### different comparisons
 
 ## Check the defaults:
-contrasts(bfi$sex)
-levels(bfi$sex)
+contrasts(bfi$gender)
+levels(bfi$gender)
 
-contrasts(bfi$ed)
-levels(bfi$ed)
+contrasts(bfi$education)
+levels(bfi$education)
 
 ### We can implement unweighted effects coding by changing the contrast
 ### attribute to a contr.sum() object
 
 ## Change the contrast type for the education factor
-newCt <- contr.sum(levels(dragonFeed$diet))
-contrasts(bfi$ed) <- contr.sum(levels(bfi$ed))
+contrasts(bfi$education) <- contr.sum(levels(bfi$education))
 
 ## For some reason, we don't get names for our contrasts. So, if we want easily
 ## interpretted output, we should add the names ourselves
-colnames(contrasts(bfi$ed)) <- head(levels(bfi$ed), 4)
+colnames(contrasts(bfi$education)) <- levels(bfi$education) %>% head(4)
 
 ## Re-estimate the model using the updated factor
 fit4.2 <- update(fit4, data = bfi)
@@ -466,7 +464,7 @@ summary(fit4.2)
 
 ## We can use the glht() function to test all pairwise comparisons with Tukey's
 ## HSD correction
-hsdOut <- glht(fit4, linfct = mcp(ed = "Tukey", sex = "Tukey"))
+hsdOut <- glht(fit4, linfct = mcp(education = "Tukey", gender = "Tukey"))
 summary(hsdOut)
 
 ## If we don't have any continous covariates we can use the base R TukeyHSD()
