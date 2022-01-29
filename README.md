@@ -16,7 +16,10 @@ To participate in this course, you will need a few things:
 		your computer.
 	  - We will be running the course out of this directory.
 	  - Do not move any of the contents.
-	  
+   - Note that I'll probably be pushing some last-minute updates, so you may 
+	 want to pull down recent commits (or download a fresh ZIP image) on the 
+	 morning of the course.
+	 
 2. You will also need to have `R` installed on your computer as well as some 
    convenient way of working with `R` (e.g., `RStudio`).
    - It will also be helpful to install the necessary add-on packages before the 
@@ -26,7 +29,6 @@ To participate in this course, you will need a few things:
 
 - You can obtain a free copy of `R` [here](https://cran.r-project.org). 
 - You can download `RStudio` as stand-alone software [here](https://www.rstudio.com/products/rstudio/download/#download). 
-
   - You want the free, open-source *RStudio Desktop* version.
 
 ### Installing Necessary Packages
@@ -54,25 +56,18 @@ key.
         install.packages(c("haven",
                            "foreign",
                            "openxlsx",
-						   "readxl",
-						   "dplyr",
-						   "magrittr",
-						   "psych",
-						   "rockchalk",
-						   "multcomp",
-						   "ggplot2",
-						   "gridExtra"),
-					   repos = "http://cloud.r-project.org",
-					   dependencies = TRUE)
+                           "readxl",
+                           "dplyr",
+                           "magrittr",
+                           "psych",
+                           "rockchalk",
+                           "multcomp",
+                           "ggplot2",
+                           "gridExtra"),
+                         repos = "http://cloud.r-project.org",
+                         dependencies = TRUE)
 
-If you are not sure where to paste the code, use the following figure to 
-identify the console:
-
-<center>
-  <img src="images/console.png" alt="HTML5 Icon" width = 70%>
-</center>
-
-If you are asked the following:
+If you are asked the following question:
 
 	Do you want to install from sources the package which needs 
     compilation? (Yes/no/cancel)
