@@ -5,6 +5,8 @@
 
 rm(list = ls(all = TRUE))
 
+dataDir <- "../data/"
+figDir  <- "../figures/"
 
 ################################################################################
 ### 1: Basic Commands                                                        ###
@@ -376,7 +378,7 @@ bfi <- select(bfi, -matches("^[aceno]\\d$")) %>% head()
 
 ## (b) Save the dataset from (a) as an RDS file.
 
-saveRDS(bfi, "../data/bfi_pp_48.rds")
+saveRDS(bfi, "../data/practice_problem_4_8.rds")
 
 
 ###-4.9----------------------------------------------------------------------###
@@ -630,3 +632,279 @@ glht(fit, linfct = mcp(education = "Tukey")) %>% summary()
 ################################################################################
 ### 6: Data Visualization                                                    ###
 ################################################################################
+
+###-6.1----------------------------------------------------------------------###
+
+## Use base R graphics and the 'titanic' data to create conditional boxplots,
+## where plots of 'age' are conditioned on 'survived'.
+## - What does this figure tell you about the ages of surivors ('survived' = 1)
+##   vs. non-survivors ('survived' = 0)?
+
+titanic <- readRDS(paste0(dataDir, "titanic.rds"))
+
+boxplot(age ~ survived, data = titanic)
+
+## There is not much difference in the age of survivors and non-survivors.
+
+
+###-6.2----------------------------------------------------------------------###
+
+## (a) Use the par() function to adjust the plotting canvas so you can draw two
+##     plots in a 1x2 array.
+
+par(mfrow = c(1, 2))
+
+## (b) Using the diabetes data, create two plots. Both plots should begin with
+##     a histogram of blood glucose level ('glu').
+##     - In the first plot, overlay the kernel density plot for 'glu' as a blue
+##       line.
+##     - In the second plot, overlay the appropriate, theoretical normal density
+##       as a red line.
+##
+## HINT: You can calculate the values for the normal density with the dnorm()
+##       function. Don't forget to define the appropriate mean and SD.
+
+diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
+
+hist(diabetes$glu, freq = FALSE)
+lines(density(diabetes$glu), col = "blue")
+
+hist(diabetes$glu, freq = FALSE)
+diabetes %>%
+    arrange(glu) %>%
+    mutate(density = dnorm(glu, mean(glu), sd(glu))) %$%
+    lines(x = glu, y = density, col = "red")
+
+
+###-6.3----------------------------------------------------------------------###
+
+## Use GGPlot and the 'diabetes' data to create an empty plot of total
+## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
+## - Don't add any geoms yet.
+## - Assign the resulting plot object to a variable in your environment.
+
+library(ggplot2)
+
+(p6.3 <- ggplot(diabetes, aes(age, tc)))
+
+
+###-6.4----------------------------------------------------------------------###
+
+## Augment the plot you created in (6.3) to create a scatterplot.
+## - Map the size of the points to 'bmi'
+## - Assign the resulting plot object to a variable in your environment.
+
+(p6.4 <- p6.3 + geom_point(aes(size = bmi)))
+
+
+###-6.5----------------------------------------------------------------------###
+
+## Augment the plot you created in (6.4) by adding RUG lines to both the x-axis
+## and y-axis.
+## - Map the color of the RUG lines to 'glu'
+## - Assign the resulting plot object to a variable in your environment.
+
+(p6.5 <- p6.4 + geom_rug(aes(color = glu)))
+
+
+###-6.6----------------------------------------------------------------------###
+
+## Augment the plot you created in (6.5) by adding linear regression lines.
+## - Add seperate lines for males and females.
+## - Differentiate the regression lines by giving them different line types.
+## - Do not include the SE bands.
+## - Assign the resulting plot object to a variable in your environment.
+
+(p6.6 <- p6.5 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
+
+
+###-6.7--------------------------------------------------------------------=-###
+
+## Modify the plot that you created in (6.6) by adjusting the theme.
+## - Change the global theme to the "classic" theme.
+## - Convert all text to 14-point, serif font.
+
+(p6.7 <- p6.6 +
+     theme_classic() +
+     theme(text = element_text(family = "serif", size = 14))
+)
+
+###-6.8----------------------------------------------------------------------###
+
+## Use the 'titanic' data, GGPlot, and facetting to create conditional
+## histograms of 'age' conditioned on 'survived'.
+## - Adjust the number of bins to optimize the clarity of the visualization.
+## - Overlay kernel density plots on each histogram.
+## - Do you think this figure is a more effective visualization than the
+##   conditional boxplots you created in (6.1)? Why or why not?
+##
+## HINT: You can get ggplot to scale your histogram in proportions, rather than
+##       counts, by specifying the argument "y = ..density.." for the y
+##       aesthetic in an appropriate geom.
+
+(p6.8 <- ggplot(titanic, aes(age)) +
+     geom_histogram(aes(y = ..density..)) +
+     geom_density() +
+     facet_wrap(vars(survived))
+)
+
+(p6.8 <- ggplot(titanic, aes(age)) +
+     geom_histogram(aes(y = ..density..), bins = 10) +
+     geom_density() +
+     facet_wrap(vars(survived))
+)
+
+(p6.8 <- ggplot(titanic, aes(age)) +
+     geom_histogram(aes(y = ..density..), bins = 50) +
+     geom_density() +
+     facet_wrap(vars(survived))
+)
+
+(p6.8 <- ggplot(titanic, aes(age)) +
+     geom_histogram(aes(y = ..density..), bins = 20) +
+     geom_density() +
+     facet_wrap(vars(survived))
+)
+
+## Yes. These histograms show a spike of very young survivors.
+
+
+###-6.9----------------------------------------------------------------------###
+
+## Use GGplot and grid.arrange() to recreate a version of the figure you created
+## in (6.2).
+
+library(gridExtra)
+
+p6.9 <- diabetes %>%
+    mutate(density = dnorm(glu, mean(glu), sd(glu))) %>%
+    ggplot(aes(glu)) +
+    geom_histogram(aes(y = ..density..),
+                   color = "black",
+                   fill = "lightgray",
+                   bins = 15) +
+    theme_classic()
+
+grid.arrange(
+    p6.9 + geom_density(color = "blue"),
+    p6.9 + geom_line(aes(glu, density), col = "red"),
+    ncol = 2
+)
+
+
+###-6.10---------------------------------------------------------------------###
+
+## Save the figure that you created in (6.8) as a JPEG
+## - Adjust the size to 10cm X 10cm
+## - Set the resolution to 800
+## - Save the image to the "../figures/" directory
+
+jpeg("../figures/practice_problem_6_10.jpg",
+     width  = 10,
+     height = 10,
+     units  = "cm",
+     res    = 800)
+
+p6.8
+
+dev.off()
+
+
+###-6.11---------------------------------------------------------------------###
+
+## (a) Save the five figures you created in (6.3 - 6.7) to a single PDF file.
+
+pdf(paste0(figDir, "practice_problem_6_11a.pdf"))
+
+p6.3
+p6.4
+p6.5
+p6.6
+p6.7
+
+dev.off()
+
+## (b) Save the five figures you created in (6.3 - 6.7) to a separate PNG files.
+##     - Save both the PDF and the PNG files to the "../figures" directory
+
+png(paste0(figDir, "practice_problem_6_11b-%d.png"))
+
+p6.3
+p6.4
+p6.5
+p6.6
+p6.7
+
+dev.off()
+
+
+################################################################################
+### 7: Programming                                                           ###
+################################################################################
+
+###-7.1----------------------------------------------------------------------###
+
+## Write a 'hello world' function
+##
+## HINT: You can use the cat() function to echo a string to stdout
+
+hello <- function() cat("Hello, World!\n")
+hello()
+
+
+###-7.2----------------------------------------------------------------------###
+
+## Write a function with two arguments that takes a vector of data and a vector
+## of weights (with length equal to the data vector) and returns the weighted
+## sum of the elements in the data vector.
+
+weightedSum <- function(data, weights) sum(data * weights)
+
+x <- rnorm(100)
+y <- rep(1:5, 20)
+
+weightedSum(data = x, weights = y)
+
+
+###-7.3----------------------------------------------------------------------###
+
+## (a) Write a for loop that iterates over the rows of the mtcars dataset. For
+##     each row, do the following:
+##     - Compute the mean of all variables.
+##     - Check if this mean is larger than 20.
+##     Save the results of this loop in a logical vector.
+
+data(mtcars)
+
+out <- rep(NA, nrow(mtcars))
+for(i in 1:nrow(mtcars))
+    out[i] <- mtcars[i, ] %>% as.numeric() %>% mean() > 20
+
+## (b) Write a single line of code that accomplishes the same as (a) using only
+##     vectorized operations (i.e., no looping, no apply statements).
+
+rowMeans(mtcars) > 20
+
+
+###-7.4----------------------------------------------------------------------###
+
+## Write a for loop that iterates over the rows of the mtcars dataset. For each
+## row, use an if/else statement to do the following:
+## - Print the string "Yay!", if the car has a manual transmission.
+## - Print the string "Boo!", if the car has an automatic transmission.
+
+for(i in 1:nrow(mtcars)) {
+    manual <- mtcars[i, "am"] == 1
+    if(manual) print("Yay!")
+    else print("Boo!")
+}
+
+## OR, using the ifelse() function ##
+
+for(i in 1:nrow(mtcars)) {
+    manual <- mtcars[i, "am"] == 1
+    ifelse(manual, print("Yay!"), print("Boo!"))
+}
+
+
+###-END----------------------------------------------------------------------###

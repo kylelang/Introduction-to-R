@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 6: Data Visualization
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2022-01-06
+### Modified: 2022-01-29
 
 rm(list = ls(all = TRUE))
 
@@ -297,6 +297,10 @@ p8 + facet_grid(vars(sex), vars(class))
 ## - Overlay kernel density plots on each histogram.
 ## - Do you think this figure is a more effective visualization than the
 ##   conditional boxplots you created in (6.1)? Why or why not?
+##
+## HINT: You can get ggplot to scale your histogram in proportions, rather than
+##       counts, by specifying the argument "y = ..density.." for the y
+##       aesthetic in an appropriate geom.
 ##
 ################################################################################
 
