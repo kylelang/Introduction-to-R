@@ -8,12 +8,10 @@ School course: *Introduction to R*.
 To participate in this course, you will need a few things:
 
 1. You will need access to the contents of this repository on your local machine.
-
    - If you're familiar with Git, you can clone this repository.
    - If you are not familiar with Git, you can download a ZIP archive of this 
 	 repository's current contents via the `Download ZIP` option in the drop-down 
 	 menu triggered by the green `Code` button at the top of this page.
-
       - Extract the contents of this ZIP archive to a convenient location on 
 		your computer.
 	  - We will be running the course out of this directory.
@@ -21,7 +19,6 @@ To participate in this course, you will need a few things:
 	  
 2. You will also need to have `R` installed on your computer as well as some 
    convenient way of working with `R` (e.g., `RStudio`).
-   
    - It will also be helpful to install the necessary add-on packages before the 
 	 course begins.
    
@@ -56,7 +53,7 @@ key.
 
         install.packages(c("haven",
                            "foreign",
-						   "openxlsx",
+                           "openxlsx",
 						   "readxl",
 						   "dplyr",
 						   "magrittr",
