@@ -10,12 +10,13 @@ To participate in this course, you will need a few things:
 1. You will need access to the contents of this repository on your local machine.
    - If you're familiar with Git, you can clone this repository.
    - If you are not familiar with Git, you can download a ZIP archive of this 
-	 repository's current contents via the `Download ZIP` option in the drop-down 
+	 repository's current content via the `Download ZIP` option in the drop-down 
 	 menu triggered by the green `Code` button at the top of this page.
       - Extract the contents of this ZIP archive to a convenient location on 
 		your computer.
 	  - We will be running the course out of this directory.
-	  - Do not move any of the contents.
+	  - Do not move any of the contents (doing so will break a bunch of relative 
+		file paths).
    - Note that I'll probably be pushing some last-minute updates, so you may 
 	 want to pull down recent commits (or download a fresh ZIP image) on the 
 	 morning of the course.
@@ -42,8 +43,8 @@ ahead of time.
 Open the script saved as [`code/00_install_packages.R`](code/00_install_packages.R)
 in `RStudio`, and run the contents.
 
-- You can run the commands by selecting all the contents and hitting *CTRL-ENTER* 
-on Windows/Linux or *CMD-ENTER* on Mac.
+- You can run the contents of the script by selecting all the text and hitting 
+*CTRL-ENTER* on Windows/Linux or *CMD-ENTER* on Mac.
 
 #### Method 2
 
