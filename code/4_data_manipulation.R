@@ -299,7 +299,7 @@ bfi <- mutate(bfi,
               )
 head(bfi)
 
-## Save a version of the 'bfi' data for later
+## Save a version of the modified 'bfi' data for later
 varNames <- c(varNames0, colnames(tmp$scores))
 saveRDS(bfi[varNames], paste0(dataDir, "bfi.rds"))
 
