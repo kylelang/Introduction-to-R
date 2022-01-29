@@ -9,16 +9,21 @@ To participate in this course, you will need a few things:
 
 1. You will need access to the contents of this repository on your local machine.
 
-  - If you're familiar with Git, you can clone this repository.
-  - If you are not familiar with Git, you can download a ZIP archive of this 
-	repository's current contents via the `Download ZIP` option in the drop-down 
-	menu triggered by the green `Code` button at the top of this page.
+   - If you're familiar with Git, you can clone this repository.
+   - If you are not familiar with Git, you can download a ZIP archive of this 
+	 repository's current contents via the `Download ZIP` option in the drop-down 
+	 menu triggered by the green `Code` button at the top of this page.
 
-1. You will also need to have `R` installed on your computer as well as some 
+      - Extract the contents of this ZIP archive to a convenient location on 
+		your computer.
+	  - We will be running the course out of this directory.
+	  - Do not move any of the contents.
+	  
+2. You will also need to have `R` installed on your computer as well as some 
    convenient way of working with `R` (e.g., `RStudio`).
    
-  - It will also be helpful to install the necessary add-on packages before the 
-	course begins.
+   - It will also be helpful to install the necessary add-on packages before the 
+	 course begins.
    
 ### Installing R & RStudio
 
@@ -35,8 +40,8 @@ ahead of time.
 
 #### Method 1
 
-Open the script saved as `code/00_install_packages.R` in `RStudio`, and run the 
-contents.
+Open the script saved as [`code/00_install_packages.R`](code/00_install_packages.R)
+in `RStudio`, and run the contents.
 
 - You can run the commands by selecting all the contents and hitting *CTRL-ENTER* 
 on Windows/Linux or *CMD-ENTER* on Mac.
@@ -49,7 +54,7 @@ execute the necessary command.
 - If nothing happens after you paste the code, try hitting the "Enter/Return" 
 key.
 
-		install.packages(c("haven",
+        install.packages(c("haven",
                            "foreign",
 						   "openxlsx",
 						   "readxl",
@@ -60,8 +65,8 @@ key.
 						   "multcomp",
 						   "ggplot2",
 						   "gridExtra"),
-					     repos = "http://cloud.r-project.org",
-					     dependencies = TRUE)
+					   repos = "http://cloud.r-project.org",
+					   dependencies = TRUE)
 
 If you are not sure where to paste the code, use the following figure to 
 identify the console:
