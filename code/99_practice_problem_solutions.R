@@ -8,6 +8,19 @@ rm(list = ls(all = TRUE))
 dataDir <- "../data/"
 figDir  <- "../figures/"
 
+library(haven)
+library(foreign)
+library(openxlsx)
+library(readxl)
+library(dplyr)
+library(magrittr)
+library(psych)
+library(rockchalk)
+library(multcomp)
+library(ggplot2)
+library(gridExtra)
+
+
 ################################################################################
 ### 1: Basic Commands                                                        ###
 ################################################################################
@@ -218,13 +231,11 @@ str(diabetes0)
 ## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
 ##     '../data/starwars.sav'
 
-library(haven)
 starwars1 <- read_spss("../data/starwars.sav")
 
 ## (b) Use the foreign::read.spss() function to load the same dataset as above
 ##     into a list with variable labels preserved.
 
-library(foreign)
 starwars2 <- read.spss("../data/starwars.sav")
 
 ## (c) Use the foreign::read.spss() function to load the same dataset as above
@@ -241,7 +252,6 @@ starwars3 <- read.spss("../data/starwars.sav",
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
 ##     in the Excel workbook stored at '../data/example_data.xlsx'
 
-library(openxlsx)
 dat3.4a <- read.xlsx("../data/example_data.xlsx",
                      sheet = "diabetes",
                      rows  = 1:100,
@@ -252,7 +262,6 @@ dat3.4a <- read.xlsx("../data/example_data.xlsx",
 ##     Column 2 and ending on Row 100 and Column 7 from the 'titanic' sheet in
 ##     '../data/example_data.xlsx'
 
-library(readxl)
 dat3.4b <- read_excel("../data/example_data.xlsx",
                       sheet = "titanic",
                       range = "B3:G100")
@@ -278,8 +287,6 @@ bfi[filter, paste0("N", 1:5)]
 ###-4.2----------------------------------------------------------------------###
 
 ## Use dplyr subsetting functions to select the same subset as in (4.1)
-
-library(dplyr)
 
 tmp <- filter(bfi, gender == 2 & age < 18)
 select(tmp, starts_with("N"))
@@ -328,8 +335,6 @@ levels(bfi$education) <- gsub(" ", "_", levels(bfi$education))
 
 
 ###-4.6----------------------------------------------------------------------###
-
-library(psych)
 
 names(bfi.keys) <- c("agree", "consc", "extra", "neuro", "open")
 scores          <- scoreVeryFast(bfi.keys, bfi)
@@ -391,8 +396,6 @@ saveRDS(bfi, "../data/practice_problem_4_8.rds")
 bfi %>% filter(gender == 1) %>% select(agree) %>% unlist() %>% mean() %>% sqrt()
 
 ## OR, if you peek ahead to exposition pipes ##
-
-library(magrittr)
 
 bfi %>% filter(gender == 1) %$% mean(agree) %>% sqrt()
 
@@ -572,8 +575,6 @@ anova(fit1, fit2)
 ##     - Define the simple slopes at the mean of the moderator and one SD above
 ##       and below the mean of the moderator.
 
-library(rockchalk)
-
 psOut <- plotSlopes(fit2, plotx = "extra", modx = "age", modxVals = "std.dev")
 
 ## (b) Use the rockchalk::testSlopes() function to test the simple slopes you
@@ -617,8 +618,6 @@ summary(fit)
 ## of educational attaiment from the model you estimated in (5.14).
 ## - Are any of the groups significanlty different in their mean levels of
 ##   openness? If so, which?
-
-library(multcomp)
 
 glht(fit, linfct = mcp(education = "Tukey")) %>% summary()
 
@@ -682,8 +681,6 @@ diabetes %>%
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
 ## - Don't add any geoms yet.
 ## - Assign the resulting plot object to a variable in your environment.
-
-library(ggplot2)
 
 (p6.3 <- ggplot(diabetes, aes(age, tc)))
 
@@ -773,8 +770,6 @@ library(ggplot2)
 
 ## Use GGplot and grid.arrange() to recreate a version of the figure you created
 ## in (6.2).
-
-library(gridExtra)
 
 p6.9 <- diabetes %>%
     mutate(density = dnorm(glu, mean(glu), sd(glu))) %>%
