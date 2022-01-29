@@ -38,9 +38,8 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# Emacs autosave files
+# Autosave stuff files
 *~
 *.R#
+.#*
 
-# Example figures
-scripts/figures/*
