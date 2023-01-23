@@ -15,8 +15,6 @@ library(readxl)
 library(dplyr)
 library(magrittr)
 library(psych)
-library(rockchalk)
-library(multcomp)
 library(ggplot2)
 library(gridExtra)
 
