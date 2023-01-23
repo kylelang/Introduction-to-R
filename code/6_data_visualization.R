@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 6: Data Visualization
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2022-01-29
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -10,14 +10,14 @@ library(dplyr)
 library(magrittr)
 library(gridExtra)
 
-dataDir  <- "../data/"
-figDir   <- "../figures/"
+dataDir  <- "data/"
+figDir   <- "figures/"
 
 diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
 titanic  <- readRDS(paste0(dataDir, "titanic.rds"))
 bfi      <- readRDS(paste0(dataDir, "bfi.rds"))
 
-## Convert surival indicator to a numeric dummy code:
+## Convert survival indicator to a numeric dummy code:
 titanic <- titanic %>% mutate(survived = as.numeric(survived) - 1)
 
 

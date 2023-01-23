@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 1: Basic Commands
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2012-01-04
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -11,7 +11,7 @@ rm(list = ls(all = TRUE))
 ## Each commented line must be preceded by a '#' symbol
 ## There are no block comments in R (same system as Mplus)
 
-## Comments are not evaluted when you run your code
+## Comments are not evaluated when you run your code
 
 
 ###-Assignment---------------------------------------------------------------###
@@ -172,25 +172,6 @@ ls()
 rm(list = ls(all = TRUE))
 ls()
 
-### Every R session is associated with a 'working directory'. The working
-### directory is the directory wherein R will root its navigation when reading
-### or writing data objects to or from disk.
-
-## Find the current working directory
-getwd()
-
-## Change the current working directory
-setwd("data/")
-getwd()
-
-################################################################################
-## PRACTICE PROBLEM 1.4
-##
-## Use the setwd() function to change your working directory to the directory in
-## which this script is saved.
-##
-################################################################################
-
 
 ###-Installing Packages------------------------------------------------------###
 
@@ -204,15 +185,15 @@ install.packages(c("lattice", "gridExtra"),
 ## Specify a non-standard directory into which the packages will be installed
 install.packages("mvtnorm",
                  repos = "http://cloud.r-project.org",
-                 lib = "../../software")
+                 lib = "../software")
 
 ## Install from local source
-install.packages("../../software/magrittr_2.0.1.tar.gz",
+install.packages("../software/magrittr_2.0.1.tar.gz",
                  repos = NULL,
                  type = "Source")
 
 ################################################################################
-## PRACTICE PROBLEM 1.5
+## PRACTICE PROBLEM 1.4
 ##
 ## Use the install.packages() function to install the following packages in the
 ## default location (i.e., don't specify anything for the 'lib' argument).
@@ -246,7 +227,7 @@ help(quickpred, package = "mice")
 help.start()
 
 ################################################################################
-## PRACTICE PROBLEM 1.6
+## PRACTICE PROBLEM 1.5
 ##
 ##  (a) Access the help file for the vector() function.
 ##  (b) How many arguments does the vector() function take?

@@ -1,7 +1,7 @@
 ### Title:    Introduction to R: Suggested Solutions for Practice Problems
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2022-01-29
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -60,21 +60,14 @@ rm(age)
 
 ###-1.4----------------------------------------------------------------------###
 
-## Use the setwd() function to change your working directory to the directory in
-## which this script is saved.
-
-setwd("Your/Directory/Path/Here")
-
-
-###-1.5----------------------------------------------------------------------###
-
 ## Use the install.packages() function to install the following packages in the
 ## default location (i.e., don't specify anything for the 'lib' argument).
 
 install.packages(c("ggplot2", "dplyr", "haven"),
                  repos = "http://cloud.r-project.org")
 
-###-1.6----------------------------------------------------------------------###
+
+###-1.5----------------------------------------------------------------------###
 
 ##  (a) Access the help file for the vector() function.
 
@@ -123,6 +116,7 @@ myMat <- matrix(myVec, 5, 3)
 ## HINT: The built-in R object 'pi' contains the value of pi.
 
 pi * myMat
+
 
 ###-2.4----------------------------------------------------------------------###
 
@@ -191,6 +185,22 @@ myDf$f <- f
 
 ###-3.1----------------------------------------------------------------------###
 
+## Use the setwd() function to change your working directory to the directory in
+## which this script is saved.
+
+setwd("Your/Directory/Path/Here")
+
+
+###-3.2----------------------------------------------------------------------###
+
+## Create a new RStudio project, and associate that project with the directory
+## in which this script is saved.
+
+### ANSWER: You have to do this with clicky-box options.
+
+
+###-3.3----------------------------------------------------------------------###
+
 ## (a) Use the data() function to load the 'Cars93' dataset from the 'MASS'
 ##     package.
 
@@ -205,7 +215,7 @@ dim(Cars93)
 ## The Cars93 dataset has 93 rows and 27 columns.
 
 
-###-3.2----------------------------------------------------------------------###
+###-3.4----------------------------------------------------------------------###
 
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 
@@ -226,7 +236,7 @@ str(diabetes0)
 ## it's a character vector when reading the data from the tab-delimited file.
 
 
-###-3.3----------------------------------------------------------------------###
+###-3.5----------------------------------------------------------------------###
 
 ## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
 ##     '../data/starwars.sav'
@@ -246,13 +256,13 @@ starwars3 <- read.spss("../data/starwars.sav",
                        use.value.labels = FALSE)
 
 
-###-3.4----------------------------------------------------------------------###
+###-3.6----------------------------------------------------------------------###
 
 ## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
 ##     in the Excel workbook stored at '../data/example_data.xlsx'
 
-dat3.4a <- read.xlsx("../data/example_data.xlsx",
+dat3.6a <- read.xlsx("../data/example_data.xlsx",
                      sheet = "diabetes",
                      rows  = 1:100,
                      cols  = 1:4)
@@ -262,11 +272,11 @@ dat3.4a <- read.xlsx("../data/example_data.xlsx",
 ##     Column 2 and ending on Row 100 and Column 7 from the 'titanic' sheet in
 ##     '../data/example_data.xlsx'
 
-dat3.4b <- read_excel("../data/example_data.xlsx",
+dat3.6b <- read_excel("../data/example_data.xlsx",
                       sheet = "titanic",
                       range = "B3:G100")
 
-dat3.4b
+dat3.6b
 
 
 ################################################################################
@@ -298,13 +308,6 @@ bfi %>% filter(gender == 2 & age < 18) %>% select(starts_with("N"))
 
 ###-4.3----------------------------------------------------------------------###
 
-## Use base R functions to sort the 'bfi' data on ascending order of 'age'
-
-bfi[order(bfi$age), ]
-
-
-###-4.4----------------------------------------------------------------------###
-
 ## Use the dplyr functions to sort the 'bfi' data on descending order of 'age'
 ## and ascending order of 'gender'.
 ## - Sort on 'age' before 'gender'
@@ -312,7 +315,7 @@ bfi[order(bfi$age), ]
 arrange(bfi, gender, -age)
 
 
-###-4.5----------------------------------------------------------------------###
+###-4.4----------------------------------------------------------------------###
 
 bfi <- mutate(bfi,
               age_std = scale(age),
@@ -334,7 +337,7 @@ bfi <- mutate(bfi,
 levels(bfi$education) <- gsub(" ", "_", levels(bfi$education))
 
 
-###-4.6----------------------------------------------------------------------###
+###-4.5----------------------------------------------------------------------###
 
 names(bfi.keys) <- c("agree", "consc", "extra", "neuro", "open")
 scores          <- scoreVeryFast(bfi.keys, bfi)
@@ -346,7 +349,7 @@ bfi             <- data.frame(bfi, scores)
 bfi <- mutate(bfi, across(agree:open, scale, .names = "std_{.col}"))
 
 
-###-4.7----------------------------------------------------------------------###
+###-4.6----------------------------------------------------------------------###
 
 ## NOTE: The following problem statement uses these abbreviations
 ##       - O = Openness to Experience ('open')
@@ -375,7 +378,7 @@ bfi <- mutate(bfi,
               )
 
 
-###-4.8----------------------------------------------------------------------###
+###-4.7----------------------------------------------------------------------###
 
 ## (a) Exclude the raw scale items from the modified 'bfi' data.
 
@@ -386,7 +389,7 @@ bfi <- select(bfi, -matches("^[aceno]\\d$")) %>% head()
 saveRDS(bfi, "../data/practice_problem_4_8.rds")
 
 
-###-4.9----------------------------------------------------------------------###
+###-4.8----------------------------------------------------------------------###
 
 ## Use a pipeline to calculate the square root of the mean of the agreeableness
 ## scale score for males in the 'bfi' data.
@@ -400,7 +403,7 @@ bfi %>% filter(gender == 1) %>% select(agree) %>% unlist() %>% mean() %>% sqrt()
 bfi %>% filter(gender == 1) %$% mean(agree) %>% sqrt()
 
 
-###-4.10---------------------------------------------------------------------###
+###-4.9---------------------------------------------------------------------###
 ##
 ## Use the pipe and exposition pipe to calculate the correlation between 'age'
 ## and 'agree' for adults in the 'bfi' data.
@@ -542,90 +545,6 @@ fit1 <- lm(agree ~ open + extra + age + education, data = bfi)
 ## for extraversion, age, and education.
 
 s1$r.squared
-
-
-###-5.12---------------------------------------------------------------------###
-
-## Modify the model you fit in (5.11) to test if age moderates the effect of
-## openness on agreeableness or the effect of extraversion on agreeableness,
-## after controlling for educational attainment.
-## - Does age moderate either of the focal effects?
-## - If you find significant moderation, how does age affect the focal effects?
-## - How much more variability in agreeableness have you explained by modifying
-##   the model?
-## - Is the additional explained variation significant?
-
-
-fit2 <- update(fit1, ". ~ . + age * open + age * extra")
-(s2 <- summary(fit2))
-
-## No. Age does not moderate either focal effect.
-
-s2$r.squared - s1$r.squared
-
-anova(fit1, fit2)
-
-## No. The modified  model does not explain significantly more variability.
-
-
-###-5.13---------------------------------------------------------------------###
-##
-## (a) Use the rockchalk::plotSlopes() function to visualize the simple slopes
-##     for one of the interactions you estimated in (5.12).
-##     - Define the simple slopes at the mean of the moderator and one SD above
-##       and below the mean of the moderator.
-
-psOut <- plotSlopes(fit2, plotx = "extra", modx = "age", modxVals = "std.dev")
-
-## (b) Use the rockchalk::testSlopes() function to test the simple slopes you
-##     estimated in (a) for significance.
-##     - Are any of the simple slopes significant?
-##     - Interpret any significant simple slopes.
-
-testSlopes(psOut)$hypotests
-
-## All three simple slopes are significant. Extraversion significantly predicts
-## agreeableness for people with mean age and for people one SD above or below
-## the mean of age.
-
-
-###-5.14---------------------------------------------------------------------###
-
-## Estimate a one-way ANCOVA to test if there is a difference in mean openness
-## between adults with different levels of educational attainment after
-## controlling for age, extraversion, and agreeableness
-## - Is the hypothesis supported?
-## - Do all predictors combined explain a significant proportion of variability
-##   in openness?
-
-bfi %>% filter(age >= 18) %$% lm(open ~ education + age + extra + agree) -> fit
-
-summary.aov(fit)
-
-## Yes. There are significant differences in the mean levels of openness between
-## different educational groups after controlling for age, extraversion, and
-## agreeableness.
-
-summary(fit)
-
-## Yes. The omnibus F-test is significant. So, we know that the R^2 for the
-## model is significantly greater than zero.
-
-
-###-5.15---------------------------------------------------------------------###
-
-## Use Tukey's HSD to test all pairwise differences between the different levels
-## of educational attaiment from the model you estimated in (5.14).
-## - Are any of the groups significanlty different in their mean levels of
-##   openness? If so, which?
-
-glht(fit, linfct = mcp(education = "Tukey")) %>% summary()
-
-## Yes. The following groups have significanlty different means of openness:
-## - graduate degree and some high school
-## - graduate degree and high school graduate
-## - graduate degree and some college
-## - college graduate and some college
 
 
 ################################################################################

@@ -1,11 +1,11 @@
 ### Title:    Introduction to R 4: Working with Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2022-01-29
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
-dataDir <- "../data/"
+dataDir <- "data/"
 
 ## Load necessary packages
 library(dplyr)    # Data manipulation
@@ -17,6 +17,7 @@ data(bfi, package = "psychTools")
 
 ## Save the original variable names for later use
 varNames0 <- colnames(bfi)
+
 
 ###-Subsetting---------------------------------------------------------------###
 
@@ -107,7 +108,7 @@ with(bfi, table(age, (gender == 1 & !is.na(education) & education >= 4)))
 ### on logical conditions
 
 ## Do the same subsetting as above with dplyr::filter()
-bfi3 <- filter(bfi, age < 50 & gender == 1 & !is.na(education) & education >= 4)
+bfi3 <- filter(bfi, age < 50, gender == 1, !is.na(education), education >= 4)
 
 ## Same result?
 sum(bfi2 - bfi3, na.rm = TRUE)
@@ -123,7 +124,10 @@ head(tmp)
 tmp <- select(bfi, -10:-1)
 head(tmp)
 
-## Use dplyr::select() to select the 'gender', 'education', and 'age' columns
+tmp <- select(bfi, -(1:10))
+head(tmp)
+
+## Use dplyr::select() to select the 'gender', 'age', and 'education' columns
 tmp <- select(bfi, gender, age, education)
 head(tmp)
 
@@ -168,15 +172,8 @@ order(x)
 y[order(y$x1), ]
 y[order(y$x1, decreasing = TRUE), ]
 
-################################################################################
-## PRACTICE PROBLEM 4.3
-##
-## Use base R functions to sort the 'bfi' data on ascending order of 'age'
-##
-################################################################################
-
-## The dplyr::arrange() function offers a more simple and intuitive way to sort
-## the rows of a data frame
+## Sorting rows with base R order() can be confusing. The dplyr::arrange() 
+## function offers a simpler, intuitive way to sort the rows of a data frame
 arrange(y, x1)
 arrange(y, -x1)
 
@@ -185,7 +182,7 @@ arrange(y, x3, x1)
 arrange(y, x3, -x2)
 
 ################################################################################
-## PRACTICE PROBLEM 4.4
+## PRACTICE PROBLEM 4.3
 ##
 ## Use the dplyr functions to sort the 'bfi' data on descending order of 'age'
 ## and ascending order of 'gender'.
@@ -200,7 +197,7 @@ arrange(y, x3, -x2)
 ### variables into factors.
 
 ### A quick-and-dirty solution uses the as.factor() function to cast the
-### varaible to a factor with default labels
+### variable to a factor with default labels
 
 (animals <- sample(c("dog", "cat", "mongoose"), 25, TRUE))
 
@@ -245,7 +242,7 @@ bfi <- mutate(bfi,
 str(bfi)
 
 ################################################################################
-## PRACTICE PROBLEM 4.5
+## PRACTICE PROBLEM 4.4
 ##
 ## Modify the factor levels of the 'education' factor we just created. Replace
 ## all of the spaces with underscores, "_".
@@ -310,7 +307,7 @@ varNames <- c(varNames0, colnames(tmp$scores))
 saveRDS(bfi[varNames], paste0(dataDir, "bfi.rds"))
 
 ################################################################################
-## PRACTICE PROBLEM 4.6
+## PRACTICE PROBLEM 4.5
 ##
 ## Use the dplyr::mutate() function to create standardized versions of the five
 ## scales scores we just created.
@@ -346,13 +343,14 @@ with(bfi, table(minor = age < 18, gender, gendered_maturity))
 
 ## Rename a few of the variables in our bfi data
 bfi <- rename(bfi, sex = gender, ed = education, gm = gendered_maturity)
+head(bfi)
 
 ## Convert all scale item names to lower case
 bfi <- rename_with(bfi, .fn = tolower, .cols = matches("\\d$"))
 head(bfi)
 
 ################################################################################
-## PRACTICE PROBLEM 4.7
+## PRACTICE PROBLEM 4.6
 ##
 ## NOTE: The following problem statement uses these abbreviations
 ##       - O = Openness to Experience ('open')
@@ -372,7 +370,7 @@ head(bfi)
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 4.8
+## PRACTICE PROBLEM 4.7
 ##
 ## (a) Exclude the raw scale items from the modified 'bfi' data.
 ## (b) Save the dataset from (a) as an RDS file.
@@ -420,7 +418,7 @@ bfi %>%
     sqrt()
 
 ################################################################################
-## PRACTICE PROBLEM 4.9
+## PRACTICE PROBLEM 4.8
 ##
 ## Use a pipeline to calculate the square root of the mean of the agreeableness
 ## scale score for males in the 'bfi' data.
@@ -495,7 +493,7 @@ bfi %>% lm(extra ~ age, data = .)
 bfi %$% lm(extra ~ age)
 
 ################################################################################
-## PRACTICE PROBLEM 4.10
+## PRACTICE PROBLEM 4.9
 ##
 ## Use the pipe and exposition pipe to calculate the correlation between 'age'
 ## and 'agree' for adults in the 'bfi' data.
@@ -518,3 +516,4 @@ bfi[c("agree", "consc", "extra", "neuro", "open")] |>
 
 
 ###-END----------------------------------------------------------------------###
+

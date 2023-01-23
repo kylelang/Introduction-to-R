@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 2: Data Objects
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2022-01-29
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -91,15 +91,18 @@ y == 4 | y == 2
 y == c(4, 2)# Hmm...that's weird. What's going on here?
 
 ## We can access and assign values to vector entries with the '[]' operator
-y4
+y
 
-y4[3]
+y[3]
 
-(y4[1] <- 77)
+y[1] <- 77
+y
 
-(y4[c(2, 4)] <- -22)
+## To select multiple elements, we subset with another vector
+y[c(2, 4)] <- -22
+y
 
-y4[2, 4] <- 33# Oops :(
+y[2, 4] <- 33# Oops :(
 
 ################################################################################
 ## PRACTICE PROBLEM 2.2
@@ -144,7 +147,7 @@ m3 / m2
 m3 * m2
 
 ## We can access and assign values with the '[]' operator
-m3[1 : 2, 1 : 3]
+m3[1:2, 1:3]
 (m4 <- m3[c(1, 3), 2])
 
 m1[1, 2] <- 33
@@ -353,7 +356,7 @@ attributes(f1)
 levels(f1)
 
 ## Even though a factor's data are represented by an integer vector, R does not
-## consider factors to be interger/numeric data
+## consider factors to be integer/numeric data
 is.numeric(f1)
 is.integer(f1)
 

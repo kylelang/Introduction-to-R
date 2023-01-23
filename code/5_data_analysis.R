@@ -1,17 +1,15 @@
 ### Title:    Introduction to R 5: Data Analyses
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-27
-### Modified: 2022-01-29
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
 library(psych)
-library(multcomp)
-library(rockchalk)
 library(dplyr)
 library(magrittr)
 
-bfi <- readRDS(paste0("../data/bfi.rds"))
+bfi <- readRDS(paste0("data/bfi.rds"))
 
 
 ###-Summary------------------------------------------------------------------###
@@ -94,6 +92,8 @@ apply(bfi[scaleNames], 1, max)
 
 ## Find the column number containing the maximum scale score value in each row
 apply(bfi[scaleNames], 1, which.max)
+
+bfi %>% select(matches("^[a-z]{4,5}$")) %>% apply(1, which.max)
 
 ################################################################################
 ## PRACTICE PROBLEM 5.3
@@ -231,7 +231,7 @@ bfi %>%
 ## - Use 2000 bootstrap samples to estimate confidence intervals for the
 ##   internal consistency.
 ## - According to the bootstrap inference, is the internal consistency
-##   significanlty different from 0.8?
+##   significantly different from 0.8?
 ##
 ################################################################################
 
@@ -243,7 +243,7 @@ kurtVec <- sapply(bfi[scaleNames], kurtosi)
 skewVec
 kurtVec
 
-## Any really problematic varibles?
+## Any really problematic variables?
 any(abs(skewVec) > 1.0)
 any(abs(kurtVec) > 7.0)
 
@@ -254,7 +254,7 @@ any(abs(kurtVec) > 7.0)
 
 ## Do the average levels of agreeableness differ significantly from the average
 ## levels of extraversion within people?
-with(bfi, t.test(agree, extra, paired = TRUE))
+bfi %$% t.test(agree, extra, paired = TRUE)
 
 ################################################################################
 ## PRACTICE PROBLEM 5.9
@@ -309,7 +309,7 @@ summary(fit1)
 ## Does this difference remain after controlling for the other four personality
 ## scales?
 
-fit2 <- update(fit1, ". ~ . + agree + extra + open + consc")
+fit2 <- lm(neuro ~ age + gender + agree + extra + open + consc, data = bfi)
 summary(fit2)
 
 ################################################################################
@@ -334,153 +334,6 @@ anova(fit1, fit2)
 ## We can also do model comparisons in terms of information criteria
 AIC(fit1, fit2)
 BIC(fit1, fit2)
-
-## Is there a differential effect of age on neuroticism for men an women, after
-## controlling for the other personality dimensions?
-fit3 <- update(fit2, ". ~ . + age * gender")
-summary(fit3)
-
-################################################################################
-## PRACTICE PROBLEM 5.12
-##
-## Modify the model you fit in (5.11) to test if age moderates the effect of
-## openness on agreeableness or the effect of extraversion on agreeableness,
-## after controlling for educational attainment.
-## - Does age moderate either of the focal effects?
-## - If you find significant moderation, how does age affect the focal effects?
-## - How much more variability in agreeableness have you explained by modifying
-##   the model?
-## - Is the additional explained variation significant?
-##
-################################################################################
-
-### We can use the rockchalk::plotSlopes() and rockchalk::testSlopes() function
-### to visualize and probe this interaction
-
-## Calculate and visualize the simple slopes of age on neuroticism for each gender
-psOut <- plotSlopes(fit3, plotx = "age", modx = "gender")
-
-## Test the simple slopes for significance:
-testSlopes(psOut)
-
-### Before we place too much trust in these results, we need to evaluate the
-### tenability of the assumptions
-
-## Generate diagnostic plots for our final model
-plot(fit3)
-
-## Put all plots on a single canvas
-par(mfrow = c(2, 2))
-plot(fit3)
-
-################################################################################
-## PRACTICE PROBLEM 5.13
-##
-## (a) Use the rockchalk::plotSlopes() function to visualize the simple slopes
-##     for one of the interactions you estimated in (5.12).
-##     - Define the simple slopes at the mean of the moderator and one SD above
-##       and below the mean of the moderator.
-## (b) Use the rockchalk::testSlopes() function to test the simple slopes you
-##     estimated in (a) for significance.
-##     - Are any of the simple slopes significant?
-##     - Interpret any significant simple slopes.
-##
-################################################################################
-
-
-###-ANOVA--------------------------------------------------------------------###
-
-### Since ANOVA is just another flavor of the general linear model, we also use
-### the lm() function to do ANOVAs; we just summarize the results differently
-
-## One-way ANOVA
-fit1 <- lm(extra ~ education, data = bfi)
-summary.aov(fit1)
-
-## ANCOVA
-fit2 <- lm(extra ~ education + age, data = bfi)
-summary.aov(fit2)
-
-## Factorial ANCOVA
-fit3 <- lm(extra ~ education * gender + age, data = bfi)
-summary.aov(fit3)
-
-## Two-way ANCOVA
-fit4 <- lm(extra ~ education + gender + age, data = bfi)
-summary.aov(fit4)
-
-## Check assumptions graphically
-par(mfrow = c(2, 2))
-plot(fit4)
-
-################################################################################
-## PRACTICE PROBLEM 5.14
-##
-## Estimate a one-way ANCOVA to test if there is a difference in mean openness
-## between adults with different levels of educational attainment after
-## controlling for age, extraversion, and agreeableness
-## - Is the hypothesis supported?
-## - Do all predictors combined explain a significant proportion of variability
-##   in openness?
-##
-################################################################################
-
-
-###-Post Hoc Test------------------------------------------------------------###
-
-### To evaluate hypotheses about specific effects (or between-group differences),
-### we use the summary.lm() function instead of the summary.aov() function
-
-## By default factors are coded as dummy codes. So, we'll see test of mean
-## differences from the reference groups
-summary(fit4)
-
-### We can manipulte the contrast attribute of the independent factors to test
-### different comparisons
-
-## Check the defaults:
-contrasts(bfi$gender)
-levels(bfi$gender)
-
-contrasts(bfi$education)
-levels(bfi$education)
-
-### We can implement unweighted effects coding by changing the contrast
-### attribute to a contr.sum() object
-
-## Change the contrast type for the education factor
-contrasts(bfi$education) <- contr.sum(levels(bfi$education))
-
-## For some reason, we don't get names for our contrasts. So, if we want easily
-## interpretted output, we should add the names ourselves
-colnames(contrasts(bfi$education)) <- levels(bfi$education) %>% head(4)
-
-## Re-estimate the model using the updated factor
-fit4.2 <- update(fit4, data = bfi)
-summary(fit4.2)
-
-### The glht() function from the 'multcomp' package supports arbitrary posthoc
-### comparisons with corrections for multiple testing.
-
-## We can use the glht() function to test all pairwise comparisons with Tukey's
-## HSD correction
-hsdOut <- glht(fit4, linfct = mcp(education = "Tukey", gender = "Tukey"))
-summary(hsdOut)
-
-## If we don't have any continous covariates we can use the base R TukeyHSD()
-## function, but we have to estimate the model using aov()
-fit1.2 <- aov(formula(fit1), data = bfi)
-TukeyHSD(fit1.2)
-
-################################################################################
-## PRACTICE PROBLEM 5.15
-##
-## Use Tukey's HSD to test all pairwise differences between the different levels
-## of educational attaiment from the model you estimated in (5.14).
-## - Are any of the groups significanlty different in their mean levels of
-##   openness? If so, which?
-##
-################################################################################
 
 
 ###-END----------------------------------------------------------------------###

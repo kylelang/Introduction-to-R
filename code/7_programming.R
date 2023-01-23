@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 7: Simple R Programming
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-29
-### Modified: 2022-01-29
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -94,6 +94,8 @@ X[1:10, ]
 
 c(1, 3, 6:9, 12)
 
+rnorm(100) %>% square() %>% mean()
+
 ################################################################################
 ## PRACTICE PROBLEM 7.2
 ##
@@ -166,7 +168,7 @@ val0 - val1 # Same answer
 t0
 t1     # But many times slower
 
-### There is often a builtin routine for what you are trying to accomplish with
+### There is often a built in routine for what you are trying to accomplish with
 ### the loop.
 
 ## The appropriate way to get variable means:
@@ -175,7 +177,7 @@ colMeans(mtcars)
 ### In R, we're usually working with lists and data frames, not vectors and
 ### matrices. So, some flavor of apply statement is often preferred to a loop.
 
-## A more elegent way to summarise the list of fits from above
+## A more elegant way to summarize the list of fits from above
 lapply(fits, summary)
 
 ################################################################################

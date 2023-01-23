@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 3: Reading and Writing External Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2022-01-28
+### Modified: 2023-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -13,7 +13,42 @@ library(readxl)   # Read Excel files
 library(labelled) # Working with labelled vectors
 
 ## Define the directory holding our data
-dataDir <- "../data/"
+dataDir <- "data/"
+
+
+###-Working Directories & RStudio Projects-----------------------------------###
+
+### Every R session is associated with a 'working directory'. The working
+### directory is the directory wherein R will root its navigation when reading
+### or writing data objects to or from disk.
+
+## Find the current working directory
+getwd()
+
+## Change the current working directory
+setwd("../")
+getwd()
+
+################################################################################
+## PRACTICE PROBLEM 3.1
+##
+## Use the setwd() function to change your working directory to the directory in
+## which this script is saved.
+##
+################################################################################
+
+### We can use RStudio projects to simplify this process and gain additional 
+### project-management benefits.
+
+### More information: https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects
+
+################################################################################
+## PRACTICE PROBLEM 3.2
+##
+## Create a new RStudio project, and associate that project with the directory
+## in which this script is saved.
+##
+################################################################################
 
 
 ###-Loading Simple Data------------------------------------------------------###
@@ -27,7 +62,7 @@ data(bfi, package = "psychTools")
 ?psychTools::bfi
 
 ################################################################################
-## PRACTICE PROBLEM 3.1
+## PRACTICE PROBLEM 3.3
 ##
 ## (a) Use the data() function to load the 'Cars93' dataset from the 'MASS'
 ##     package.
@@ -54,7 +89,7 @@ utmb1 <- read.csv(paste0(dataDir, "utmb_2017.csv"))
 titanic <- readRDS(paste0(dataDir, "titanic.rds"))
 
 ################################################################################
-## PRACTICE PROBLEM 3.2
+## PRACTICE PROBLEM 3.4
 ##
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 ## (b) Use the str() function to compare the structure of the data you loaded in
@@ -94,9 +129,9 @@ attributes(mtcars3)
 
 attributes(mtcars4)
 
-## have::read_spss() converts any SPSS variables with labels to labelled vectors
-mtcars$am
-attributes(mtcars$am)
+## haven::read_spss() converts SPSS variables with labels into labelled vectors
+mtcars4$am
+attributes(mtcars4$am)
 
 ## Use the labelled::unlabelled() functio to remove the value labels (but not
 ## the variable labels)
@@ -111,7 +146,7 @@ var_label(mtcars5)
 ###       variable and value labels for data coming from, or going to, SPSS.
 
 ################################################################################
-## PRACTICE PROBLEM 3.3
+## PRACTICE PROBLEM 3.5
 ##
 ## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
 ##     '../data/starwars.sav'
@@ -139,7 +174,7 @@ str(titanic3)
 all.equal(as.data.frame(titanic2), titanic3)
 
 ################################################################################
-## PRACTICE PROBLEM 3.4
+## PRACTICE PROBLEM 3.6
 ##
 ## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
@@ -197,3 +232,4 @@ write.xlsx(diabetes, paste0(dataDir, "diabetes.xlsx"), overwrite = TRUE)
 write.xlsx(list(titanic = titanic, diabetes = diabetes, mtcars = mtcars),
            paste0(dataDir, "example_data.xlsx"),
            overwrite = TRUE)
+
