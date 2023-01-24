@@ -8,21 +8,7 @@ School course: *Introduction to R*.
 The following video walks through the preparations you should make before
 joining the course meeting.
 
-<iframe 
-	width="560" 
-	height="315" 
-	src="https://www.youtube.com/embed/sRUGFQ9QNU4"
-	title="YouTube video player" 
-	frameborder="0" 
-	allow="accelerometer;
-	       autoplay;
-		   clipboard-write; 
-		   encrypted-media; 
-		   gyroscope; 
-		   picture-in-picture; 
-		   web-share"
-	allowfullscreen>
-</iframe>
+[![Preparation Guide](https://img.youtube.com/vi/sRUGFQ9QNU4/0.jpg)](https://www.youtube.com/watch?v=sRUGFQ9QNU4)
 
 To participate in this course, you will need a few things:
 
