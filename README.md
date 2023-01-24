@@ -68,8 +68,6 @@ key.
                            "dplyr",
                            "magrittr",
                            "psych",
-                           "rockchalk",
-                           "multcomp",
                            "ggplot2",
                            "gridExtra"),
                          repos = "http://cloud.r-project.org",
@@ -93,8 +91,12 @@ the following R scripts:
 - [`code/1_basic_commands.R`](code/1_basic_commands.R)
 - [`code/2_data_objects.R`](code/2_data_objects.R)
 
-Make note of any confusing points. We can discuss any remaining questions at the 
-beginning of the in-person course meeting.
+If you can understand most of what's happening in these scripts, you're fully
+prepared for the in-person course meeting. If, however, there are some (or many)
+points of confusion, don't worry. Just make a note of any confusing points you 
+encounter when working through these two scripts. We'll discuss any "homework" 
+questions at the beginning of the in-person course meeting.
 
 You can find suggested solutions to the practice problems in the 
-[`code/99_suggested_solutions.R`](code/99_suggested_solutions.R) script.
+[`code/99_practice_problem_solutions.R`](code/99_practice_problem_solutions.R) 
+script.
