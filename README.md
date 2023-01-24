@@ -5,6 +5,25 @@ School course: *Introduction to R*.
 
 ## Preparation
 
+The following video walks through the preparations you should make before
+joining the course meeting.
+
+<iframe 
+	width="560" 
+	height="315" 
+	src="https://www.youtube.com/embed/sRUGFQ9QNU4"
+	title="YouTube video player" 
+	frameborder="0" 
+	allow="accelerometer;
+	       autoplay;
+		   clipboard-write; 
+		   encrypted-media; 
+		   gyroscope; 
+		   picture-in-picture; 
+		   web-share"
+	allowfullscreen>
+</iframe>
+
 To participate in this course, you will need a few things:
 
 1. You will need access to the contents of this repository on your local machine.
