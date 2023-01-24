@@ -82,3 +82,19 @@ If you are asked the following question:
 
 Type `Yes` in the console, and press the "Enter/Return" key (or click the 
 corresponding button if the question presents as a dialog box). 
+
+### Homework
+
+As mentioned in the video linked above, you should work through the first two 
+R scripts before joining the course meeting. After you've completed the setup
+described above, work through the examples and practice problems contained in
+the following R scripts:
+
+- [`code/1_basic_commands.R`](code/1_basic_commands.R)
+- [`code/2_data_objects.R`](code/2_data_objects.R)
+
+Make note of any confusing points. We can discuss any remaining questions at the 
+beginning of the in-person course meeting.
+
+You can find suggested solutions to the practice problems in the 
+[`code/99_suggested_solutions.R`](code/99_suggested_solutions.R) script.
