@@ -1,7 +1,7 @@
-### Title:    Introduction to R 6: Data Visualization
+### Title:    Introduction to R 5: Data Visualization
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -56,7 +56,7 @@ boxplot(diabetes$progress,
 boxplot(progress ~ sex, data = diabetes, col = "violet")
 
 ################################################################################
-## PRACTICE PROBLEM 6.1
+## PRACTICE PROBLEM 5.1
 ##
 ## Use base R graphics and the 'titanic' data to create conditional boxplots,
 ## where plots of 'age' are conditioned on 'survived'.
@@ -112,7 +112,7 @@ hist(diabetes$progress)
 plot(rstudent(fit))
 
 ################################################################################
-## PRACTICE PROBLEM 6.2
+## PRACTICE PROBLEM 5.2
 ##
 ## (a) Use the par() function to adjust the plotting canvas so you can draw two
 ##     plots in a 1x2 array.
@@ -152,7 +152,7 @@ p1 + geom_rug()
 p1 + geom_point() + geom_line() + geom_rug()
 
 ################################################################################
-## PRACTICE PROBLEM 6.3
+## PRACTICE PROBLEM 5.3
 ##
 ## Use GGPlot and the 'diabetes' data to create an empty plot of total
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
@@ -212,18 +212,18 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
     geom_smooth()
 
 ################################################################################
-## PRACTICE PROBLEM 6.4
+## PRACTICE PROBLEM 5.4
 ##
-## Augment the plot you created in (6.3) to create a scatterplot.
+## Augment the plot you created in (5.3) to create a scatterplot.
 ## - Map the size of the points to 'bmi'
 ## - Assign the resulting plot object to a variable in your environment.
 ##
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 6.5
+## PRACTICE PROBLEM 5.5
 ##
-## Augment the plot you created in (6.4) by adding RUG lines to both the x-axis
+## Augment the plot you created in (5.4) by adding RUG lines to both the x-axis
 ## and y-axis.
 ## - Map the color of the RUG lines to 'glu'
 ## - Assign the resulting plot object to a variable in your environment.
@@ -231,9 +231,9 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 6.6
+## PRACTICE PROBLEM 5.6
 ##
-## Augment the plot you created in (6.5) by adding linear regression lines.
+## Augment the plot you created in (5.5) by adding linear regression lines.
 ## - Add seperate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
@@ -258,9 +258,9 @@ p1.1 + theme_classic() +
           aspect.ratio = 1)
 
 ################################################################################
-## PRACTICE PROBLEM 6.7
+## PRACTICE PROBLEM 5.7
 ##
-## Modify the plot that you created in (6.6) by adjusting the theme.
+## Modify the plot that you created in (5.6) by adjusting the theme.
 ## - Change the global theme to the "classic" theme.
 ## - Convert all text to 14-point, serif font.
 ##
@@ -289,14 +289,14 @@ p7 + facet_wrap(vars(sex))
 p8 + facet_grid(vars(sex), vars(class))
 
 ################################################################################
-## PRACTICE PROBLEM 6.8
+## PRACTICE PROBLEM 5.8
 ##
 ## Use the 'titanic' data, GGPlot, and facetting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
 ## - Adjust the number of bins to optimize the clarity of the visualization.
 ## - Overlay kernel density plots on each histogram.
 ## - Do you think this figure is a more effective visualization than the
-##   conditional boxplots you created in (6.1)? Why or why not?
+##   conditional boxplots you created in (5.1)? Why or why not?
 ##
 ## HINT: You can get ggplot to scale your histogram in proportions, rather than
 ##       counts, by specifying the argument "y = ..density.." for the y
@@ -314,10 +314,10 @@ grid.arrange(p1 + geom_point(),
              ncol = 2)
 
 ################################################################################
-## PRACTICE PROBLEM 6.9
+## PRACTICE PROBLEM 5.9
 ##
 ## Use GGplot and grid.arrange() to recreate a version of the figure you created
-## in (6.2).
+## in (5.2).
 ##
 ################################################################################
 
@@ -358,9 +358,9 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ################################################################################
-## PRACTICE PROBLEM 6.10
+## PRACTICE PROBLEM 5.10
 ##
-## Save the figure that you created in (6.8) as a JPEG
+## Save the figure that you created in (5.8) as a JPEG
 ## - Adjust the size to 10cm X 10cm
 ## - Set the resolution to 800
 ## - Save the image to the "../figures/" directory
@@ -398,10 +398,10 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ################################################################################
-## PRACTICE PROBLEM 6.11
+## PRACTICE PROBLEM 5.11
 ##
-## (a) Save the five figures you created in (6.3 - 6.7) to a single PDF file.
-## (b) Save the five figures you created in (6.3 - 6.7) to a separate PNG files.
+## (a) Save the five figures you created in (5.3 - 5.7) to a single PDF file.
+## (b) Save the five figures you created in (5.3 - 5.7) to a separate PNG files.
 ##     - Save both the PDF and the PNG files to the "../figures" directory
 ##
 ################################################################################

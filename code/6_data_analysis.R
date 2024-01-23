@@ -1,7 +1,7 @@
-### Title:    Introduction to R 5: Data Analyses
+### Title:    Introduction to R 6: Data Analyses
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-27
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -41,7 +41,7 @@ bfi %>% filter(gender == "male") %>%
               )
 
 ################################################################################
-## PRACTICE PROBLEM 5.1
+## PRACTICE PROBLEM 6.1
 ##
 ## Use dplyr functions to compute the mean, variance, and range of 'age' for
 ## females in the 'bfi' data.
@@ -62,7 +62,7 @@ bfi %>% is.na() %>% colSums()
 (bfi %>% is.na() %>% rowSums() == 0) %>% mean()
 
 ################################################################################
-## PRACTICE PROBLEM 5.2
+## PRACTICE PROBLEM 6.2
 ##
 ## Create a logical vector with one entry for every variable in the 'bfi' data.
 ## This vector should take the value TRUE when males have a higher proportion of
@@ -96,7 +96,7 @@ apply(bfi[scaleNames], 1, which.max)
 bfi %>% select(matches("^[a-z]{4,5}$")) %>% apply(1, which.max)
 
 ################################################################################
-## PRACTICE PROBLEM 5.3
+## PRACTICE PROBLEM 6.3
 ##
 ## Use an appropriate apply function to create a vector containing the variances
 ## of all numeric variables in the 'bfi' data.
@@ -117,7 +117,7 @@ with(bfi, tapply(age, education, median))
 bfi %$% tapply(age, education, median)
 
 ################################################################################
-## PRACTICE PROBLEM 5.4
+## PRACTICE PROBLEM 6.4
 ##
 ## Use the tapply() function to compute the average neuroticism value for minors
 ## and for adults.
@@ -133,7 +133,7 @@ aggregate(bfi[scaleNames], bfi["gender"], var)
 aggregate(bfi[scaleNames], bfi[c("gender", "education")], mean)
 
 ################################################################################
-## PRACTICE PROBLEM 5.5
+## PRACTICE PROBLEM 6.5
 ##
 ## Use the aggregate function to compute SDs for 'extra', 'agree', and 'open'
 ## within education groups.
@@ -172,7 +172,7 @@ bfi %>%
     summarise(across(where(is.factor), nlevels))
 
 ################################################################################
-## PRACTICE PROBLEM 5.6
+## PRACTICE PROBLEM 6.6
 ##
 ## Use dplyr functions to compute the means, medians, and variances of all
 ## numeric variables in the 'bfi' data.
@@ -198,7 +198,7 @@ bfi %>%
 
 
 ################################################################################
-## PRACTICE PROBLEM 5.7
+## PRACTICE PROBLEM 6.7
 ##
 ## Create a pipeline to compute the correlation matrix of all numeric variables
 ## in the 'bfi' dataset.
@@ -224,7 +224,7 @@ bfi %>%
     alpha(n.iter = 1000, check.keys = TRUE)
 
 ################################################################################
-## PRACTICE PROBLEM 5.8
+## PRACTICE PROBLEM 6.8
 ##
 ## Compute the internal consistency of the neuroticism scale for adult males.
 ## - Use the set.seed() function to set the random number seed to 314159.
@@ -257,7 +257,7 @@ any(abs(kurtVec) > 7.0)
 bfi %$% t.test(agree, extra, paired = TRUE)
 
 ################################################################################
-## PRACTICE PROBLEM 5.9
+## PRACTICE PROBLEM 6.9
 ##
 ## Use an exposition pipe to replicate the above t.test
 ##
@@ -279,7 +279,7 @@ bfi %>%
 bfi %$% cor.test(agree, neuro, alternative = "less")
 
 ################################################################################
-## PRACTICE PROBLEM 5.10
+## PRACTICE PROBLEM 6.10
 ##
 ## Test for a positive correlation between agreeableness and openness in people
 ## younger than 30.
@@ -313,7 +313,7 @@ fit2 <- lm(neuro ~ age + gender + agree + extra + open + consc, data = bfi)
 summary(fit2)
 
 ################################################################################
-## PRACTICE PROBLEM 5.11
+## PRACTICE PROBLEM 6.11
 ##
 ## Use the full 'bfi' dataset to estimate a linear regression model to test if
 ## openness predicts agreeableness after controlling for extraversion, age, and

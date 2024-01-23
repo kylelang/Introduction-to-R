@@ -1,7 +1,7 @@
 ### Title:    Introduction to R: Suggested Solutions for Practice Problems
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -413,143 +413,10 @@ bfi %>% filter(age > 18) %$% cor(age, agree)
 
 
 ################################################################################
-### 5: Data Analysis                                                         ###
+### 5: Data Visualization                                                    ###
 ################################################################################
 
 ###-5.1----------------------------------------------------------------------###
-
-## Use dplyr functions to compute the mean, variance, and range of 'age' for
-## females in the 'bfi' data.
-
-bfi <- readRDS("../data/bfi.rds")
-
-bfi %>%
-    filter(gender == "female") %>%
-    summarize(age_mean = mean(age), age_var = var(age), age_range = range(age))
-
-
-###-5.2----------------------------------------------------------------------###
-
-## Create a logical vector with one entry for every variable in the 'bfi' data.
-## This vector should take the value TRUE when males have a higher proportion of
-## missing data on that variable than females do.
-
-male   <- bfi %>% filter(gender == "male") %>% is.na() %>% colMeans()
-female <- bfi %>% filter(gender == "female") %>% is.na() %>% colMeans()
-
-male > female
-
-
-###-5.3----------------------------------------------------------------------###
-
-## Use an appropriate apply function to create a vector containing the variances
-## of all numeric variables in the 'bfi' data.
-
-bfi %>% select(where(is.numeric)) %>% sapply(var, na.rm = TRUE)
-
-
-###-5.4----------------------------------------------------------------------###
-
-## Use the tapply() function to compute the average neuroticism value for minors
-## and for adults.
-
-bfi %$% tapply(neuro, age < 18, mean)
-
-
-###-5.5----------------------------------------------------------------------###
-
-## Use the aggregate function to compute SDs for 'extra', 'agree', and 'open'
-## within education groups.
-
-bfi %>%
-    select(extra, agree, open) %>%
-    aggregate(by = bfi["education"], FUN = sd)
-
-
-###-5.6----------------------------------------------------------------------###
-
-## Use dplyr functions to compute the means, medians, and variances of all
-## numeric variables in the 'bfi' data.
-
-bfi %>%
-    select(where(is.numeric)) %>%
-    summarize(
-        across(.fns = list(mean = mean, med = median, var = var), na.rm = TRUE)
-    )
-
-
-###-5.7----------------------------------------------------------------------###
-
-## Create a pipeline to compute the correlation matrix of all numeric variables
-## in the 'bfi' dataset.
-## - Use Spearman's rho for the correlations.
-## - Use only those participants whose level of educational attainment includes,
-##   at least, graduating from college.
-
-bfi %>%
-    filter(education %in% c("college graduate", "graduate degree")) %>%
-    select(where(is.numeric)) %>%
-    cor(use = "pairwise", method = "spearman")
-
-
-###-5.8----------------------------------------------------------------------###
-
-## Compute the internal consistency of the neuroticism scale for adult males.
-## - Use the set.seed() function to set the random number seed to 314159.
-## - Use 2000 bootstrap samples to estimate confidence intervals for the
-##   internal consistency.
-## - According to the bootstrap inference, is the internal consistency
-##   significanlty different from 0.8?
-
-set.seed(314159)
-
-bfi %>%
-    filter(age >= 18, gender == "male") %>%
-    select(matches("^N\\d")) %>%
-    alpha(n.iter = 2000, check.keys = TRUE)
-
-## No. The bootstrapped CI for alpha includes 0.8, so we cannot infer a
-## significant difference between alpha = 0.8 and the estimated alpha. 
-
-
-###-5.9----------------------------------------------------------------------###
-
-## Use an exposition pipe to replicate the above t.test
-
-bfi %$% t.test(agree, extra, paired = TRUE)
-
-
-###-5.10---------------------------------------------------------------------###
-
-## Test for a positive correlation between agreeableness and openness in people
-## younger than 30.
-
-bfi %>% filter(age < 30) %$% cor.test(agree, open, alternative = "greater")
-
-
-###-5.11---------------------------------------------------------------------###
-
-## Use the full 'bfi' dataset to estimate a linear regression model to test if
-## openness predicts agreeableness after controlling for extraversion, age, and
-## educational attainment.
-## - Is the hypothesis supported?
-## - What proportion of variability in agreeableness is explained by the
-##   predictors?
-
-fit1 <- lm(agree ~ open + extra + age + education, data = bfi)
-(s1  <- summary(fit1))
-
-## No. Openness is not a significant predictor of agreeableness after controlling
-## for extraversion, age, and education.
-
-s1$r.squared
-
-
-################################################################################
-### 6: Data Visualization                                                    ###
-################################################################################
-
-###-6.1----------------------------------------------------------------------###
 
 ## Use base R graphics and the 'titanic' data to create conditional boxplots,
 ## where plots of 'age' are conditioned on 'survived'.
@@ -563,7 +430,7 @@ boxplot(age ~ survived, data = titanic)
 ## There is not much difference in the age of survivors and non-survivors.
 
 
-###-6.2----------------------------------------------------------------------###
+###-5.2----------------------------------------------------------------------###
 
 ## (a) Use the par() function to adjust the plotting canvas so you can draw two
 ##     plots in a 1x2 array.
@@ -592,89 +459,89 @@ diabetes %>%
     lines(x = glu, y = density, col = "red")
 
 
-###-6.3----------------------------------------------------------------------###
+###-5.3----------------------------------------------------------------------###
 
 ## Use GGPlot and the 'diabetes' data to create an empty plot of total
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
 ## - Don't add any geoms yet.
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p6.3 <- ggplot(diabetes, aes(age, tc)))
+(p5.3 <- ggplot(diabetes, aes(age, tc)))
 
 
-###-6.4----------------------------------------------------------------------###
+###-5.4----------------------------------------------------------------------###
 
-## Augment the plot you created in (6.3) to create a scatterplot.
+## Augment the plot you created in (5.3) to create a scatterplot.
 ## - Map the size of the points to 'bmi'
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p6.4 <- p6.3 + geom_point(aes(size = bmi)))
+(p5.4 <- p5.3 + geom_point(aes(size = bmi)))
 
 
-###-6.5----------------------------------------------------------------------###
+###-5.5----------------------------------------------------------------------###
 
-## Augment the plot you created in (6.4) by adding RUG lines to both the x-axis
+## Augment the plot you created in (5.4) by adding RUG lines to both the x-axis
 ## and y-axis.
 ## - Map the color of the RUG lines to 'glu'
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p6.5 <- p6.4 + geom_rug(aes(color = glu)))
+(p5.5 <- p5.4 + geom_rug(aes(color = glu)))
 
 
-###-6.6----------------------------------------------------------------------###
+###-5.6----------------------------------------------------------------------###
 
-## Augment the plot you created in (6.5) by adding linear regression lines.
+## Augment the plot you created in (5.5) by adding linear regression lines.
 ## - Add seperate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p6.6 <- p6.5 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
+(p5.6 <- p5.5 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
 
 
-###-6.7--------------------------------------------------------------------=-###
+###-5.7--------------------------------------------------------------------=-###
 
-## Modify the plot that you created in (6.6) by adjusting the theme.
+## Modify the plot that you created in (5.6) by adjusting the theme.
 ## - Change the global theme to the "classic" theme.
 ## - Convert all text to 14-point, serif font.
 
-(p6.7 <- p6.6 +
+(p5.7 <- p5.6 +
      theme_classic() +
      theme(text = element_text(family = "serif", size = 14))
 )
 
-###-6.8----------------------------------------------------------------------###
+###-5.8----------------------------------------------------------------------###
 
 ## Use the 'titanic' data, GGPlot, and facetting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
 ## - Adjust the number of bins to optimize the clarity of the visualization.
 ## - Overlay kernel density plots on each histogram.
 ## - Do you think this figure is a more effective visualization than the
-##   conditional boxplots you created in (6.1)? Why or why not?
+##   conditional boxplots you created in (5.1)? Why or why not?
 ##
 ## HINT: You can get ggplot to scale your histogram in proportions, rather than
 ##       counts, by specifying the argument "y = ..density.." for the y
 ##       aesthetic in an appropriate geom.
 
-(p6.8 <- ggplot(titanic, aes(age)) +
+(p5.8 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = ..density..)) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p6.8 <- ggplot(titanic, aes(age)) +
+(p5.8 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = ..density..), bins = 10) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p6.8 <- ggplot(titanic, aes(age)) +
+(p5.8 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = ..density..), bins = 50) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p6.8 <- ggplot(titanic, aes(age)) +
+(p5.8 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = ..density..), bins = 20) +
      geom_density() +
      facet_wrap(vars(survived))
@@ -683,12 +550,12 @@ diabetes %>%
 ## Yes. These histograms show a spike of very young survivors.
 
 
-###-6.9----------------------------------------------------------------------###
+###-5.9----------------------------------------------------------------------###
 
 ## Use GGplot and grid.arrange() to recreate a version of the figure you created
-## in (6.2).
+## in (5.2).
 
-p6.9 <- diabetes %>%
+p5.9 <- diabetes %>%
     mutate(density = dnorm(glu, mean(glu), sd(glu))) %>%
     ggplot(aes(glu)) +
     geom_histogram(aes(y = ..density..),
@@ -698,56 +565,189 @@ p6.9 <- diabetes %>%
     theme_classic()
 
 grid.arrange(
-    p6.9 + geom_density(color = "blue"),
-    p6.9 + geom_line(aes(glu, density), col = "red"),
+    p5.9 + geom_density(color = "blue"),
+    p5.9 + geom_line(aes(glu, density), col = "red"),
     ncol = 2
 )
 
 
-###-6.10---------------------------------------------------------------------###
+###-5.10---------------------------------------------------------------------###
 
-## Save the figure that you created in (6.8) as a JPEG
+## Save the figure that you created in (5.8) as a JPEG
 ## - Adjust the size to 10cm X 10cm
 ## - Set the resolution to 800
 ## - Save the image to the "../figures/" directory
 
-jpeg("../figures/practice_problem_6_10.jpg",
+jpeg("../figures/practice_problem_5_10.jpg",
      width  = 10,
      height = 10,
      units  = "cm",
      res    = 800)
 
-p6.8
+p5.8
 
 dev.off()
+
+
+###-5.11---------------------------------------------------------------------###
+
+## (a) Save the five figures you created in (5.3 - 5.7) to a single PDF file.
+
+pdf(paste0(figDir, "practice_problem_5_11a.pdf"))
+
+p5.3
+p5.4
+p5.5
+p5.6
+p5.7
+
+dev.off()
+
+## (b) Save the five figures you created in (5.3 - 5.7) to a separate PNG files.
+##     - Save both the PDF and the PNG files to the "../figures" directory
+
+png(paste0(figDir, "practice_problem_5_11b-%d.png"))
+
+p5.3
+p5.4
+p5.5
+p5.6
+p5.7
+
+dev.off()
+
+
+################################################################################
+### 6: Data Analysis                                                         ###
+################################################################################
+
+###-6.1----------------------------------------------------------------------###
+
+## Use dplyr functions to compute the mean, variance, and range of 'age' for
+## females in the 'bfi' data.
+
+bfi <- readRDS("../data/bfi.rds")
+
+bfi %>%
+    filter(gender == "female") %>%
+    summarize(age_mean = mean(age), age_var = var(age), age_range = range(age))
+
+
+###-6.2----------------------------------------------------------------------###
+
+## Create a logical vector with one entry for every variable in the 'bfi' data.
+## This vector should take the value TRUE when males have a higher proportion of
+## missing data on that variable than females do.
+
+male   <- bfi %>% filter(gender == "male") %>% is.na() %>% colMeans()
+female <- bfi %>% filter(gender == "female") %>% is.na() %>% colMeans()
+
+male > female
+
+
+###-6.3----------------------------------------------------------------------###
+
+## Use an appropriate apply function to create a vector containing the variances
+## of all numeric variables in the 'bfi' data.
+
+bfi %>% select(where(is.numeric)) %>% sapply(var, na.rm = TRUE)
+
+
+###-6.4----------------------------------------------------------------------###
+
+## Use the tapply() function to compute the average neuroticism value for minors
+## and for adults.
+
+bfi %$% tapply(neuro, age < 18, mean)
+
+
+###-6.5----------------------------------------------------------------------###
+
+## Use the aggregate function to compute SDs for 'extra', 'agree', and 'open'
+## within education groups.
+
+bfi %>%
+    select(extra, agree, open) %>%
+    aggregate(by = bfi["education"], FUN = sd)
+
+
+###-6.6----------------------------------------------------------------------###
+
+## Use dplyr functions to compute the means, medians, and variances of all
+## numeric variables in the 'bfi' data.
+
+bfi %>%
+    select(where(is.numeric)) %>%
+    summarize(
+        across(.fns = list(mean = mean, med = median, var = var), na.rm = TRUE)
+    )
+
+
+###-6.7----------------------------------------------------------------------###
+
+## Create a pipeline to compute the correlation matrix of all numeric variables
+## in the 'bfi' dataset.
+## - Use Spearman's rho for the correlations.
+## - Use only those participants whose level of educational attainment includes,
+##   at least, graduating from college.
+
+bfi %>%
+    filter(education %in% c("college graduate", "graduate degree")) %>%
+    select(where(is.numeric)) %>%
+    cor(use = "pairwise", method = "spearman")
+
+
+###-6.8----------------------------------------------------------------------###
+
+## Compute the internal consistency of the neuroticism scale for adult males.
+## - Use the set.seed() function to set the random number seed to 314159.
+## - Use 2000 bootstrap samples to estimate confidence intervals for the
+##   internal consistency.
+## - According to the bootstrap inference, is the internal consistency
+##   significanlty different from 0.8?
+
+set.seed(314159)
+
+bfi %>%
+    filter(age >= 18, gender == "male") %>%
+    select(matches("^N\\d")) %>%
+    alpha(n.iter = 2000, check.keys = TRUE)
+
+## No. The bootstrapped CI for alpha includes 0.8, so we cannot infer a
+## significant difference between alpha = 0.8 and the estimated alpha. 
+
+
+###-6.9----------------------------------------------------------------------###
+
+## Use an exposition pipe to replicate the above t.test
+
+bfi %$% t.test(agree, extra, paired = TRUE)
+
+
+###-6.10---------------------------------------------------------------------###
+
+## Test for a positive correlation between agreeableness and openness in people
+## younger than 30.
+
+bfi %>% filter(age < 30) %$% cor.test(agree, open, alternative = "greater")
 
 
 ###-6.11---------------------------------------------------------------------###
 
-## (a) Save the five figures you created in (6.3 - 6.7) to a single PDF file.
+## Use the full 'bfi' dataset to estimate a linear regression model to test if
+## openness predicts agreeableness after controlling for extraversion, age, and
+## educational attainment.
+## - Is the hypothesis supported?
+## - What proportion of variability in agreeableness is explained by the
+##   predictors?
 
-pdf(paste0(figDir, "practice_problem_6_11a.pdf"))
+fit1 <- lm(agree ~ open + extra + age + education, data = bfi)
+(s1  <- summary(fit1))
 
-p6.3
-p6.4
-p6.5
-p6.6
-p6.7
+## No. Openness is not a significant predictor of agreeableness after controlling
+## for extraversion, age, and education.
 
-dev.off()
-
-## (b) Save the five figures you created in (6.3 - 6.7) to a separate PNG files.
-##     - Save both the PDF and the PNG files to the "../figures" directory
-
-png(paste0(figDir, "practice_problem_6_11b-%d.png"))
-
-p6.3
-p6.4
-p6.5
-p6.6
-p6.7
-
-dev.off()
+s1$r.squared
 
 
 ################################################################################
