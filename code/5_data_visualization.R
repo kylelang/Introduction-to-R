@@ -60,12 +60,12 @@ boxplot(progress ~ sex, data = diabetes, col = "violet")
 ##
 ## Use base R graphics and the 'titanic' data to create conditional boxplots,
 ## where plots of 'age' are conditioned on 'survived'.
-## - What does this figure tell you about the ages of surivors ('survived' = 1)
+## - What does this figure tell you about the ages of survivors ('survived' = 1)
 ##   vs. non-survivors ('survived' = 0)?
 ##
 ################################################################################
 
-## If we apply the plot() function to a dataframe, we get a scatterplot matrix
+## If we apply the plot() function to a data frame, we get a scatterplot matrix
 diabetes %>% select(age, bmi, tc, glu, progress) %>% plot()
 
 ## The density() function will estimate the density of a continuous variable
@@ -234,7 +234,7 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
 ## PRACTICE PROBLEM 5.6
 ##
 ## Augment the plot you created in (5.5) by adding linear regression lines.
-## - Add seperate lines for males and females.
+## - Add separate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
 ## - Assign the resulting plot object to a variable in your environment.
@@ -249,7 +249,7 @@ p1.1 + theme_classic()
 p1.1 + theme_minimal()
 p1.1 + theme_bw()
 
-## We can also moodifying individual theme elements
+## We can also modify individual theme elements
 p1.1 + theme_classic() +
     theme(axis.title = element_text(size = 16,
                                     family = "serif",
@@ -266,7 +266,7 @@ p1.1 + theme_classic() +
 ##
 ################################################################################
 
-### Facetting allow us to make arrays of conditional plots
+### Faceting allow us to make arrays of conditional plots
 
 ## Use facet_wrap() to condition plots on 'sex'
 (p7 <- ggplot(titanic, aes(age, survived, color = class)) +
@@ -291,7 +291,7 @@ p8 + facet_grid(vars(sex), vars(class))
 ################################################################################
 ## PRACTICE PROBLEM 5.8
 ##
-## Use the 'titanic' data, GGPlot, and facetting to create conditional
+## Use the 'titanic' data, GGPlot, and faceting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
 ## - Adjust the number of bins to optimize the clarity of the visualization.
 ## - Overlay kernel density plots on each histogram.
@@ -299,13 +299,13 @@ p8 + facet_grid(vars(sex), vars(class))
 ##   conditional boxplots you created in (5.1)? Why or why not?
 ##
 ## HINT: You can get ggplot to scale your histogram in proportions, rather than
-##       counts, by specifying the argument "y = ..density.." for the y
+##       counts, by specifying the argument "y = after_stat(density)" for the y
 ##       aesthetic in an appropriate geom.
 ##
 ################################################################################
 
 ### If we want to paste several different plots into a single figure (without
-### facetting), we can use the utilities in the 'gridExtra' package.
+### faceting), we can use the utilities in the 'gridExtra' package.
 
 grid.arrange(p1 + geom_point(),
              p3 + geom_boxplot(),

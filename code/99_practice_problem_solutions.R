@@ -96,7 +96,7 @@ seq(2, 10, 2)
 set.seed(235711)
 myVec <- sample(1:5)
 
-## (b) Programatically create a logical vector that indicates which elements of
+## (b) Programmatically create a logical vector that indicates which elements of
 ##     myVec are less than 3.
 
 myVec < 3
@@ -151,7 +151,7 @@ z <- rep(2, 20)
 
 ## (b) Create a data frame called 'myDf' with 20 rows and 4 columns
 ##     - Make the first column the logical negation of 'x'
-##     - Make the second and third columns 'y' and 'z', respectivly
+##     - Make the second and third columns 'y' and 'z', respectively
 ##     - Make the fourth column equal y/z (i.e., 'y' divided by 'z')
 
 myDf <- data.frame(!x, y, z, y/z)
@@ -204,7 +204,7 @@ setwd("Your/Directory/Path/Here")
 
 data(Cars93, package = "MASS")
 
-## (b) Use the dim() function to check the dimensoins of the 'Cars93' data.
+## (b) Use the dim() function to check the dimensions of the 'Cars93' data.
 ##     - How many rows?
 ##     - How many columns?
 
@@ -316,7 +316,7 @@ arrange(bfi, gender, -age)
 ###-4.4----------------------------------------------------------------------###
 
 bfi <- mutate(bfi,
-              age_std = scale(age),
+              age_std = scale(age)[ , 1],
               education = factor(education,
                                  labels = c("some high school",
                                             "high school graduate",
@@ -330,7 +330,7 @@ bfi <- mutate(bfi,
 ## all of the spaces with underscores, "_".
 ##
 ## HINT 1: The levels() function can also be used to re-assign factor levels.
-## HINT 2: If you want to be fancy, check out the gsub function.
+## HINT 2: If you want to be fancy, check out the gsub() function.
 
 levels(bfi$education) <- gsub(" ", "_", levels(bfi$education))
 
@@ -380,7 +380,7 @@ bfi <- mutate(bfi,
 
 ## (a) Exclude the raw scale items from the modified 'bfi' data.
 
-bfi <- select(bfi, -matches("^[aceno]\\d$")) %>% head()
+bfi <- select(bfi, -matches("^[aceno]\\d$"))
 
 ## (b) Save the dataset from (a) as an RDS file.
 
@@ -420,7 +420,7 @@ bfi %>% filter(age > 18) %$% cor(age, agree)
 
 ## Use base R graphics and the 'titanic' data to create conditional boxplots,
 ## where plots of 'age' are conditioned on 'survived'.
-## - What does this figure tell you about the ages of surivors ('survived' = 1)
+## - What does this figure tell you about the ages of survivors ('survived' = 1)
 ##   vs. non-survivors ('survived' = 0)?
 
 titanic <- readRDS(paste0(dataDir, "titanic.rds"))
@@ -491,7 +491,7 @@ diabetes %>%
 ###-5.6----------------------------------------------------------------------###
 
 ## Augment the plot you created in (5.5) by adding linear regression lines.
-## - Add seperate lines for males and females.
+## - Add separate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
 ## - Assign the resulting plot object to a variable in your environment.
@@ -512,7 +512,7 @@ diabetes %>%
 
 ###-5.8----------------------------------------------------------------------###
 
-## Use the 'titanic' data, GGPlot, and facetting to create conditional
+## Use the 'titanic' data, GGPlot, and faceting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
 ## - Adjust the number of bins to optimize the clarity of the visualization.
 ## - Overlay kernel density plots on each histogram.
@@ -520,29 +520,29 @@ diabetes %>%
 ##   conditional boxplots you created in (5.1)? Why or why not?
 ##
 ## HINT: You can get ggplot to scale your histogram in proportions, rather than
-##       counts, by specifying the argument "y = ..density.." for the y
+##       counts, by specifying the argument "y = after_stat(density)" for the y
 ##       aesthetic in an appropriate geom.
 
 (p5.8 <- ggplot(titanic, aes(age)) +
-     geom_histogram(aes(y = ..density..)) +
+     geom_histogram(aes(y = after_stat(density))) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
 (p5.8 <- ggplot(titanic, aes(age)) +
-     geom_histogram(aes(y = ..density..), bins = 10) +
+     geom_histogram(aes(y = after_stat(density)), bins = 10) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
 (p5.8 <- ggplot(titanic, aes(age)) +
-     geom_histogram(aes(y = ..density..), bins = 50) +
+     geom_histogram(aes(y = after_stat(density)), bins = 50) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
 (p5.8 <- ggplot(titanic, aes(age)) +
-     geom_histogram(aes(y = ..density..), bins = 20) +
+     geom_histogram(aes(y = after_stat(density)), bins = 20) +
      geom_density() +
      facet_wrap(vars(survived))
 )
@@ -558,7 +558,7 @@ diabetes %>%
 p5.9 <- diabetes %>%
     mutate(density = dnorm(glu, mean(glu), sd(glu))) %>%
     ggplot(aes(glu)) +
-    geom_histogram(aes(y = ..density..),
+    geom_histogram(aes(y = after_stat(density)),
                    color = "black",
                    fill = "lightgray",
                    bins = 15) +
@@ -630,7 +630,10 @@ bfi <- readRDS("../data/bfi.rds")
 
 bfi %>%
     filter(gender == "female") %>%
-    summarize(age_mean = mean(age), age_var = var(age), age_range = range(age))
+    reframe(age_mean = mean(age), age_var = var(age), age_range = range(age))
+
+## NOTE: We use reframe() instead of summarise() because our result will include
+##       more than one row per group.
 
 
 ###-6.2----------------------------------------------------------------------###
@@ -679,8 +682,10 @@ bfi %>%
 bfi %>%
     select(where(is.numeric)) %>%
     summarize(
-        across(.fns = list(mean = mean, med = median, var = var), na.rm = TRUE)
-    )
+      across(.cols = everything(),
+             .fns = list(mean = mean, med = median, var = var),
+             na.rm = TRUE)
+             )
 
 
 ###-6.7----------------------------------------------------------------------###
@@ -704,14 +709,14 @@ bfi %>%
 ## - Use 2000 bootstrap samples to estimate confidence intervals for the
 ##   internal consistency.
 ## - According to the bootstrap inference, is the internal consistency
-##   significanlty different from 0.8?
+##   significantly different from 0.8?
 
 set.seed(314159)
 
 bfi %>%
     filter(age >= 18, gender == "male") %>%
     select(matches("^N\\d")) %>%
-    alpha(n.iter = 2000, check.keys = TRUE)
+    psych::alpha(n.iter = 2000, check.keys = TRUE)
 
 ## No. The bootstrapped CI for alpha includes 0.8, so we cannot infer a
 ## significant difference between alpha = 0.8 and the estimated alpha. 

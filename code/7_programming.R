@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 7: Simple R Programming
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-29
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -23,7 +23,7 @@ square <- function(x) {
 ## Use the function
 square(5)
 
-## We don't need an explict return() statement. R functions will return any
+## We don't need an explicit return() statement. R functions will return any
 ## object that is 'printed' as the last command inside the function (e.g.,
 ## 'out' in the above example)
 
@@ -74,7 +74,7 @@ class(getLsBeta)
 typeof(getLsBeta)
 
 
-## After evaluation, functions are simply equivelent to the objects they return.
+## After evaluation, functions are simply equivalent to the objects they return.
 class(getLsBeta(datList))
 typeof(getLsBeta(datList))
 
@@ -200,7 +200,7 @@ lapply(fits, summary)
 ### We can build conditional logic into our scripts by using if/else statements.
 ### In R, these work pretty much the same way as they do in all software.
 
-## Seperate cars with automatic and manual transmissions
+## Separate cars with automatic and manual transmissions
 auto <- manual <- NULL
 for(i in 1:nrow(mtcars)) {
     if(mtcars[i, "am"] == 0)
@@ -212,7 +212,7 @@ for(i in 1:nrow(mtcars)) {
 auto
 manual
 
-### By include 'else if' options, We can accomodate more conditions.
+### By include 'else if' options, We can accommodate more conditions.
 
 ## Count the number of cars with 4, 6, and 8 cylinders
 counts <- rep(0, 3)
@@ -226,7 +226,7 @@ counts
 
 ## As with for loops, if/else statements are often not the preferred method to
 ## incorporate conditional logic when doing applied data analysis. We can often
-## get much more elegent solutions with logical indexing.
+## get much more elegant solutions with logical indexing.
 
 ## A better way to do the file splitting shown above
 (auto1   <- mtcars[mtcars$am == 0, ])

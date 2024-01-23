@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 1: Basic Commands
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -9,7 +9,7 @@ rm(list = ls(all = TRUE))
 
 ## The comment character in R is '#'
 ## Each commented line must be preceded by a '#' symbol
-## There are no block comments in R (same system as Mplus)
+## There are no block comments in R (same system as MPlus)
 
 ## Comments are not evaluated when you run your code
 
@@ -129,7 +129,7 @@ y == w | y > x
 
 ###-Order of Operations------------------------------------------------------###
 
-### R will, mostly, follow the usual PEMDAS ordering for mathematic operations,
+### R will, mostly, follow the usual PEMDAS ordering for mathematical operations,
 ### but it's not psychic. When in doubt, use parentheses!
 
 y^(1/2)
@@ -168,7 +168,7 @@ ls()
 ##
 ################################################################################
 
-## Completely clear the enviroment
+## Completely clear the environment
 rm(list = ls(all = TRUE))
 ls()
 

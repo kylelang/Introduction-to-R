@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 2: Data Objects
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -53,7 +53,7 @@ rep(y3, each = 2)
 seq(0, 1, 0.25)
 seq(-1, 1, length.out = 10)
 
-### NOTE: The outer parantheses above allow me to assign an object and print its
+### NOTE: The outer parentheses above allow me to assign an object and print its
 ###       value in a single command
 
 ################################################################################
@@ -112,7 +112,7 @@ y[2, 4] <- 33# Oops :(
 ##
 ## (a) Create the object 'myVec' by uncommenting and running the preceding two
 ##     lines of code.
-## (b) Programatically create a logical vector that indicates which elements of
+## (b) Programmatically create a logical vector that indicates which elements of
 ##     myVec are less than 3.
 ##
 ################################################################################
@@ -140,7 +140,7 @@ length(m3)
 ## We use dim() to get a more sensible measure of dimension
 dim(m3)
 
-## Arthmetic is still assumed element-wise
+## Arithmetic is still assumed element-wise
 m3 + m2
 m3 - m2
 m3 / m2
@@ -180,7 +180,7 @@ m2 + m4
 (l1 <- list(1, 2, 3))
 (l2 <- list("bob", TRUE, 33, 42+3i))
 
-## List elements have no defualt names, but we can define our own
+## List elements have no default names, but we can define our own
 (l3 <- list(name = "bob",
             alive = TRUE,
             age = 33,
@@ -332,7 +332,7 @@ d1
 ##     three lines of code.
 ## (b) Create a data frame called 'myDf' with 20 rows and 4 columns
 ##     - Make the first column the logical negation of 'x'
-##     - Make the second and third columns 'y' and 'z', respectivly
+##     - Make the second and third columns 'y' and 'z', respectively
 ##     - Make the fourth column equal y/z (i.e., 'y' divided by 'z')
 ## (b) Use the paste() function to name the columns var-1, var-2, var-3, var-4.
 ## (c) Name the rows with the first twenty letters of the English alphabet.

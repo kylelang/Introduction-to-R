@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 4: Working with Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -153,33 +153,21 @@ head(tmp)
 
 ###-Sorting------------------------------------------------------------------###
 
-## We can use the sort() function to order the elements of a vector
+## We can use the base R sort() function to order the elements of a vector
 (x <- runif(6))
 sort(x)
 sort(x, decreasing = TRUE)
 
 ## To sort the rows of a matrix or data frame using base R functions, we can use
-## the order() function
-x
-order(x)
-
-(y <- data.frame(x1 = x,
-                 x2 = rnorm(6),
-                 x3 = rep(letters[1:2], 3)
-                 )
-)
-
-y[order(y$x1), ]
-y[order(y$x1, decreasing = TRUE), ]
-
-## Sorting rows with base R order() can be confusing. The dplyr::arrange() 
+## the order() function, but order() can be confusing. The dplyr::arrange() 
 ## function offers a simpler, intuitive way to sort the rows of a data frame
-arrange(y, x1)
+(y <- data.frame(x1 = 1:10, x2 = c(-1, 1), x3 = runif(10)))
+arrange(y, x3)
 arrange(y, -x1)
 
 ## We can also sort on multiple columns
-arrange(y, x3, x1)
-arrange(y, x3, -x2)
+arrange(y, x2, x3)
+arrange(y, x2, -x3)
 
 ################################################################################
 ## PRACTICE PROBLEM 4.3
@@ -216,7 +204,7 @@ table(numeric = bfi$gender, factor = genderF)
 
 ## We can use the factor() function to build exactly the factor we want
 bfi0 <- bfi
-bfi$gender <- factor(bfi$gender, labels = c("male", "female"))
+bfi <- mutate(bfi, gender = factor(gender, labels = c("male", "female")))
 
 levels(bfi$gender)
 table(numeric = bfi0$gender, factor = bfi$gender)
@@ -230,7 +218,7 @@ head(bfi)
 
 ## Standardize age and convert education into a factor
 bfi <- mutate(bfi,
-              age_std = scale(age),
+              age_std = scale(age)[ , 1],
               education = factor(education,
                                  labels = c("some high school",
                                             "high school graduate",
@@ -389,7 +377,7 @@ head(bfi)
 
 ### Say we want to compose the following series of functions
 ### 1. Select the five scale scores
-### 2. Calculate the coveriance matrix of these scores
+### 2. Calculate the covariance matrix of these scores
 ### 3. Extract the variances from this covariance matrix
 ### 4. Convert these variances into standard deviations
 
@@ -428,7 +416,7 @@ bfi %>%
 ################################################################################
 
 ### We can also use pipes to chain together multistep data processing workflows
-### into meanginful computational units
+### into meaningful computational units
 
 ### Consider the following workflow applied to the BFI data
 ### 1. Center the 'age' variable on 18
@@ -436,7 +424,7 @@ bfi %>%
 ### 3. Select only adult participants
 ### 4. Select only the extraversion and neuroticism scale scores and the
 ###    demographic items
-### 5. Sort the data on acending order of extraversion
+### 5. Sort the data on ascending order of extraversion
 
 ## With the dplyr pipe, this sequence of operations could be achieved by
 tmp1 <- bfi %>%
@@ -489,7 +477,7 @@ bfi %>% lm(extra ~ age, data = .)
 ### doesn't pass a dataset. Rather, it "exposes" the variable names of that
 ### dataset to the downstream function.
 
-## We can use the exposition pipe to solve our previous dilema, as well
+## We can use the exposition pipe to solve our previous dilemma, as well
 bfi %$% lm(extra ~ age)
 
 ################################################################################
@@ -503,7 +491,7 @@ bfi %$% lm(extra ~ age)
 ##
 ################################################################################
 
-### As of R verison 4.1, there is a base R pipe operator, |>, that you can use
+### As of R version 4.1, there is a base R pipe operator, |>, that you can use
 ### if you just need to create a simple pipeline and don't want to load dplyr
 ### and/or magrittr.
 
@@ -516,4 +504,3 @@ bfi[c("agree", "consc", "extra", "neuro", "open")] |>
 
 
 ###-END----------------------------------------------------------------------###
-

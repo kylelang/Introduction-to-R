@@ -22,7 +22,7 @@ str(bfi)
 ### To calculate more pointed summary information, the dplyr::summarise()
 ### function can be useful.
 
-## Compute the means and standard devaitions of agreeableness and neuroticism
+## Compute the means and standard deviations of agreeableness and neuroticism
 bfi %>% summarise(mA = mean(agree),
                   sdA = sd(agree),
                   mN = mean(neuro),
@@ -70,7 +70,7 @@ bfi %>% is.na() %>% colSums()
 ##
 ################################################################################
 
-### Unforunately, there are no multivariate analogues of functions like var(),
+### Unfortunately, there are no multivariate analogues of functions like var(),
 ### sd(), median(), min(), max(), etc. Thankfully, this isn't really a problem,
 ### because we can easily broadcast any function that takes a single vector as
 ### input using "apply" functions.
@@ -148,7 +148,7 @@ bfi %>%
     group_by(gender, education) %>%
     summarize(age05 = quantile(age, 0.05), age95 = quantile(age, 0.95))
 
-### We can use the across() funtion to broadcast univariate functions across
+### We can use the across() function to broadcast univariate functions across
 ### multiple columns within summarise()
 
 bfi %>%
@@ -215,13 +215,13 @@ bfi %>%
 ## agreeableness scale:
 bfi %>%
     select(matches("^A\\d")) %>%
-    alpha(check.keys = TRUE)
+    psych::alpha(check.keys = TRUE)
 
 ## Use the psych::alpha() function to compute Cronbach's Alpha for the
-## opennes scale and include boostrapped confidence intervals:
+## openness scale and include bootstrapped confidence intervals:
 bfi %>%
     select(matches("^O\\d")) %>%
-    alpha(n.iter = 1000, check.keys = TRUE)
+    psych::alpha(n.iter = 1000, check.keys = TRUE)
 
 ################################################################################
 ## PRACTICE PROBLEM 6.8

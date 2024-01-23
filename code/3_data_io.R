@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 3: Reading and Writing External Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2023-01-23
+### Modified: 2024-01-23
 
 rm(list = ls(all = TRUE))
 
@@ -66,7 +66,7 @@ data(bfi, package = "psychTools")
 ##
 ## (a) Use the data() function to load the 'Cars93' dataset from the 'MASS'
 ##     package.
-## (b) Use the dim() function to check the dimensoins of the 'Cars93' data.
+## (b) Use the dim() function to check the dimensions of the 'Cars93' data.
 ##     - How many rows?
 ##     - How many columns?
 ##
@@ -80,7 +80,7 @@ diabetes <- read.table(paste0(dataDir, "diabetes.txt"),
                        header = TRUE,
                        sep = "\t")
 
-## Load the 2017 UTMB data from the comma-seperated file '../data/utmb_2017.csv'
+## Load the 2017 UTMB data from the comma-separated file '../data/utmb_2017.csv'
 utmb1 <- read.csv(paste0(dataDir, "utmb_2017.csv"))
 
 ### NOTE: For EU-formatted CSV files, use read.csv2()
@@ -133,7 +133,7 @@ attributes(mtcars4)
 mtcars4$am
 attributes(mtcars4$am)
 
-## Use the labelled::unlabelled() functio to remove the value labels (but not
+## Use the labelled::unlabelled() function to remove the value labels (but not
 ## the variable labels)
 (mtcars5 <- unlabelled(mtcars4))
 
@@ -228,8 +228,10 @@ write_sav(mtcars5, paste0(dataDir, "mctars5.sav"))
 write.xlsx(diabetes, paste0(dataDir, "diabetes.xlsx"), overwrite = TRUE)
 
 ## Use the openxlsx::write.xlsx() function to write each data frame in a list to
-## a seperate sheet of an XLSX workbook
+## a separate sheet of an XLSX workbook
 write.xlsx(list(titanic = titanic, diabetes = diabetes, mtcars = mtcars),
            paste0(dataDir, "example_data.xlsx"),
            overwrite = TRUE)
 
+
+###-END----------------------------------------------------------------------###
