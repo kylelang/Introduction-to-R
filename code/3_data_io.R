@@ -1,16 +1,16 @@
 ### Title:    Introduction to R 3: Reading and Writing External Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2024-01-23
+### Modified: 2025-01-11
 
 rm(list = ls(all = TRUE))
 
 ## Load necessary packages
-library(foreign)  # Data I/O from other stats packages
+library(readr)    # Data I/O for delimited files
 library(haven)    # Data I/O from other stats packages
-library(openxlsx) # Powerful data I/O for Excel files
-library(readxl)   # Read Excel files
 library(labelled) # Working with labelled vectors
+library(readxl)   # Read Excel files
+library(openxlsx) # Powerful data I/O for Excel files
 
 ## Define the directory holding our data
 dataDir <- "data/"
@@ -51,49 +51,88 @@ getwd()
 ################################################################################
 
 
-###-Loading Simple Data------------------------------------------------------###
+###-Loading Delimited Data---------------------------------------------------###
 
-### We have many ways to read data into R
+### The readr package provides several powerful functions for reading delimited
+### data files.
 
-## Load the built-in 'bfi' data from the 'psychTools' package
-data(bfi, package = "psychTools")
+## Use readr::read_delim() to load the 'boys' data stored in space-delimited
+## file '../data/boys.dat'
+boys <- read_delim(paste0(dataDir, "boys.dat"))
+boys
 
-## Access the documentation for the 'bfi' data
-?psychTools::bfi
+## Specify the missing data code
+boys <- read_delim(paste0(dataDir, "boys.dat"), na = "-999")
+boys
 
-################################################################################
-## PRACTICE PROBLEM 3.3
-##
-## (a) Use the data() function to load the 'Cars93' dataset from the 'MASS'
-##     package.
-## (b) Use the dim() function to check the dimensions of the 'Cars93' data.
-##     - How many rows?
-##     - How many columns?
-##
-################################################################################
+## Use readr::read_delim() to load the 'diabetes' data stored in tab-delimited
+## file '../data/diabetes.txt'
+diabetes <- read_delim(paste0(dataDir, "diabetes.txt"), delim = "\t")
+diabetes
+
+## Use readr::read_tsv() to do the same as above
+diabetes <- read_tsv(paste0(dataDir, "diabetes.txt"))
+diabetes
+
+## Use readr::read_csv() to load the 2017 UTMB data from the comma-separated
+## file '../data/utmb_2017.csv'
+utmb <- read_csv(paste0(dataDir, "utmb_2017.csv"))
+utmb
+
+## Drop the first column
+utmb <- read_csv(paste0(dataDir, "utmb_2017.csv"), col_select = -1)
+utmb
+str(utmb)
+spec(utmb)
+
+## Specify some columns types
+utmb <- read_csv(
+  file       = paste0(dataDir, "utmb_2017.csv"),
+  col_select = -1,
+  col_types  = cols(
+    bib         = col_character(),
+    category    = col_factor(),
+    rank        = col_integer(),
+    nationality = col_factor()
+  )
+)
+utmb
+str(utmb)
+
+## Use readr::read_csv2() to load an EU-formatted CSV file:
+boys <- read_csv2(paste0(dataDir, "boys_eu.csv"))
+boys
+
+## Specify column types:
+boys <- read_csv2(paste0(dataDir, "boys_eu.csv"), col_types = "dddddffdf")
+boys
+str(boys)
+
+### Base R includes analagous functions, but they're not as powerful.
+
+diabetes2 <- read.table(paste0(dataDir, "diabetes.txt"),
+                        header = TRUE,
+                        sep = "\t")
+utmb2 <- read.csv(paste0(dataDir, "utmb_2017.csv"))
+boys2 <- read.csv2(paste0(dataDir, "boys_eu.csv"))
+
+
+###-Loading R Data-----------------------------------------------------------###
+
+### R has two native data types.
 
 ## Load the 'boys' data stored in the R workspace '../data/boys.RData'
 load(paste0(dataDir, "boys.RData"))
-
-## Load the 'diabetes' data stored in tab-delimited file '../data/diabetes.txt'
-diabetes <- read.table(paste0(dataDir, "diabetes.txt"),
-                       header = TRUE,
-                       sep = "\t")
-
-## Load the 2017 UTMB data from the comma-separated file '../data/utmb_2017.csv'
-utmb1 <- read.csv(paste0(dataDir, "utmb_2017.csv"))
-
-### NOTE: For EU-formatted CSV files, use read.csv2()
 
 ## Load the 'titanic' data stored in R data set '../data/titanic.rds'
 titanic <- readRDS(paste0(dataDir, "titanic.rds"))
 
 ################################################################################
-## PRACTICE PROBLEM 3.4
+## PRACTICE PROBLEM 3.3
 ##
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 ## (b) Use the str() function to compare the structure of the data you loaded in
-##     (a) to the diabetes data loaded above using the read.table() function.
+##     (a) to the diabetes data loaded above using the read_tsv() function.
 ##     - Are there any differences between these two objects? If so, what are
 ##       the differences?
 ##
@@ -102,58 +141,32 @@ titanic <- readRDS(paste0(dataDir, "titanic.rds"))
 
 ###-Loading SPSS Data--------------------------------------------------------###
 
-### Reading data in from other stats packages can be a bit tricky. If we want to
-### read SAV files, the two most popular options are foreign::read.spss() and
-### haven::read_spss().
-
-## Use foreign::read.spss() to read '../data/mtcars.sav' into a list
-(mtcars1 <- read.spss(paste0(dataDir, "mtcars.sav")))
+## Use haven::read_spss() to read '../data/mtcars.sav' into a tibble
+(mtcars1 <- read_spss(paste0(dataDir, "mtcars.sav")))
 
 attributes(mtcars1)
 
-## Read '../data/mtcars.sav' as a data frame
-(mtcars2 <- read.spss(paste0(dataDir, "mtcars.sav"), to.data.frame = TRUE))
-
-attributes(mtcars2)
-
-## Read '../data/mtcars.sav' without value labels
-(mtcars3 <- read.spss(paste0(dataDir, "mtcars.sav"),
-                      to.data.frame = TRUE,
-                      use.value.labels = FALSE)
-)
-
-attributes(mtcars3)
-
-## Use haven::read_spss() to read '../data/mtcars.sav' into a tibble
-(mtcars4 <- read_spss(paste0(dataDir, "mtcars.sav")))
-
-attributes(mtcars4)
-
 ## haven::read_spss() converts SPSS variables with labels into labelled vectors
-mtcars4$am
-attributes(mtcars4$am)
+mtcars1$am
+attributes(mtcars1$am)
 
 ## Use the labelled::unlabelled() function to remove the value labels (but not
 ## the variable labels)
-(mtcars5 <- unlabelled(mtcars4))
+(mtcars2 <- unlabelled(mtcars2))
 
-val_labels(mtcars4)
-val_labels(mtcars5)
+val_labels(mtcars1)
+val_labels(mtcars2)
 
-var_label(mtcars5)
+var_label(mtcars2)
 
 ### NOTE: The 'labelled' package provides a bunch of utilities to manipulate the
 ###       variable and value labels for data coming from, or going to, SPSS.
 
 ################################################################################
-## PRACTICE PROBLEM 3.5
+## PRACTICE PROBLEM 3.4
 ##
-## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
-##     '../data/starwars.sav'
-## (b) Use the foreign::read.spss() function to load the same dataset as above
-##     into a list with variable labels preserved.
-## (c) Use the foreign::read.spss() function to load the same dataset as above
-##     into a data frame without variable labels.
+## Use the haven::read_spss() function to load the SPSS dataset saved at
+## '../data/starwars.sav'
 ##
 ################################################################################
 
@@ -171,10 +184,8 @@ titanic3 <- read.xlsx(paste0(dataDir, "example_data.xlsx"), sheet = "titanic")
 str(titanic2)
 str(titanic3)
 
-all.equal(as.data.frame(titanic2), titanic3)
-
 ################################################################################
-## PRACTICE PROBLEM 3.6
+## PRACTICE PROBLEM 3.5
 ##
 ## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
@@ -187,34 +198,41 @@ all.equal(as.data.frame(titanic2), titanic3)
 ################################################################################
 
 
-###-Writing Simple Data------------------------------------------------------###
+###-Writing Delimited Data---------------------------------------------------###
 
-### All of the data reading functions we saw earlier have complementary data
-### writing versions.
+## For delimited text files, each read_*() function in readr has an analagous
+## write_*() function
+write_delim(boys,
+            paste0(dataDir, "boys.dat"),
+            na = "-999")
+write_delim(boys,
+            paste0(dataDir, "boys.txt"),
+            delim = "\t",
+            na = "-999")
+
+write_tsv(boys, paste0(dataDir, "boys.txt"), na = "")
+
+write_csv(boys, paste0(dataDir, "boys_us.csv"), na = "")
+write_csv2(boys, paste0(dataDir, "boys_eu.csv"), na = "")
+
+
+###-Writing R Data-----------------------------------------------------------###
 
 ## The save() function writes an R workspace to disk
 save(boys, file = paste0(dataDir, "tmp.RData"))
 
-## For delimited text files and RDS data, the write.table(), write.csv(), and
-## saveRDS() function do what you'd expect
-write.table(boys,
-            paste0(dataDir, "boys.txt"),
-            row.names = FALSE,
-            sep = "\t",
-            na = "-999")
-write.csv2(boys, paste0(dataDir, "boys.csv"), row.names = FALSE, na = "")
+## The saveRDS() function does what you'd expect
 saveRDS(boys, paste0(dataDir, "boys.rds"))
 
 
 ###-Writing SPSS Data--------------------------------------------------------###
 
 ## To write SPSS data, the best option is the haven::write_sav() function.
-write_sav(mtcars2, paste0(dataDir, "mctars2.sav"))
+write_sav(mtcars1, paste0(dataDir, "mctars1.sav"))
 
 ## write_sav() will preserve label information provided by factor variables and
 ## the 'haven_labelled' class, but not by attributes
-write_sav(mtcars4, paste0(dataDir, "mctars4.sav"))
-write_sav(mtcars5, paste0(dataDir, "mctars5.sav"))
+write_sav(mtcars2, paste0(dataDir, "mctars2.sav"))
 
 
 ###-Writing Excel Data-------------------------------------------------------###

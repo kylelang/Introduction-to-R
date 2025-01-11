@@ -1,15 +1,15 @@
 ### Title:    Introduction to R: Suggested Solutions for Practice Problems
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2024-01-23
+### Modified: 2025-01-11
 
 rm(list = ls(all = TRUE))
 
-dataDir <- "../data/"
-figDir  <- "../figures/"
+dataDir <- "data/"
+figDir  <- "figures/"
 
+library(readr)
 library(haven)
-library(foreign)
 library(openxlsx)
 library(readxl)
 library(dplyr)
@@ -199,25 +199,9 @@ setwd("Your/Directory/Path/Here")
 
 ###-3.3----------------------------------------------------------------------###
 
-## (a) Use the data() function to load the 'Cars93' dataset from the 'MASS'
-##     package.
-
-data(Cars93, package = "MASS")
-
-## (b) Use the dim() function to check the dimensions of the 'Cars93' data.
-##     - How many rows?
-##     - How many columns?
-
-dim(Cars93)
-
-## The Cars93 dataset has 93 rows and 27 columns.
-
-
-###-3.4----------------------------------------------------------------------###
-
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 
-diabetes <- readRDS("../data/diabetes.rds")
+diabetes <- readRDS("data/diabetes.rds")
 
 
 ## (b) Use the str() function to compare the structure of the data you loaded in
@@ -225,7 +209,7 @@ diabetes <- readRDS("../data/diabetes.rds")
 ##     - Are there any differences between these two objects? If so, what are
 ##       the differences?
 
-diabetes0 <- read.table("../data/diabetes.txt", header = TRUE, sep = "\t")
+diabetes0 <- read_tsv("data/diabetes.txt")
 
 str(diabetes)
 str(diabetes0)
@@ -234,33 +218,21 @@ str(diabetes0)
 ## it's a character vector when reading the data from the tab-delimited file.
 
 
-###-3.5----------------------------------------------------------------------###
+###-3.4----------------------------------------------------------------------###
 
 ## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
-##     '../data/starwars.sav'
+##     'data/starwars.sav'
 
-starwars1 <- read_spss("../data/starwars.sav")
-
-## (b) Use the foreign::read.spss() function to load the same dataset as above
-##     into a list with variable labels preserved.
-
-starwars2 <- read.spss("../data/starwars.sav")
-
-## (c) Use the foreign::read.spss() function to load the same dataset as above
-##     into a data frame without variable labels.
-
-starwars3 <- read.spss("../data/starwars.sav",
-                       to.data.frame    = TRUE,
-                       use.value.labels = FALSE)
+starwars <- read_spss("../data/starwars.sav")
 
 
-###-3.6----------------------------------------------------------------------###
+###-3.5----------------------------------------------------------------------###
 
 ## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
 ##     in the Excel workbook stored at '../data/example_data.xlsx'
 
-dat3.6a <- read.xlsx("../data/example_data.xlsx",
+dat3.5a <- read.xlsx("../data/example_data.xlsx",
                      sheet = "diabetes",
                      rows  = 1:100,
                      cols  = 1:4)
@@ -270,11 +242,11 @@ dat3.6a <- read.xlsx("../data/example_data.xlsx",
 ##     Column 2 and ending on Row 100 and Column 7 from the 'titanic' sheet in
 ##     '../data/example_data.xlsx'
 
-dat3.6b <- read_excel("../data/example_data.xlsx",
+dat3.5b <- read_excel("../data/example_data.xlsx",
                       sheet = "titanic",
                       range = "B3:G100")
 
-dat3.6b
+dat3.5b
 
 
 ################################################################################

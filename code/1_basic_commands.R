@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 1: Basic Commands
 ### Author:   Kyle M. Lang
 ### Created:  2016-01-28
-### Modified: 2024-01-23
+### Modified: 2025-01-11
 
 rm(list = ls(all = TRUE))
 
@@ -67,7 +67,7 @@ exp(x) # exponentiate x
 
 ## Other useful stuff
 abs(y) # absolute value of y
-x %% y # modulo operator := remainder after diving x by y
+x %% y # modulo operator := remainder after dividing x by y
 
 ################################################################################
 ## PRACTICE PROBLEM 1.1
