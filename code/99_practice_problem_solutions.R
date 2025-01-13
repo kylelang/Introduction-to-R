@@ -1,7 +1,7 @@
 ### Title:    Introduction to R: Suggested Solutions for Practice Problems
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2025-01-11
+### Modified: 2025-01-13
 
 rm(list = ls(all = TRUE))
 
@@ -183,42 +183,35 @@ myDf$f <- f
 
 ###-3.1----------------------------------------------------------------------###
 
-## Use the setwd() function to change your working directory to the directory in
-## which this script is saved.
-
-setwd("Your/Directory/Path/Here")
-
-
-###-3.2----------------------------------------------------------------------###
-
-## Create a new RStudio project, and associate that project with the directory
-## in which this script is saved.
+## Create a new RStudio project associated with the directory that you want to
+## use as the working directory for these exercises.
 
 ### ANSWER: You have to do this with clicky-box options.
 
 
-###-3.3----------------------------------------------------------------------###
+###-3.2----------------------------------------------------------------------###
 
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 
-diabetes <- readRDS("data/diabetes.rds")
-
+diabetes1 <- readRDS(paste0(dataDir, "diabetes.rds"))
 
 ## (b) Use the str() function to compare the structure of the data you loaded in
-##     (a) to the diabetes data loaded above using the read.table() function.
+##     (a) to the 'diabetes2' dataset loaded above.
 ##     - Are there any differences between these two objects? If so, what are
 ##       the differences?
 
-diabetes0 <- read_tsv("data/diabetes.txt")
+diabetes2 <- read.table(paste0(dataDir, "diabetes.txt"),
+                        header = TRUE,
+                        sep = "\t")
 
-str(diabetes)
-str(diabetes0)
+str(diabetes1)
+str(diabetes2)
 
 ## The 'sex' variable is a factor when reading the data from the RDS file, but
 ## it's a character vector when reading the data from the tab-delimited file.
 
 
-###-3.4----------------------------------------------------------------------###
+###-3.3----------------------------------------------------------------------###
 
 ## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
 ##     'data/starwars.sav'
@@ -226,13 +219,13 @@ str(diabetes0)
 starwars <- read_spss("../data/starwars.sav")
 
 
-###-3.5----------------------------------------------------------------------###
+###-3.4----------------------------------------------------------------------###
 
 ## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
 ##     in the Excel workbook stored at '../data/example_data.xlsx'
 
-dat3.5a <- read.xlsx("../data/example_data.xlsx",
+dat3.4a <- read.xlsx("../data/example_data.xlsx",
                      sheet = "diabetes",
                      rows  = 1:100,
                      cols  = 1:4)
@@ -242,11 +235,11 @@ dat3.5a <- read.xlsx("../data/example_data.xlsx",
 ##     Column 2 and ending on Row 100 and Column 7 from the 'titanic' sheet in
 ##     '../data/example_data.xlsx'
 
-dat3.5b <- read_excel("../data/example_data.xlsx",
+dat3.4b <- read_excel("../data/example_data.xlsx",
                       sheet = "titanic",
                       range = "B3:G100")
 
-dat3.5b
+dat3.4b
 
 
 ################################################################################

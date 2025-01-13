@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 3: Reading and Writing External Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2025-01-11
+### Modified: 2025-01-13
 
 rm(list = ls(all = TRUE))
 
@@ -29,24 +29,17 @@ getwd()
 setwd("../")
 getwd()
 
-################################################################################
-## PRACTICE PROBLEM 3.1
-##
-## Use the setwd() function to change your working directory to the directory in
-## which this script is saved.
-##
-################################################################################
-
-### We can use RStudio projects to simplify this process and gain additional 
-### project-management benefits.
+### You should usually avoid manually changing the working directory.
+### We're better off using RStudio projects to simplify this process and gain
+### additional project-management benefits.
 
 ### More information: https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects
 
 ################################################################################
-## PRACTICE PROBLEM 3.2
+## PRACTICE PROBLEM 3.1
 ##
-## Create a new RStudio project, and associate that project with the directory
-## in which this script is saved.
+## Create a new RStudio project associated with the directory that you want to
+## use as the working directory for these exercises.
 ##
 ################################################################################
 
@@ -108,7 +101,7 @@ boys <- read_csv2(paste0(dataDir, "boys_eu.csv"), col_types = "dddddffdf")
 boys
 str(boys)
 
-### Base R includes analagous functions, but they're not as powerful.
+### Base R includes analogous functions, but they're not as powerful.
 
 diabetes2 <- read.table(paste0(dataDir, "diabetes.txt"),
                         header = TRUE,
@@ -128,11 +121,11 @@ load(paste0(dataDir, "boys.RData"))
 titanic <- readRDS(paste0(dataDir, "titanic.rds"))
 
 ################################################################################
-## PRACTICE PROBLEM 3.3
+## PRACTICE PROBLEM 3.2
 ##
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 ## (b) Use the str() function to compare the structure of the data you loaded in
-##     (a) to the diabetes data loaded above using the read_tsv() function.
+##     (a) to the 'diabetes2' dataset loaded above.
 ##     - Are there any differences between these two objects? If so, what are
 ##       the differences?
 ##
@@ -163,7 +156,7 @@ var_label(mtcars2)
 ###       variable and value labels for data coming from, or going to, SPSS.
 
 ################################################################################
-## PRACTICE PROBLEM 3.4
+## PRACTICE PROBLEM 3.3
 ##
 ## Use the haven::read_spss() function to load the SPSS dataset saved at
 ## '../data/starwars.sav'
@@ -185,7 +178,7 @@ str(titanic2)
 str(titanic3)
 
 ################################################################################
-## PRACTICE PROBLEM 3.5
+## PRACTICE PROBLEM 3.4
 ##
 ## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
@@ -200,18 +193,24 @@ str(titanic3)
 
 ###-Writing Delimited Data---------------------------------------------------###
 
-## For delimited text files, each read_*() function in readr has an analagous
-## write_*() function
+### For delimited text files, each read_*() function in readr has an analogous
+### write_*() function
+
+## Save 'boys' as a space-delimited file
 write_delim(boys,
             paste0(dataDir, "boys.dat"),
             na = "-999")
+
+## Save 'boys' as a tab-delimited file
 write_delim(boys,
             paste0(dataDir, "boys.txt"),
             delim = "\t",
             na = "-999")
 
+## Same as above
 write_tsv(boys, paste0(dataDir, "boys.txt"), na = "")
 
+## Save 'boys' as two different flavors of comma-separated values files
 write_csv(boys, paste0(dataDir, "boys_us.csv"), na = "")
 write_csv2(boys, paste0(dataDir, "boys_eu.csv"), na = "")
 
@@ -239,7 +238,7 @@ write_sav(mtcars2, paste0(dataDir, "mctars2.sav"))
 
 ### The 'openxlsx' package provides a powerful toolkit for programmatically
 ### building Excel workbooks in R and saving the results. Of course, it also
-##  works for simple data writing tasks.
+### works for simple data writing tasks.
 
 ## Use the openxlsx::write.xlsx() function to write the 'diabetes' data to an
 ## XLSX workbook
