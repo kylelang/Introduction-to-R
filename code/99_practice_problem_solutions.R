@@ -1,14 +1,13 @@
 ### Title:    Introduction to R: Suggested Solutions for Practice Problems
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2025-01-13
+### Modified: 2025-01-18
 
 rm(list = ls(all = TRUE))
 
 dataDir <- "data/"
 figDir  <- "figures/"
 
-library(readr)
 library(haven)
 library(openxlsx)
 library(readxl)
@@ -61,8 +60,7 @@ rm(age)
 ## Use the install.packages() function to install the following packages in the
 ## default location (i.e., don't specify anything for the 'lib' argument).
 
-install.packages(c("ggplot2", "dplyr", "haven"),
-                 repos = "http://cloud.r-project.org")
+install.packages(c("ggplot2", "dplyr", "haven"))
 
 
 ###-1.5----------------------------------------------------------------------###
@@ -216,7 +214,7 @@ str(diabetes2)
 ## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
 ##     'data/starwars.sav'
 
-starwars <- read_spss("../data/starwars.sav")
+starwars <- read_spss(paste0(dataDir, "starwars.sav"))
 
 
 ###-3.4----------------------------------------------------------------------###
@@ -225,7 +223,7 @@ starwars <- read_spss("../data/starwars.sav")
 ##     counting column names) of the first 4 columns from the 'diabetes' sheet
 ##     in the Excel workbook stored at '../data/example_data.xlsx'
 
-dat3.4a <- read.xlsx("../data/example_data.xlsx",
+dat3.4a <- read.xlsx(paste0(dataDir, "example_data.xlsx"),
                      sheet = "diabetes",
                      rows  = 1:100,
                      cols  = 1:4)
@@ -235,7 +233,7 @@ dat3.4a <- read.xlsx("../data/example_data.xlsx",
 ##     Column 2 and ending on Row 100 and Column 7 from the 'titanic' sheet in
 ##     '../data/example_data.xlsx'
 
-dat3.4b <- read_excel("../data/example_data.xlsx",
+dat3.4b <- read_excel(paste0(dataDir, "example_data.xlsx"),
                       sheet = "titanic",
                       range = "B3:G100")
 
@@ -273,7 +271,7 @@ bfi %>% filter(gender == 2 & age < 18) %>% select(starts_with("N"))
 
 ## Use the dplyr functions to sort the 'bfi' data on descending order of 'age'
 ## and ascending order of 'gender'.
-## - Sort on 'age' before 'gender'
+## - Sort 'age' within levels of 'gender'
 
 arrange(bfi, gender, -age)
 
@@ -349,7 +347,7 @@ bfi <- select(bfi, -matches("^[aceno]\\d$"))
 
 ## (b) Save the dataset from (a) as an RDS file.
 
-saveRDS(bfi, "../data/practice_problem_4_8.rds")
+saveRDS(bfi, paste0(dataDir, "practice_problem_4_8.rds"))
 
 
 ###-4.8----------------------------------------------------------------------###
@@ -543,7 +541,7 @@ grid.arrange(
 ## - Set the resolution to 800
 ## - Save the image to the "../figures/" directory
 
-jpeg("../figures/practice_problem_5_10.jpg",
+jpeg(paste0(figDir, "practice_problem_5_10.jpg"),
      width  = 10,
      height = 10,
      units  = "cm",
@@ -580,213 +578,6 @@ p5.6
 p5.7
 
 dev.off()
-
-
-################################################################################
-### 6: Data Analysis                                                         ###
-################################################################################
-
-###-6.1----------------------------------------------------------------------###
-
-## Use dplyr functions to compute the mean, variance, and range of 'age' for
-## females in the 'bfi' data.
-
-bfi <- readRDS("../data/bfi.rds")
-
-bfi %>%
-    filter(gender == "female") %>%
-    reframe(age_mean = mean(age), age_var = var(age), age_range = range(age))
-
-## NOTE: We use reframe() instead of summarise() because our result will include
-##       more than one row per group.
-
-
-###-6.2----------------------------------------------------------------------###
-
-## Create a logical vector with one entry for every variable in the 'bfi' data.
-## This vector should take the value TRUE when males have a higher proportion of
-## missing data on that variable than females do.
-
-male   <- bfi %>% filter(gender == "male") %>% is.na() %>% colMeans()
-female <- bfi %>% filter(gender == "female") %>% is.na() %>% colMeans()
-
-male > female
-
-
-###-6.3----------------------------------------------------------------------###
-
-## Use an appropriate apply function to create a vector containing the variances
-## of all numeric variables in the 'bfi' data.
-
-bfi %>% select(where(is.numeric)) %>% sapply(var, na.rm = TRUE)
-
-
-###-6.4----------------------------------------------------------------------###
-
-## Use the tapply() function to compute the average neuroticism value for minors
-## and for adults.
-
-bfi %$% tapply(neuro, age < 18, mean)
-
-
-###-6.5----------------------------------------------------------------------###
-
-## Use the aggregate function to compute SDs for 'extra', 'agree', and 'open'
-## within education groups.
-
-bfi %>%
-    select(extra, agree, open) %>%
-    aggregate(by = bfi["education"], FUN = sd)
-
-
-###-6.6----------------------------------------------------------------------###
-
-## Use dplyr functions to compute the means, medians, and variances of all
-## numeric variables in the 'bfi' data.
-
-bfi %>%
-    select(where(is.numeric)) %>%
-    summarize(
-      across(.cols = everything(),
-             .fns = list(mean = mean, med = median, var = var),
-             na.rm = TRUE)
-             )
-
-
-###-6.7----------------------------------------------------------------------###
-
-## Create a pipeline to compute the correlation matrix of all numeric variables
-## in the 'bfi' dataset.
-## - Use Spearman's rho for the correlations.
-## - Use only those participants whose level of educational attainment includes,
-##   at least, graduating from college.
-
-bfi %>%
-    filter(education %in% c("college graduate", "graduate degree")) %>%
-    select(where(is.numeric)) %>%
-    cor(use = "pairwise", method = "spearman")
-
-
-###-6.8----------------------------------------------------------------------###
-
-## Compute the internal consistency of the neuroticism scale for adult males.
-## - Use the set.seed() function to set the random number seed to 314159.
-## - Use 2000 bootstrap samples to estimate confidence intervals for the
-##   internal consistency.
-## - According to the bootstrap inference, is the internal consistency
-##   significantly different from 0.8?
-
-set.seed(314159)
-
-bfi %>%
-    filter(age >= 18, gender == "male") %>%
-    select(matches("^N\\d")) %>%
-    psych::alpha(n.iter = 2000, check.keys = TRUE)
-
-## No. The bootstrapped CI for alpha includes 0.8, so we cannot infer a
-## significant difference between alpha = 0.8 and the estimated alpha. 
-
-
-###-6.9----------------------------------------------------------------------###
-
-## Use an exposition pipe to replicate the above t.test
-
-bfi %$% t.test(agree, extra, paired = TRUE)
-
-
-###-6.10---------------------------------------------------------------------###
-
-## Test for a positive correlation between agreeableness and openness in people
-## younger than 30.
-
-bfi %>% filter(age < 30) %$% cor.test(agree, open, alternative = "greater")
-
-
-###-6.11---------------------------------------------------------------------###
-
-## Use the full 'bfi' dataset to estimate a linear regression model to test if
-## openness predicts agreeableness after controlling for extraversion, age, and
-## educational attainment.
-## - Is the hypothesis supported?
-## - What proportion of variability in agreeableness is explained by the
-##   predictors?
-
-fit1 <- lm(agree ~ open + extra + age + education, data = bfi)
-(s1  <- summary(fit1))
-
-## No. Openness is not a significant predictor of agreeableness after controlling
-## for extraversion, age, and education.
-
-s1$r.squared
-
-
-################################################################################
-### 7: Programming                                                           ###
-################################################################################
-
-###-7.1----------------------------------------------------------------------###
-
-## Write a 'hello world' function
-##
-## HINT: You can use the cat() function to echo a string to stdout
-
-hello <- function() cat("Hello, World!\n")
-hello()
-
-
-###-7.2----------------------------------------------------------------------###
-
-## Write a function with two arguments that takes a vector of data and a vector
-## of weights (with length equal to the data vector) and returns the weighted
-## sum of the elements in the data vector.
-
-weightedSum <- function(data, weights) sum(data * weights)
-
-x <- rnorm(100)
-y <- rep(1:5, 20)
-
-weightedSum(data = x, weights = y)
-
-
-###-7.3----------------------------------------------------------------------###
-
-## (a) Write a for loop that iterates over the rows of the mtcars dataset. For
-##     each row, do the following:
-##     - Compute the mean of all variables.
-##     - Check if this mean is larger than 20.
-##     Save the results of this loop in a logical vector.
-
-data(mtcars)
-
-out <- rep(NA, nrow(mtcars))
-for(i in 1:nrow(mtcars))
-    out[i] <- mtcars[i, ] %>% as.numeric() %>% mean() > 20
-
-## (b) Write a single line of code that accomplishes the same as (a) using only
-##     vectorized operations (i.e., no looping, no apply statements).
-
-rowMeans(mtcars) > 20
-
-
-###-7.4----------------------------------------------------------------------###
-
-## Write a for loop that iterates over the rows of the mtcars dataset. For each
-## row, use an if/else statement to do the following:
-## - Print the string "Yay!", if the car has a manual transmission.
-## - Print the string "Boo!", if the car has an automatic transmission.
-
-for(i in 1:nrow(mtcars)) {
-    manual <- mtcars[i, "am"] == 1
-    if(manual) print("Yay!")
-    else print("Boo!")
-}
-
-## OR, using the ifelse() function ##
-
-for(i in 1:nrow(mtcars)) {
-    manual <- mtcars[i, "am"] == 1
-    ifelse(manual, print("Yay!"), print("Boo!"))
-}
 
 
 ###-END----------------------------------------------------------------------###

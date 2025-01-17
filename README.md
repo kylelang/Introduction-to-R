@@ -61,8 +61,8 @@ execute the necessary command.
 - If nothing happens after you paste the code, try hitting the "Enter/Return" 
 key.
 
-        install.packages(c("haven",
-                           "foreign",
+        install.packages(c("readr",
+                           "haven",
                            "openxlsx",
                            "readxl",
                            "dplyr",

@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 4: Working with Data
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2024-01-23
+### Modified: 2025-01-13
 
 rm(list = ls(all = TRUE))
 
@@ -40,23 +40,16 @@ bfi[ , c(1, 3, 5)]
 bfi[ , c("age", "gender")]
 bfi[c("age", "gender")]
 
-### Now we'll look into some other methods of subsetting rows and columns of a
-### data frame
+## Select the first 5 rows and exclude columns 2 through 4
+bfi[1:5, -(2:4)]
 
-## Select the first 20 rows of all columns with names beginning in "A"
-bfi[1:20, grep("^A", colnames(bfi))]
+### The head() and tail() function let us easily select the first or last rows
 
 ## Select the first 10 rows:
 head(bfi, 10)
 
 ## Select the final 15 rows:
 tail(bfi, 15)
-
-## Select the first 5 rows and exclude columns 2 through 4
-bfi[1:5, -(2:4)]
-
-## Select rows 42, 45, and 56 and exclude the 'age' and 'education' columns
-bfi[c(42, 45, 56), setdiff(colnames(bfi), c("age", "education"))]
 
 ### We can also subset using logical vectors.
 
@@ -121,10 +114,10 @@ tmp <- select(bfi, 1:10)
 head(tmp)
 
 ## Use dplyr::select() to exclude the first 10 columns
-tmp <- select(bfi, -10:-1)
+tmp <- select(bfi, -(1:10))
 head(tmp)
 
-tmp <- select(bfi, -(1:10))
+tmp <- select(bfi, -10:-1)
 head(tmp)
 
 ## Use dplyr::select() to select the 'gender', 'age', and 'education' columns
@@ -158,9 +151,12 @@ head(tmp)
 sort(x)
 sort(x, decreasing = TRUE)
 
-## To sort the rows of a matrix or data frame using base R functions, we can use
-## the order() function, but order() can be confusing. The dplyr::arrange() 
-## function offers a simpler, intuitive way to sort the rows of a data frame
+### To sort the rows of a matrix or data frame using base R functions, we can
+### use the order() function, but order() can be confusing, so we won't bother.
+
+### The dplyr::arrange() function offers a simple, intuitive way to sort the
+### rows of a data frame.
+
 (y <- data.frame(x1 = 1:10, x2 = c(-1, 1), x3 = runif(10)))
 arrange(y, x3)
 arrange(y, -x1)
@@ -174,7 +170,7 @@ arrange(y, x2, -x3)
 ##
 ## Use the dplyr functions to sort the 'bfi' data on descending order of 'age'
 ## and ascending order of 'gender'.
-## - Sort on 'age' before 'gender'
+## - Sort 'age' within levels of 'gender'
 ##
 ################################################################################
 
@@ -204,13 +200,16 @@ table(numeric = bfi$gender, factor = genderF)
 
 ## We can use the factor() function to build exactly the factor we want
 bfi0 <- bfi
-bfi <- mutate(bfi, gender = factor(gender, labels = c("male", "female")))
+bfi$gender <- factor(bfi$gender, labels = c("male", "female"))
 
 levels(bfi$gender)
 table(numeric = bfi0$gender, factor = bfi$gender)
 
 ### The dplyr::mutate() function is the tidyverse function for computing new
 ### variables
+
+## Use dplyr::mutate() to create the gender factor
+bfi <- mutate(bfi, gender = factor(gender, labels = c("male", "female")))
 
 ## Mean center age
 bfi <- mutate(bfi, age_mc = age - mean(age))
@@ -282,12 +281,13 @@ bfi <- data.frame(bfi, scores)
 
 head(bfi)
 
-## Mean center all of the agreeableness and extraversion items
+## Create squarerooted versions of the agreeableness and extraversion items
 bfi <- mutate(bfi,
               across(starts_with(c("A", "E"), ignore.case = FALSE),
-                     ~ .x - mean(.x, na.rm = TRUE),
-                     .names = "{.col}_mc")
+                     sqrt,
+                     .names = "{.col}_sqrt")
               )
+
 head(bfi)
 
 ## Save a clean version of the modified 'bfi' data for later
