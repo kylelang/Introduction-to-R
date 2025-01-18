@@ -1,10 +1,10 @@
 ### Title:    Introduction to R: Package Installation Script
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2023-01-24
+### Modified: 2025-01-18
 
-install.packages(c("haven",
-                   "foreign",
+install.packages(c("readr",
+                   "haven",
                    "openxlsx",
                    "readxl",
                    "dplyr",
