@@ -191,7 +191,7 @@ myDf$f <- f
 
 ## (a) Load the dataset saved as '../data/diabetes.rds'.
 
-diabetes1 <- readRDS(paste0(dataDir, "diabetes.rds"))
+diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
 
 ## (b) Use the str() function to compare the structure of the data you loaded in
 ##     (a) to the 'diabetes2' dataset loaded above.
@@ -202,7 +202,7 @@ diabetes2 <- read.table(paste0(dataDir, "diabetes.txt"),
                         header = TRUE,
                         sep = "\t")
 
-str(diabetes1)
+str(diabetes)
 str(diabetes2)
 
 ## The 'sex' variable is a factor when reading the data from the RDS file, but
@@ -395,85 +395,56 @@ boxplot(age ~ survived, data = titanic)
 
 ###-5.2----------------------------------------------------------------------###
 
-## (a) Use the par() function to adjust the plotting canvas so you can draw two
-##     plots in a 1x2 array.
-
-par(mfrow = c(1, 2))
-
-## (b) Using the diabetes data, create two plots. Both plots should begin with
-##     a histogram of blood glucose level ('glu').
-##     - In the first plot, overlay the kernel density plot for 'glu' as a blue
-##       line.
-##     - In the second plot, overlay the appropriate, theoretical normal density
-##       as a red line.
-##
-## HINT: You can calculate the values for the normal density with the dnorm()
-##       function. Don't forget to define the appropriate mean and SD.
-
-diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
-
-hist(diabetes$glu, freq = FALSE)
-lines(density(diabetes$glu), col = "blue")
-
-hist(diabetes$glu, freq = FALSE)
-diabetes %>%
-    arrange(glu) %>%
-    mutate(density = dnorm(glu, mean(glu), sd(glu))) %$%
-    lines(x = glu, y = density, col = "red")
-
-
-###-5.3----------------------------------------------------------------------###
-
 ## Use GGPlot and the 'diabetes' data to create an empty plot of total
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
 ## - Don't add any geoms yet.
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.3 <- ggplot(diabetes, aes(age, tc)))
+(p5.2 <- ggplot(diabetes, aes(age, tc)))
+
+
+###-5.3----------------------------------------------------------------------###
+
+## Augment the plot you created in (5.2) to create a scatterplot.
+## - Map the size of the points to 'bmi'
+## - Assign the resulting plot object to a variable in your environment.
+
+(p5.3 <- p5.2 + geom_point(aes(size = bmi)))
 
 
 ###-5.4----------------------------------------------------------------------###
 
-## Augment the plot you created in (5.3) to create a scatterplot.
-## - Map the size of the points to 'bmi'
-## - Assign the resulting plot object to a variable in your environment.
-
-(p5.4 <- p5.3 + geom_point(aes(size = bmi)))
-
-
-###-5.5----------------------------------------------------------------------###
-
-## Augment the plot you created in (5.4) by adding RUG lines to both the x-axis
+## Augment the plot you created in (5.3) by adding RUG lines to both the x-axis
 ## and y-axis.
 ## - Map the color of the RUG lines to 'glu'
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.5 <- p5.4 + geom_rug(aes(color = glu)))
+(p5.4 <- p5.3 + geom_rug(aes(color = glu)))
 
 
-###-5.6----------------------------------------------------------------------###
+###-5.5----------------------------------------------------------------------###
 
-## Augment the plot you created in (5.5) by adding linear regression lines.
+## Augment the plot you created in (5.4) by adding linear regression lines.
 ## - Add separate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.6 <- p5.5 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
+(p5.5 <- p5.4 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
 
 
-###-5.7--------------------------------------------------------------------=-###
+###-5.6--------------------------------------------------------------------=-###
 
-## Modify the plot that you created in (5.6) by adjusting the theme.
+## Modify the plot that you created in (5.5) by adjusting the theme.
 ## - Change the global theme to the "classic" theme.
 ## - Convert all text to 14-point, serif font.
 
-(p5.7 <- p5.6 +
+(p5.6 <- p5.5 +
      theme_classic() +
      theme(text = element_text(family = "serif", size = 14))
 )
 
-###-5.8----------------------------------------------------------------------###
+###-5.7----------------------------------------------------------------------###
 
 ## Use the 'titanic' data, GGPlot, and faceting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
@@ -486,25 +457,25 @@ diabetes %>%
 ##       counts, by specifying the argument "y = after_stat(density)" for the y
 ##       aesthetic in an appropriate geom.
 
-(p5.8 <- ggplot(titanic, aes(age)) +
+(p5.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density))) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p5.8 <- ggplot(titanic, aes(age)) +
+(p5.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density)), bins = 10) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p5.8 <- ggplot(titanic, aes(age)) +
+(p5.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density)), bins = 50) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p5.8 <- ggplot(titanic, aes(age)) +
+(p5.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density)), bins = 20) +
      geom_density() +
      facet_wrap(vars(survived))
@@ -513,12 +484,22 @@ diabetes %>%
 ## Yes. These histograms show a spike of very young survivors.
 
 
-###-5.9----------------------------------------------------------------------###
+###-5.8----------------------------------------------------------------------###
+##
+## Use ggplot() and grid.arrange() to create the two plots described below and
+## organize the plots into a 1x2 array (i.e., 1 row and 2 columns).
+##
+## Using the diabetes data, create two plots. Both plots should begin with a 
+## histogram of blood glucose level ('glu').
+## - In the first plot, overlay the kernel density plot for 'glu' as a blue line.
+## - In the second plot, overlay the theoretical normal density as a red line.
+##
+## HINTS:
+## - You can calculate the values for the normal density with the dnorm()
+##   function.
+## - Don't forget to define the appropriate mean and SD.
 
-## Use GGplot and grid.arrange() to recreate a version of the figure you created
-## in (5.2).
-
-p5.9 <- diabetes %>%
+p5.8 <- diabetes %>%
     mutate(density = dnorm(glu, mean(glu), sd(glu))) %>%
     ggplot(aes(glu)) +
     geom_histogram(aes(y = after_stat(density)),
@@ -528,54 +509,54 @@ p5.9 <- diabetes %>%
     theme_classic()
 
 grid.arrange(
-    p5.9 + geom_density(color = "blue"),
-    p5.9 + geom_line(aes(glu, density), col = "red"),
+    p5.8 + geom_density(color = "blue"),
+    p5.8 + geom_line(aes(glu, density), col = "red"),
     ncol = 2
 )
 
 
-###-5.10---------------------------------------------------------------------###
+###-5.9----------------------------------------------------------------------###
 
-## Save the figure that you created in (5.8) as a JPEG
+## Save the figure that you created in (5.7) as a JPEG
 ## - Adjust the size to 10cm X 10cm
 ## - Set the resolution to 800
 ## - Save the image to the "../figures/" directory
 
-jpeg(paste0(figDir, "practice_problem_5_10.jpg"),
+jpeg(paste0(figDir, "practice_problem_5_9.jpg"),
      width  = 10,
      height = 10,
      units  = "cm",
      res    = 800)
 
-p5.8
-
-dev.off()
-
-
-###-5.11---------------------------------------------------------------------###
-
-## (a) Save the five figures you created in (5.3 - 5.7) to a single PDF file.
-
-pdf(paste0(figDir, "practice_problem_5_11a.pdf"))
-
-p5.3
-p5.4
-p5.5
-p5.6
 p5.7
 
 dev.off()
 
-## (b) Save the five figures you created in (5.3 - 5.7) to a separate PNG files.
-##     - Save both the PDF and the PNG files to the "../figures" directory
 
-png(paste0(figDir, "practice_problem_5_11b-%d.png"))
+###-5.10---------------------------------------------------------------------###
 
+## (a) Save the five figures you created in (5.2 - 5.6) to a single PDF file.
+
+pdf(paste0(figDir, "practice_problem_5_10a.pdf"))
+
+p5.2
 p5.3
 p5.4
 p5.5
 p5.6
-p5.7
+
+dev.off()
+
+## (b) Save the five figures you created in (5.2 - 5.6) to a separate PNG files.
+##     - Save both the PDF and the PNG files to the "figures" directory
+
+png(paste0(figDir, "practice_problem_5_10b-%d.png"))
+
+p5.2
+p5.3
+p5.4
+p5.5
+p5.6
 
 dev.off()
 

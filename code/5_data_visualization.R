@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 5: Data Visualization
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2024-01-23
+### Modified: 2025-01-18
 
 rm(list = ls(all = TRUE))
 
@@ -77,57 +77,6 @@ plot(d)
 ls(d)
 d %$% plot(y = y, x = x, type = "l")
 
-### Base R graphics work by building up graphics from layers.
-
-## Start with a simple scatter plot
-diabetes %$% plot(y = tc, x = bmi, pch = 20, xlab = "", ylab = "")
-
-## Use the abline() function to add lines representing the means of x and y
-abline(h = mean(diabetes$tc), v = mean(diabetes$bmi), lty = 2)
-
-## Add the best fit line from a linear regression of 'tc' onto 'bmi'
-fit <- lm(tc ~ bmi, data = diabetes)
-
-abline(coef = coef(fit), col = "blue", lwd = 2)
-
-## Add titles
-title(main = "Total Cholesterol by Body Mass Index",
-      ylab = "Total Cholesterol",
-      xlab = "Body Mass Index")
-
-## Add a kernel density plot on top of a histogram
-hist(diabetes$age,
-     probability = TRUE,
-     xlab = "Age",
-     main = "Distribution of Age")
-lines(density(diabetes$age), col = "red", lwd = 2)
-
-### We can adjust the global plotting parameters using the par() function
-
-## Include multiple plots on the same canvas
-par(mfrow = c(1, 3))
-
-boxplot(age ~ sex, data = diabetes)
-hist(diabetes$progress)
-plot(rstudent(fit))
-
-################################################################################
-## PRACTICE PROBLEM 5.2
-##
-## (a) Use the par() function to adjust the plotting canvas so you can draw two
-##     plots in a 1x2 array.
-## (b) Using the diabetes data, create two plots. Both plots should begin with
-##     a histogram of blood glucose level ('glu').
-##     - In the first plot, overlay the kernel density plot for 'glu' as a blue
-##       line.
-##     - In the second plot, overlay the appropriate, theoretical normal density
-##       as a red line.
-##
-## HINT: You can calculate the values for the normal density with the dnorm()
-##       function. Don't forget to define the appropriate mean and SD.
-##
-################################################################################
-
 
 ###-GGPlot-------------------------------------------------------------------###
 
@@ -152,7 +101,7 @@ p1 + geom_rug()
 p1 + geom_point() + geom_line() + geom_rug()
 
 ################################################################################
-## PRACTICE PROBLEM 5.3
+## PRACTICE PROBLEM 5.2
 ##
 ## Use GGPlot and the 'diabetes' data to create an empty plot of total
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
@@ -212,18 +161,18 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
     geom_smooth()
 
 ################################################################################
-## PRACTICE PROBLEM 5.4
+## PRACTICE PROBLEM 5.3
 ##
-## Augment the plot you created in (5.3) to create a scatterplot.
+## Augment the plot you created in (5.2) to create a scatterplot.
 ## - Map the size of the points to 'bmi'
 ## - Assign the resulting plot object to a variable in your environment.
 ##
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 5.5
+## PRACTICE PROBLEM 5.4
 ##
-## Augment the plot you created in (5.4) by adding RUG lines to both the x-axis
+## Augment the plot you created in (5.3) by adding RUG lines to both the x-axis
 ## and y-axis.
 ## - Map the color of the RUG lines to 'glu'
 ## - Assign the resulting plot object to a variable in your environment.
@@ -231,9 +180,9 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 5.6
+## PRACTICE PROBLEM 5.5
 ##
-## Augment the plot you created in (5.5) by adding linear regression lines.
+## Augment the plot you created in (5.4) by adding linear regression lines.
 ## - Add separate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
@@ -258,9 +207,9 @@ p1.1 + theme_classic() +
           aspect.ratio = 1)
 
 ################################################################################
-## PRACTICE PROBLEM 5.7
+## PRACTICE PROBLEM 5.6
 ##
-## Modify the plot that you created in (5.6) by adjusting the theme.
+## Modify the plot that you created in (5.5) by adjusting the theme.
 ## - Change the global theme to the "classic" theme.
 ## - Convert all text to 14-point, serif font.
 ##
@@ -289,7 +238,7 @@ p7 + facet_wrap(vars(sex))
 p8 + facet_grid(vars(sex), vars(class))
 
 ################################################################################
-## PRACTICE PROBLEM 5.8
+## PRACTICE PROBLEM 5.7
 ##
 ## Use the 'titanic' data, GGPlot, and faceting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
@@ -314,10 +263,20 @@ grid.arrange(p1 + geom_point(),
              ncol = 2)
 
 ################################################################################
-## PRACTICE PROBLEM 5.9
+## PRACTICE PROBLEM 5.8
 ##
-## Use GGplot and grid.arrange() to recreate a version of the figure you created
-## in (5.2).
+## Use ggplot() and grid.arrange() to create the two plots described below and
+## organize the plots into a 1x2 array (i.e., 1 row and 2 columns).
+##
+## Using the diabetes data, create two plots. Both plots should begin with a 
+## histogram of blood glucose level ('glu').
+## - In the first plot, overlay the kernel density plot for 'glu' as a blue line.
+## - In the second plot, overlay the theoretical normal density as a red line.
+##
+## HINTS:
+## - You can calculate the values for the normal density with the dnorm()
+##   function.
+## - Don't forget to define the appropriate mean and SD.
 ##
 ################################################################################
 
@@ -358,12 +317,12 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ################################################################################
-## PRACTICE PROBLEM 5.10
+## PRACTICE PROBLEM 5.9
 ##
-## Save the figure that you created in (5.8) as a JPEG
+## Save the figure that you created in (5.7) as a JPEG
 ## - Adjust the size to 10cm X 10cm
 ## - Set the resolution to 800
-## - Save the image to the "../figures/" directory
+## - Save the image to the "figures" directory
 ##
 ################################################################################
 
@@ -398,11 +357,11 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ################################################################################
-## PRACTICE PROBLEM 5.11
+## PRACTICE PROBLEM 5.10
 ##
-## (a) Save the five figures you created in (5.3 - 5.7) to a single PDF file.
-## (b) Save the five figures you created in (5.3 - 5.7) to a separate PNG files.
-##     - Save both the PDF and the PNG files to the "../figures" directory
+## (a) Save the five figures you created in (5.2 - 5.6) to a single PDF file.
+## (b) Save the five figures you created in (5.2 - 5.6) to a separate PNG files.
+##     - Save both the PDF and the PNG files to the "figures" directory
 ##
 ################################################################################
 
