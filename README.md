@@ -8,7 +8,7 @@ The following video walks through the preparations you should make before joinin
 
 - NOTE: Clicking the video preview below will redirect you to YouTube.
 
-[![Preparation Guide](.assets/prep_video_pic2.png)](https://youtu.be/QQxNLQQShrw?si=N6GT-j4XZAaK1Q9v)
+[![Preparation Guide](.assets/intro_to_r_prep_thumb.png)](https://youtu.be/QQxNLQQShrw?si=N6GT-j4XZAaK1Q9v)
 
 To participate in this course, you will need a few things:
 
