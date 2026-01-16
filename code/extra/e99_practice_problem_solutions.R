@@ -12,6 +12,228 @@ library(magrittr)
 
 
 ################################################################################
+### 1: Basic Commands                                                        ###
+################################################################################
+
+###-1.1----------------------------------------------------------------------###
+
+## (a) Create an object called 'age' that takes the value of your age in whole
+##     years.
+
+age <- 35
+
+## (b) Use the 'age' object you created in (a) to create a second object called
+##     'weeks' that takes the value of your age in whole weeks.
+##     - Assume 52 weeks in each year
+##     - Disregard partial years (i.e., assume every year counted in 'age'
+##       contains 52 whole weeks).
+
+weeks <- age * 52
+
+
+###-1.2----------------------------------------------------------------------###
+
+## Use a single line of code to generate a logical value (i.e., TRUE/FALSE)
+## indicating if the value of the 'weeks' object you created in (1.1b) is
+## evenly divisible by 5 or 7.
+
+weeks %% 5 == 0 | weeks %% 7 == 0
+
+
+###-1.3----------------------------------------------------------------------###
+
+## Use the rm() function to remove the 'age' object that you created in (1.1a)
+## from your environment.
+
+rm(age)
+
+
+###-1.4----------------------------------------------------------------------###
+
+## Use the install.packages() function to install the following packages in the
+## default location (i.e., don't specify anything for the 'lib' argument).
+
+install.packages(c("ggplot2", "dplyr", "haven"))
+
+
+###-1.5----------------------------------------------------------------------###
+
+##  (a) Access the help file for the vector() function.
+
+?vector
+
+##  (b) How many arguments does the vector() function take?
+
+## The vector function takes two arguments: "mode" and "length"
+
+
+################################################################################
+### 2: Data Objects                                                          ###
+################################################################################
+
+###-2.1----------------------------------------------------------------------###
+
+## Create a numeric vector containing the five even integers between 2 and 10
+## (inclusive).
+
+seq(2, 10, 2)
+
+
+###-2.2----------------------------------------------------------------------###
+
+## (a) Create the object 'myVec' by uncommenting and running the preceding two
+##     lines of code.
+
+set.seed(235711)
+myVec <- sample(1:5)
+
+## (b) Programmatically create a logical vector that indicates which elements of
+##     myVec are less than 3.
+
+myVec < 3
+
+
+###-2.3----------------------------------------------------------------------###
+##
+## (a) Create a 5x3 numeric matrix called 'myMat' wherein each column is equal
+##     to the vector 'myVec' that you created for Problem 2.2.
+
+myMat <- matrix(myVec, 5, 3)
+
+## (b) Multiply each entry in 'myMat' by pi (i.e., the numerical constant).
+##
+## HINT: The built-in R object 'pi' contains the value of pi.
+
+pi * myMat
+
+
+###-2.4----------------------------------------------------------------------###
+
+## (a) Create a list to describe yourself. Include the following named elements
+##     in your list:
+##     (1) Your Name
+##     (3) Your Eye Color
+##     (4) Your Hair Color
+##     (5) Your Favorite Color
+
+me <- list(name      = "Kyle M. Lang",
+           eyeColor  = "Brown",
+           hairColor = "Brown",
+           favColor  = "Green")
+
+## (b) Using a single command, test if your eye color OR your hair color is also
+##     your favorite color.
+
+me$eyeColor == me$favColor | me$hairColor == me$favColor
+
+## OR ##
+
+with(me, eyeColor == favColor | hairColor == favColor)
+
+
+###-2.5----------------------------------------------------------------------###
+
+## (a) Create the vectors x, y, and z by uncommented and running the preceding
+##     three lines of code.
+
+x <- rep(c(TRUE, FALSE), 10)
+y <- rep(1, 20)
+z <- rep(2, 20)
+
+## (b) Create a data frame called 'myDf' with 20 rows and 4 columns
+##     - Make the first column the logical negation of 'x'
+##     - Make the second and third columns 'y' and 'z', respectively
+##     - Make the fourth column equal y/z (i.e., 'y' divided by 'z')
+
+myDf <- data.frame(!x, y, z, y/z)
+
+## (b) Use the paste() function to name the columns var-1, var-2, var-3, var-4.
+
+colnames(myDf) <- paste("var", 1:4, sep = "-")
+
+## (c) Name the rows with the first twenty letters of the English alphabet.
+
+rownames(myDf) <- letters[1:20]
+
+
+###-2.6----------------------------------------------------------------------###
+
+## (a) Create a length-20 factor with two levels = {"yes", "no"}.
+
+f <- factor(rep(c("yes", "no"), 10))
+
+## (b) Add the factor you created in (a) to the data frame you created in (2.5)
+##     as a new column called "f".
+
+myDf$f <- f
+
+
+################################################################################
+### 3: Data I/O                                                              ###
+################################################################################
+
+###-3.1----------------------------------------------------------------------###
+
+## Create a new RStudio project associated with the directory that you want to
+## use as the working directory for these exercises.
+
+### ANSWER: You have to do this with clicky-box options.
+
+
+###-3.2----------------------------------------------------------------------###
+
+## (a) Load the dataset saved as '../data/diabetes.rds'.
+
+diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
+
+## (b) Use the str() function to compare the structure of the data you loaded in
+##     (a) to the 'diabetes2' dataset loaded above.
+##     - Are there any differences between these two objects? If so, what are
+##       the differences?
+
+diabetes2 <- read.table(paste0(dataDir, "diabetes.txt"),
+                        header = TRUE,
+                        sep = "\t")
+
+str(diabetes)
+str(diabetes2)
+
+## The 'sex' variable is a factor when reading the data from the RDS file, but
+## it's a character vector when reading the data from the tab-delimited file.
+
+
+###-3.3----------------------------------------------------------------------###
+
+## (a) Use the haven::read_spss() function to load the SPSS dataset saved at
+##     'data/starwars.sav'
+
+starwars <- read_spss(paste0(dataDir, "starwars.sav"))
+
+
+###-3.4----------------------------------------------------------------------###
+
+## (a) Use the openxlsx::read.xlsx() function to load the first 100 rows (not
+##     counting column names) of the first 4 columns from the 'diabetes' sheet
+##     in the Excel workbook stored at '../data/example_data.xlsx'
+
+dat3.4a <- read.xlsx(paste0(dataDir, "example_data.xlsx"),
+                     sheet = "diabetes",
+                     rows  = 1:100,
+                     cols  = 1:4)
+
+## (b) Use the readxl::read_excel() function with an appropriate specification
+##     for the 'range' argument to load the chunk of data beginning on Row 3 and
+##     Column 2 and ending on Row 100 and Column 7 from the 'titanic' sheet in
+##     '../data/example_data.xlsx'
+
+dat3.4b <- read_excel(paste0(dataDir, "example_data.xlsx"),
+                      sheet = "titanic",
+                      range = "B3:G100")
+
+dat3.4b
+
+
+################################################################################
 ### e1: Data Analysis                                                        ###
 ################################################################################
 

@@ -125,6 +125,7 @@ all.equal(tmp1, tmp3)
 ##
 ## Create a single pipeline that completes the following data processing steps
 ## on the 'bfi' data.
+##
 ## 1. Create a new variable, 'open4', by centering the 'open' variable on 4
 ## 2. Create a new variable, 'oaProd', that contains the product of 'open4' and
 ##    'agree'
@@ -133,13 +134,7 @@ all.equal(tmp1, tmp3)
 ##    - The five agreeableness items
 ##    - The five openness items
 ##    - 'agree', 'open', and 'open4'
-
-bfi3.2 <- bfi |>
-    mutate(open4 = open - 4,
-           oaProd = open4 * agree) |>
-    filter(oaProd > 0) |> 
-    select(a1:a5, o1:o5, agree, open, open4)
-
+##
 ################################################################################
 
 ### Pipes work by passing the output from the upstream function into the
@@ -178,6 +173,9 @@ bfi %$% lm(extra ~ age)
 ##
 ## Use the pipe and exposition pipe to calculate the correlation between 'age'
 ## and 'agree' for adults in the 'bfi' data.
+##
+## - Your pipeline should return only a single correlation, not an entire
+##   correlation matrix
 ##
 ## HINT: You can use the cor() function to compute the correlation between two
 ##       variables.

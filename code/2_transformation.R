@@ -102,11 +102,16 @@ str(bfi)
 ################################################################################
 ## PRACTICE PROBLEM 2.1
 ##
-## Modify the factor levels of the 'education' factor we just created. Replace
-## all of the spaces with underscores, "_".
-##
-## HINT 1: The levels() function can also be used to re-assign factor levels.
-## HINT 2: If you want to be fancy, check out the gsub() function.
+## Use dplyr::mutate() to add three new variables to the 'bfi' data
+## 1. rootAge = The square root of 'age'
+## 2. permEdu = A random permutation of the 'education' factor
+## 3. compEdu = A logical vector that contains TRUE for every row where
+##              'permEdu' = 'education' and FALSE otherwise
+## 
+## HINTS: 
+## - You can use the sample() function to permute the contents of an R vector
+## - You can use the tidyr::replace_na() function to replace missing values with
+##   some non-missing value
 ##
 ################################################################################
 
@@ -215,6 +220,18 @@ bfi |>
 ################################################################################
 ## PRACTICE PROBLEM 2.3
 ##
+## Use dplyr::mutate() and case_when() to create a new factor called 'col_grad'
+## that satisfies the following logic
+## - col_grad = "no" when 'education' is "some high school", "high school graduate",
+##   or "some college"
+## - col_grad = "yes" when 'education' is "college graduate" or "graduate degree"
+## - col_grad = is missing, otherwise
+##
+################################################################################
+
+################################################################################
+## PRACTICE PROBLEM 2.4
+##
 ## NOTE: The following problem statement uses these abbreviations
 ##       - O = Openness to Experience ('open')
 ##       - E = Extraversion ('extra')
@@ -257,7 +274,7 @@ sapply(l1, range)
 sapply(x, var)
 
 ################################################################################
-## PRACTICE PROBLEM 2.4
+## PRACTICE PROBLEM 2.5
 ##
 ## Use an appropriate apply function to convert all the variable names in the
 ## 'bfi.keys' list to lower case.
