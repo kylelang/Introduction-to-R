@@ -117,17 +117,19 @@ bfi2.2 <- mutate(bfi, across(agree:open, scale, .names = "std_{.col}"))
 
 ## Use dplyr::mutate() and case_when() to create a new factor called 'col_grad'
 ## that satisfies the following logic
-## - col_grad = "no" when 'education' is "some high school", "high school graduate",
+## - col_grad = "no" when 'edu' is "some high school", "high school graduate",
 ##   or "some college"
-## - col_grad = "yes" when 'education' is "college graduate" or "graduate degree"
+## - col_grad = "yes" when 'edu' is "college graduate" or "graduate degree"
 ## - col_grad = is missing, otherwise
+
+bfi <- readRDS(here::here(dataDir, "bfi.rds"))
 
 ## Tell mutate() to create a factor variable directly:
 bfi2.3 <-
     mutate(bfi,
            col_grad = case_when(
-               education %in% c("some high school", "high school graduate", "some college") ~ factor("no"),
-               education %in% c("college graduate", "graduate degree") ~ factor("yes"),
+               edu %in% c("some high school", "high school graduate", "some college") ~ factor("no"),
+               edu %in% c("college graduate", "graduate degree") ~ factor("yes"),
                TRUE ~ NA
            )
     )
@@ -136,8 +138,8 @@ bfi2.3 <-
 bfi2.3 <-
     mutate(bfi,
            col_grad = case_when(
-               education %in% c("some high school", "high school graduate", "some college") ~ "no",
-               education %in% c("college graduate", "graduate degree") ~ "yes",
+               edu %in% c("some high school", "high school graduate", "some college") ~ "no",
+               edu %in% c("college graduate", "graduate degree") ~ "yes",
                TRUE ~ NA
            ),
            col_grad = factor(col_grad)
@@ -147,8 +149,8 @@ bfi2.3 <-
 bfi2.3 <-
     mutate(bfi,
            col_grad = case_when(
-               education %in% c("some high school", "high school graduate", "some college") ~ "no",
-               education %in% c("college graduate", "graduate degree") ~ "yes",
+               edu %in% c("some high school", "high school graduate", "some college") ~ "no",
+               edu %in% c("college graduate", "graduate degree") ~ "yes",
                TRUE ~ NA
            ) |> factor()
     )
@@ -247,106 +249,108 @@ bfi %>% filter(age > 18) %$% cor(age, agree)
 
 
 ################################################################################
-### 5: Data Visualization                                                    ###
+### 4: Data Visualization                                                    ###
 ################################################################################
 
-###-5.1----------------------------------------------------------------------###
+###-4.1----------------------------------------------------------------------###
 
 ## Use base R graphics and the 'titanic' data to create conditional boxplots,
 ## where plots of 'age' are conditioned on 'survived'.
 ## - What does this figure tell you about the ages of survivors ('survived' = 1)
 ##   vs. non-survivors ('survived' = 0)?
 
-titanic <- readRDS(paste0(dataDir, "titanic.rds"))
+titanic <- readRDS(here::here(dataDir, "titanic.rds"))
 
 boxplot(age ~ survived, data = titanic)
 
 ## There is not much difference in the age of survivors and non-survivors.
 
 
-###-5.2----------------------------------------------------------------------###
+###-4.2----------------------------------------------------------------------###
 
 ## Use GGPlot and the 'diabetes' data to create an empty plot of total
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
 ## - Don't add any geoms yet.
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.2 <- ggplot(diabetes, aes(age, tc)))
+diabetes <- readRDS(here::here(dataDir, "diabetes.rds"))
+
+(p4.2 <- ggplot(diabetes, aes(age, tc)))
 
 
-###-5.3----------------------------------------------------------------------###
+###-4.3----------------------------------------------------------------------###
 
-## Augment the plot you created in (5.2) to create a scatterplot.
+## Augment the plot you created in 4.2 to create a scatterplot.
 ## - Map the size of the points to 'bmi'
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.3 <- p5.2 + geom_point(aes(size = bmi)))
+(p4.3 <- p4.2 + geom_point(aes(size = bmi)))
 
 
-###-5.4----------------------------------------------------------------------###
+###-4.4----------------------------------------------------------------------###
 
-## Augment the plot you created in (5.3) by adding RUG lines to both the x-axis
+## Augment the plot you created in 4.3 by adding RUG lines to both the x-axis
 ## and y-axis.
 ## - Map the color of the RUG lines to 'glu'
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.4 <- p5.3 + geom_rug(aes(color = glu)))
+(p4.4 <- p4.3 + geom_rug(aes(color = glu)))
 
 
-###-5.5----------------------------------------------------------------------###
+###-4.5----------------------------------------------------------------------###
 
-## Augment the plot you created in (5.4) by adding linear regression lines.
+## Augment the plot you created in 4.4 by adding linear regression lines.
 ## - Add separate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
 ## - Assign the resulting plot object to a variable in your environment.
 
-(p5.5 <- p5.4 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
+(p4.5 <- p4.4 + geom_smooth(aes(linetype = sex), method = "lm", se = FALSE))
 
 
-###-5.6--------------------------------------------------------------------=-###
+###-4.6--------------------------------------------------------------------=-###
 
-## Modify the plot that you created in (5.5) by adjusting the theme.
+## Modify the plot that you created in 4.5 by adjusting the theme.
 ## - Change the global theme to the "classic" theme.
 ## - Convert all text to 14-point, serif font.
 
-(p5.6 <- p5.5 +
+(p4.6 <- p4.5 +
      theme_classic() +
      theme(text = element_text(family = "serif", size = 14))
 )
 
-###-5.7----------------------------------------------------------------------###
+###-4.7----------------------------------------------------------------------###
 
 ## Use the 'titanic' data, GGPlot, and faceting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
 ## - Adjust the number of bins to optimize the clarity of the visualization.
 ## - Overlay kernel density plots on each histogram.
 ## - Do you think this figure is a more effective visualization than the
-##   conditional boxplots you created in (5.1)? Why or why not?
+##   conditional boxplots you created in 4.1? Why or why not?
 ##
 ## HINT: You can get ggplot to scale your histogram in proportions, rather than
 ##       counts, by specifying the argument "y = after_stat(density)" for the y
 ##       aesthetic in an appropriate geom.
 
-(p5.7 <- ggplot(titanic, aes(age)) +
+(p4.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density))) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p5.7 <- ggplot(titanic, aes(age)) +
+(p4.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density)), bins = 10) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p5.7 <- ggplot(titanic, aes(age)) +
+(p4.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density)), bins = 50) +
      geom_density() +
      facet_wrap(vars(survived))
 )
 
-(p5.7 <- ggplot(titanic, aes(age)) +
+(p4.7 <- ggplot(titanic, aes(age)) +
      geom_histogram(aes(y = after_stat(density)), bins = 20) +
      geom_density() +
      facet_wrap(vars(survived))
@@ -355,7 +359,7 @@ boxplot(age ~ survived, data = titanic)
 ## Yes. These histograms show a spike of very young survivors.
 
 
-###-5.8----------------------------------------------------------------------###
+###-4.8----------------------------------------------------------------------###
 ##
 ## Use ggplot() and grid.arrange() to create the two plots described below and
 ## organize the plots into a 1x2 array (i.e., 1 row and 2 columns).
@@ -370,7 +374,7 @@ boxplot(age ~ survived, data = titanic)
 ##   function.
 ## - Don't forget to define the appropriate mean and SD.
 
-p5.8 <- diabetes %>%
+p4.8 <- diabetes %>%
     mutate(density = dnorm(glu, mean(glu), sd(glu))) %>%
     ggplot(aes(glu)) +
     geom_histogram(aes(y = after_stat(density)),
@@ -380,54 +384,54 @@ p5.8 <- diabetes %>%
     theme_classic()
 
 grid.arrange(
-    p5.8 + geom_density(color = "blue"),
-    p5.8 + geom_line(aes(glu, density), col = "red"),
+    p4.8 + geom_density(color = "blue"),
+    p4.8 + geom_line(aes(glu, density), col = "red"),
     ncol = 2
 )
 
 
-###-5.9----------------------------------------------------------------------###
+###-4.9----------------------------------------------------------------------###
 
-## Save the figure that you created in (5.7) as a JPEG
+## Save the figure that you created in 4.7 as a JPEG
 ## - Adjust the size to 10cm X 10cm
 ## - Set the resolution to 800
-## - Save the image to the "../figures/" directory
+## - Save the image to the "/figures/" directory
 
-jpeg(paste0(figDir, "practice_problem_5_9.jpg"),
+jpeg(here::here(figDir, "practice_problem_4_9.jpg"),
      width  = 10,
      height = 10,
      units  = "cm",
      res    = 800)
 
-p5.7
+p4.7
 
 dev.off()
 
 
-###-5.10---------------------------------------------------------------------###
+###-4.10---------------------------------------------------------------------###
 
-## (a) Save the five figures you created in (5.2 - 5.6) to a single PDF file.
+## (a) Save the five figures you created in (4.2 - 4.6) to a single PDF file.
 
-pdf(paste0(figDir, "practice_problem_5_10a.pdf"))
+pdf(here::here(figDir, "practice_problem_4_10a.pdf"))
 
-p5.2
-p5.3
-p5.4
-p5.5
-p5.6
+p4.2
+p4.3
+p4.4
+p4.5
+p4.6
 
 dev.off()
 
-## (b) Save the five figures you created in (5.2 - 5.6) to a separate PNG files.
+## (b) Save the five figures you created in (4.2 - 4.6) to a separate PNG files.
 ##     - Save both the PDF and the PNG files to the "figures" directory
 
-png(paste0(figDir, "practice_problem_5_10b-%d.png"))
+png(here::here(figDir, "practice_problem_4_10b-%d.png"))
 
-p5.2
-p5.3
-p5.4
-p5.5
-p5.6
+p4.2
+p4.3
+p4.4
+p4.5
+p4.6
 
 dev.off()
 

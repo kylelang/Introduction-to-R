@@ -205,7 +205,7 @@ with(bfi, table(minor = age < 18, gender, gendered_maturity))
 ### rename columns in a data frame
 
 ## Rename a few of the variables in our bfi data
-bfi <- rename(bfi, sex = gender, ed = education, gm = gendered_maturity)
+bfi <- rename(bfi, sex = gender, edu = education, gm = gendered_maturity)
 head(bfi)
 
 ## Convert all scale item names to lower case
@@ -222,9 +222,9 @@ bfi |>
 ##
 ## Use dplyr::mutate() and case_when() to create a new factor called 'col_grad'
 ## that satisfies the following logic
-## - col_grad = "no" when 'education' is "some high school", "high school graduate",
+## - col_grad = "no" when 'edu' is "some high school", "high school graduate",
 ##   or "some college"
-## - col_grad = "yes" when 'education' is "college graduate" or "graduate degree"
+## - col_grad = "yes" when 'edu' is "college graduate" or "graduate degree"
 ## - col_grad = is missing, otherwise
 ##
 ################################################################################

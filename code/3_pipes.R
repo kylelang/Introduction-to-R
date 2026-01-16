@@ -91,7 +91,7 @@ tmp1 <- bfi |>
            extraversion = scoreVeryFast(keys = keys["extraversion"], items = across(everything()))[ , 1],
            neuroticism = scoreVeryFast(keys = keys["neuroticism"], items = across(everything()))[ , 1]) |>
     filter(age >= 0) |>
-    select(extraversion, neuroticism, age, sex, ed, gm) |>
+    select(extraversion, neuroticism, age, sex, edu, gm) |>
     arrange(extraversion)
 
 head(tmp1, 30)
@@ -102,7 +102,7 @@ tmp2   <- data.frame(bfi, scores)
 
 tmp2$age   <- tmp2$age - 18
 
-tmp2 <- tmp2[tmp2$age >= 0, c("extraversion", "neuroticism", "age", "sex", "ed", "gm")]
+tmp2 <- tmp2[tmp2$age >= 0, c("extraversion", "neuroticism", "age", "sex", "edu", "gm")]
 tmp2 <- tmp2[order(tmp2$extraversion), ]
 
 head(tmp2, 30)
@@ -114,7 +114,7 @@ tmp3 <- bfi |>
     data.frame(scores) |>
     mutate(age = age - 18) |>
     filter(age >= 0) |>
-    select(extraversion, neuroticism, age, sex, ed, gm) |>
+    select(extraversion, neuroticism, age, sex, edu, gm) |>
     arrange(extraversion)
 
 head(tmp3, 30)

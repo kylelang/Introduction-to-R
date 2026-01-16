@@ -1,7 +1,7 @@
-### Title:    Introduction to R 5: Data Visualization
+### Title:    Introduction to R 4: Data Visualization
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2025-01-18
+### Modified: 2026-01-16
 
 rm(list = ls(all = TRUE))
 
@@ -10,15 +10,15 @@ library(dplyr)
 library(magrittr)
 library(gridExtra)
 
-dataDir  <- "data/"
-figDir   <- "figures/"
+dataDir  <- "data"
+figDir   <- "figures"
 
-diabetes <- readRDS(paste0(dataDir, "diabetes.rds"))
-titanic  <- readRDS(paste0(dataDir, "titanic.rds"))
-bfi      <- readRDS(paste0(dataDir, "bfi.rds"))
+diabetes <- readRDS(here::here(dataDir, "diabetes.rds"))
+titanic  <- readRDS(here::here(dataDir, "titanic.rds"))
+bfi      <- readRDS(here::here(dataDir, "bfi.rds"))
 
-## Convert survival indicator to a numeric dummy code:
-titanic <- titanic %>% mutate(survived = as.numeric(survived) - 1)
+## Create a numeric version of the survival variable:
+titanic <- mutate(titanic, surviveNum = ifelse(survived == "yes", 1, 0))
 
 
 ###-Base R Graphics----------------------------------------------------------###
@@ -56,7 +56,7 @@ boxplot(diabetes$progress,
 boxplot(progress ~ sex, data = diabetes, col = "violet")
 
 ################################################################################
-## PRACTICE PROBLEM 5.1
+## PRACTICE PROBLEM 4.1
 ##
 ## Use base R graphics and the 'titanic' data to create conditional boxplots,
 ## where plots of 'age' are conditioned on 'survived'.
@@ -73,9 +73,6 @@ d <- density(diabetes$bmi)
 
 ## If we plot a density object, we get a kernel density plot
 plot(d)
-
-ls(d)
-d %$% plot(y = y, x = x, type = "l")
 
 
 ###-GGPlot-------------------------------------------------------------------###
@@ -101,7 +98,7 @@ p1 + geom_rug()
 p1 + geom_point() + geom_line() + geom_rug()
 
 ################################################################################
-## PRACTICE PROBLEM 5.2
+## PRACTICE PROBLEM 4.2
 ##
 ## Use GGPlot and the 'diabetes' data to create an empty plot of total
 ## cholesterol, 'tc', (on the y-axis) against 'age' (on the x-axis).
@@ -122,7 +119,7 @@ p3 <- ggplot(diabetes, aes(sex, bmi))
 p3 + geom_boxplot()
 p3 + geom_violin()
 
-p4 <- ggplot(bfi, aes(education, age))
+p4 <- ggplot(bfi, aes(edu, age))
 
 p4 + geom_point()
 p4 + geom_jitter()
@@ -135,15 +132,15 @@ p1 + geom_point() + geom_smooth(method = "lm")
 
 ## Changing style options outside of the aes() function applies the styling to
 ## the entire plot
-p5 <- ggplot(titanic, aes(age, survived))
+p5 <- ggplot(titanic, aes(age, surviveFac))
 p5 + geom_jitter(color = "blue", size = 3, height = 0.1)
 
 ## We can also apply styles as a function of variables by defining the style
 ## within the aes() function.
-p6.1 <- ggplot(titanic, aes(age, survived, color = sex))
+p6.1 <- ggplot(titanic, aes(age, surviveNum, color = sex))
 p6.1 + geom_jitter(size = 3, height = 0.1) + geom_smooth()
 
-p6.2 <- ggplot(titanic, aes(age, survived))
+p6.2 <- ggplot(titanic, aes(age, surviveNum))
 
 p6.2 + geom_jitter(aes(color = sex), size = 3, height = 0.1) +
     geom_smooth()
@@ -161,18 +158,18 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
     geom_smooth()
 
 ################################################################################
-## PRACTICE PROBLEM 5.3
+## PRACTICE PROBLEM 4.3
 ##
-## Augment the plot you created in (5.2) to create a scatterplot.
+## Augment the plot you created in 4.2 to create a scatterplot.
 ## - Map the size of the points to 'bmi'
 ## - Assign the resulting plot object to a variable in your environment.
 ##
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 5.4
+## PRACTICE PROBLEM 4.4
 ##
-## Augment the plot you created in (5.3) by adding RUG lines to both the x-axis
+## Augment the plot you created in 4.3 by adding RUG lines to both the x-axis
 ## and y-axis.
 ## - Map the color of the RUG lines to 'glu'
 ## - Assign the resulting plot object to a variable in your environment.
@@ -180,9 +177,9 @@ p6.1 + geom_jitter(aes(shape = class), size = 3, height = 0.1) +
 ################################################################################
 
 ################################################################################
-## PRACTICE PROBLEM 5.5
+## PRACTICE PROBLEM 4.5
 ##
-## Augment the plot you created in (5.4) by adding linear regression lines.
+## Augment the plot you created in 4.4 by adding linear regression lines.
 ## - Add separate lines for males and females.
 ## - Differentiate the regression lines by giving them different line types.
 ## - Do not include the SE bands.
@@ -207,9 +204,9 @@ p1.1 + theme_classic() +
           aspect.ratio = 1)
 
 ################################################################################
-## PRACTICE PROBLEM 5.6
+## PRACTICE PROBLEM 4.6
 ##
-## Modify the plot that you created in (5.5) by adjusting the theme.
+## Modify the plot that you created in 4.5 by adjusting the theme.
 ## - Change the global theme to the "classic" theme.
 ## - Convert all text to 14-point, serif font.
 ##
@@ -218,7 +215,7 @@ p1.1 + theme_classic() +
 ### Faceting allow us to make arrays of conditional plots
 
 ## Use facet_wrap() to condition plots on 'sex'
-(p7 <- ggplot(titanic, aes(age, survived, color = class)) +
+(p7 <- ggplot(titanic, aes(age, surviveNum, color = class)) +
      geom_jitter(height = 0.05) +
      geom_smooth(method = "glm",
                  method.args = list(family = "binomial"),
@@ -228,7 +225,7 @@ p1.1 + theme_classic() +
 p7 + facet_wrap(vars(sex))
 
 ## Use facet_grid() to condition plots on both 'sex' and 'class'
-(p8 <- ggplot(titanic, aes(age, survived)) +
+(p8 <- ggplot(titanic, aes(age, surviveNum)) +
      geom_jitter(height = 0.05) +
      geom_smooth(method = "glm",
                  method.args = list(family = "binomial"),
@@ -238,14 +235,14 @@ p7 + facet_wrap(vars(sex))
 p8 + facet_grid(vars(sex), vars(class))
 
 ################################################################################
-## PRACTICE PROBLEM 5.7
+## PRACTICE PROBLEM 4.7
 ##
 ## Use the 'titanic' data, GGPlot, and faceting to create conditional
 ## histograms of 'age' conditioned on 'survived'.
 ## - Adjust the number of bins to optimize the clarity of the visualization.
 ## - Overlay kernel density plots on each histogram.
 ## - Do you think this figure is a more effective visualization than the
-##   conditional boxplots you created in (5.1)? Why or why not?
+##   conditional boxplots you created in (4.1)? Why or why not?
 ##
 ## HINT: You can get ggplot to scale your histogram in proportions, rather than
 ##       counts, by specifying the argument "y = after_stat(density)" for the y
@@ -263,7 +260,7 @@ grid.arrange(p1 + geom_point(),
              ncol = 2)
 
 ################################################################################
-## PRACTICE PROBLEM 5.8
+## PRACTICE PROBLEM 4.8
 ##
 ## Use ggplot() and grid.arrange() to create the two plots described below and
 ## organize the plots into a 1x2 array (i.e., 1 row and 2 columns).
@@ -287,28 +284,28 @@ grid.arrange(p1 + geom_point(),
 ### output to a file using an appropriate function.
 
 ## Save as PDF
-pdf(paste0(figDir, "example_plot.pdf"))
+pdf(here::here(figDir, "example_plot.pdf"))
 
 p7 + facet_wrap(vars(sex))
 
 dev.off()
 
 ## Save as JPEG
-jpeg(paste0(figDir, "example_plot.jpg"))
+jpeg(here::here(figDir, "example_plot.jpg"))
 
 p7 + facet_wrap(vars(sex))
 
 dev.off()
 
 ## Save as PNG
-png(paste0(figDir, "example_plot.png"))
+png(here::here(figDir, "example_plot.png"))
 
 p7 + facet_wrap(vars(sex))
 
 dev.off()
 
 ## With PDF documents we can save multiple figures to a single file.
-pdf(paste0(figDir, "example_plot2.pdf"))
+pdf(here::here(figDir, "example_plot2.pdf"))
 
 p6.1 + geom_jitter(size = 3, height = 0.1) + geom_smooth()
 p7 + facet_wrap(vars(sex))
@@ -317,9 +314,9 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ################################################################################
-## PRACTICE PROBLEM 5.9
+## PRACTICE PROBLEM 4.9
 ##
-## Save the figure that you created in (5.7) as a JPEG
+## Save the figure that you created in (4.7) as a JPEG
 ## - Adjust the size to 10cm X 10cm
 ## - Set the resolution to 800
 ## - Save the image to the "figures" directory
@@ -330,7 +327,7 @@ dev.off()
 ### token to the file name, so the file names will have an index.
 
 ## For PDF files, we also need to set 'onefile = FALSE'
-pdf(paste0(figDir, "example_plot2_%d.pdf"), onefile = FALSE)
+pdf(here::here(figDir, "example_plot2_%d.pdf"), onefile = FALSE)
 
 p6.1 + geom_jitter(size = 3, height = 0.1) + geom_smooth()
 p7 + facet_wrap(vars(sex))
@@ -339,7 +336,7 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ## Multiple PNG files
-png(paste0(figDir, "example_plot2_%d.png"))
+png(here::here(figDir, "example_plot2_%d.png"))
 
 p6.1 + geom_jitter(size = 3, height = 0.1) + geom_smooth()
 p7 + facet_wrap(vars(sex))
@@ -348,7 +345,7 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ## Multiple JPEG files
-jpeg(paste0(figDir, "example_plot2_%d.jpg"))
+jpeg(here::here(figDir, "example_plot2_%d.jpg"))
 
 p6.1 + geom_jitter(size = 3, height = 0.1) + geom_smooth()
 p7 + facet_wrap(vars(sex))
@@ -357,13 +354,12 @@ p8 + facet_grid(vars(sex), vars(class))
 dev.off()
 
 ################################################################################
-## PRACTICE PROBLEM 5.10
+## PRACTICE PROBLEM 4.10
 ##
-## (a) Save the five figures you created in (5.2 - 5.6) to a single PDF file.
-## (b) Save the five figures you created in (5.2 - 5.6) to a separate PNG files.
+## (a) Save the five figures you created in (4.2 - 4.6) to a single PDF file.
+## (b) Save the five figures you created in (4.2 - 4.6) to a separate PNG files.
 ##     - Save both the PDF and the PNG files to the "figures" directory
 ##
 ################################################################################
-
 
 ###-END----------------------------------------------------------------------###
