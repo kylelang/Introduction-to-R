@@ -58,7 +58,8 @@ Copy-paste the following lines of code into the `RStudio` console window to exec
                            "magrittr",
                            "psych",
                            "ggplot2",
-                           "gridExtra"),
+                           "gridExtra",
+                           "tidyr"),
                          repos = "http://cloud.r-project.org",
                          dependencies = TRUE)
 
