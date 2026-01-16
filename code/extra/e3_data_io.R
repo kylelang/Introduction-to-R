@@ -227,11 +227,11 @@ saveRDS(boys, here::here(dataDir, "boys.rds"))
 ###-Writing SPSS Data--------------------------------------------------------###
 
 ## To write SPSS data, the best option is the haven::write_sav() function.
-write_sav(mtcars1, here::here(dataDir, "mctars1.sav"))
+write_sav(mtcars1, here::here(dataDir, "mtcars1.sav"))
 
 ## write_sav() will preserve label information provided by factor variables and
 ## the 'haven_labelled' class, but not by attributes
-write_sav(mtcars2, here::here(dataDir, "mctars2.sav"))
+write_sav(mtcars2, here::here(dataDir, "mtcars2.sav"))
 
 
 ###-Writing Excel Data-------------------------------------------------------###

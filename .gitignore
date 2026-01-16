@@ -43,3 +43,9 @@ vignettes/*.pdf
 *.R#
 .#*
 
+# Practice problem results
+/figures/practice_problem*
+/data/practice_problem*
+/data/mtcars1.sav
+/data/mtcars2.sav
+/data/tmp.RData
