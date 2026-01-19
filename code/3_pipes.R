@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 3: Pipes
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2026-01-16
+### Modified: 2026-01-19
 
 rm(list = ls(all = TRUE))
 
@@ -78,12 +78,6 @@ bfi |>
 
 ## First, we prep the variable keys as you did earlier
 (keys <- lapply(bfi.keys, tolower))
-
-tmp <- select(bfi, matches("e\\d")) |> scoreVeryFast(keys = keys["extraversion"], items = _)
-
-head(tmp)
-?scoreVeryFast
-scoreVeryFast(keys = keys)
 
 ## With the dplyr pipe, this sequence of operations could be achieved by
 tmp1 <- bfi |>

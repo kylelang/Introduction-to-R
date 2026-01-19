@@ -1,7 +1,7 @@
 ### Title:    Introduction to R: Package Installation Script
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2026-01-16
+### Modified: 2026-01-19
 
 install.packages(c("readr",
                    "haven",
@@ -12,6 +12,8 @@ install.packages(c("readr",
                    "psych",
                    "ggplot2",
                    "gridExtra",
-                   "tidyr"),
+                   "tidyr",
+                   "psychTools",
+                   "here"),
                  repos = "http://cloud.r-project.org",
                  dependencies = TRUE)

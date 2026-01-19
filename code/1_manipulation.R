@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 1: Data Manipulation
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2026-01-16
+### Modified: 2026-01-19
 
 rm(list = ls(all = TRUE))
 
@@ -25,6 +25,8 @@ bfi["age"]
 
 ## Select the first 10 rows
 bfi[1:10, ]
+myDat2 <- bfi[1:10, ]
+myDat2
 
 ## Select columns 1, 3, and 5
 bfi[ , c(1, 3, 5)]
@@ -50,7 +52,7 @@ tail(bfi, 15)
 (over30 <- bfi$age > 30)
 
 ## How many people is that?
-sum(over30)
+nrow(bfi) - sum(over30)
 
 ## What proportion of the total sample?
 mean(over30)
@@ -99,9 +101,11 @@ with(bfi, table(age, (gender == 1 & !is.na(education) & education >= 4)))
 
 ## Do the same subsetting as above with dplyr::filter()
 bfi3 <- filter(bfi, age < 50, gender == 1, !is.na(education), education >= 4)
+bfi4 <- filter(bfi, age < 50, gender == 1, education >= 4)
 
 ## Same result?
-sum(bfi2 - bfi3, na.rm = TRUE)
+all.equal(bfi2, bfi3, check.attributes = FALSE)
+all.equal(bfi3, bfi4)
 
 ### The dplyr::select() function is a very flexible tool for selecting columns
 ### from a data frame
@@ -138,9 +142,6 @@ head(tmp)
 tmp <- select(bfi, starts_with(c("A", "E"), ignore.case = FALSE))
 head(tmp)
 
-tmp <- select(bfi, contains("3"))
-head(tmp)
-
 ################################################################################
 ## PRACTICE PROBLEM 1.2
 ##
@@ -153,7 +154,7 @@ head(tmp)
 ################################################################################
 ## PRACTICE PROBLEM 1.3
 ##
-## Use dplyr subsetting functions to select the same subset as in (4.1)
+## Use dplyr subsetting functions to select the same subset as in (1.1)
 ##
 ################################################################################
 

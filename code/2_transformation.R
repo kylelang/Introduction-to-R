@@ -1,7 +1,7 @@
 ### Title:    Introduction to R 2: Data Transformation
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-04
-### Modified: 2026-01-16
+### Modified: 2026-01-19
 
 rm(list = ls(all = TRUE))
 
@@ -9,7 +9,6 @@ dataDir <- "data"
 
 ## Load necessary packages
 library(dplyr)    # Data manipulation
-library(magrittr) # Exposition pipe
 library(psych)    # For creating scale scores
 
 ## Load the 'bfi' data from the 'psychTools' package

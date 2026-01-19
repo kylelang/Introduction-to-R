@@ -1,7 +1,7 @@
 ### Title:    Introduction to R: Suggested Solutions for Practice Problems
 ### Author:   Kyle M. Lang
 ### Created:  2022-01-29
-### Modified: 2025-01-18
+### Modified: 2026-01-19
 
 rm(list = ls(all = TRUE))
 
@@ -47,7 +47,7 @@ bfi1.2 <- select(bfi, contains("3"))
 
 ###-1.3----------------------------------------------------------------------###
 
-## Use dplyr subsetting functions to select the same subset as in (4.1)
+## Use dplyr subsetting functions to select the same subset as in (1.1)
 
 tmp <- filter(bfi, gender == 2 & age < 18)
 select(tmp, starts_with("N"))
@@ -154,6 +154,11 @@ bfi2.3 <-
                TRUE ~ NA
            ) |> factor()
     )
+
+## In practice, we'd be better off skipping case_when() for this problem
+bfi2.3 <- mutate(bfi,
+  col_grad = factor(edu, labels = c(rep("no", 3), rep("yes", 2)))
+)
 
 
 ###-2.4----------------------------------------------------------------------###
